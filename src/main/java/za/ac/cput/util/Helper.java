@@ -29,4 +29,17 @@ public class Helper {
     public static boolean isValidCellNumber(String phoneNumber) {
         return phoneNumber != null && phoneNumber.matches("\\d{10}");
     }
+
+    public static boolean isLong(Long l){
+        if (l <= 0)
+            return true;
+        return false;
+    }
+
+    public static boolean isIntNotValid(int i) {    //checks int
+        if (i < 0)
+            return true;
+        return false;
+    }
+
 }
