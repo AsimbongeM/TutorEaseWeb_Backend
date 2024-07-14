@@ -6,6 +6,13 @@ import za.ac.cput.domain.Student;
 import za.ac.cput.repository.StudentRepository;
 import java.util.List;
 
+/**
+ * StudentService.java
+ * This is the Service class
+ * @author Thandolwethu Zamasiba Khoza (221797289)
+ * Date: 08 July 2024
+ */
+
 @Service
 public class StudentService implements IStudentService{
     private StudentRepository studentRepository;

@@ -4,6 +4,13 @@ import jakarta.persistence.*;
 
 import java.util.Objects;
 
+/**
+ * Student.java
+ * This is the Domain class
+ * @author Thandolwethu Zamasiba Khoza (221797289)
+ * Date: 08 July 2024
+ */
+
 @Entity
 public class Student {
     //Thandolwethu

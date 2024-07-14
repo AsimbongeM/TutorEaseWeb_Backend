@@ -6,6 +6,13 @@ import za.ac.cput.domain.Student;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * StudentFactoryTest.java
+ * This is the Factory class
+ * @author Thandolwethu Zamasiba Khoza (221797289)
+ * Date: 08 July 2024
+ */
+
 class StudentFactoryTest {
     private Student student1;
     private Student student2;
