@@ -73,16 +73,30 @@ class ClassSession extends Component {
             document.getElementById('tutorSideVideo').srcObject = screenStream;
             document.getElementById('startScreenShare').style.display = 'none';
             document.getElementById('stopScreenShare').style.display = 'inline';
+
+            const peerConnection = new RTCPeerConnection(ICE_SERVERS);
+            this.setState({ peerConnection });
+            screenStream.getTracks().forEach(track => peerConnection.addTrack(track, screenStream));
+            peerConnection.onicecandidate = this.handleIceCandidate;
+            peerConnection.ontrack = this.handleTrackEvent;
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            this.socket.emit('offer', offer);
         } catch (error) {
             console.error('Error starting screen share:', error);
         }
     };
 
     stopScreenShare = () => {
-        const { screenStream } = this.state;
+        const { screenStream, peerConnection } = this.state;
         if (screenStream) {
             screenStream.getTracks().forEach((track) => track.stop());
             this.setState({ screenStream: null });
+        }
+        if (peerConnection) {
+            peerConnection.close();
+            this.setState({ peerConnection: null });
         }
         document.getElementById('startScreenShare').style.display = 'inline';
         document.getElementById('stopScreenShare').style.display = 'none';
@@ -221,6 +235,7 @@ class ClassSession extends Component {
                         <i className="fas fa-download"></i>
                     </button>
                 </div>
+
             </div>
         );
     }
