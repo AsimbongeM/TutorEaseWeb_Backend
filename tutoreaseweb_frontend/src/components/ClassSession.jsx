@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import io from 'socket.io-client';
 
 const SIGNALING_SERVER_URL = 'http://localhost:3000';
@@ -21,6 +21,8 @@ class ClassSession extends Component {
         };
         this.socket = io(SIGNALING_SERVER_URL);
     }
+
+    /*-------------------------------P2P Connection-------------------------------------*/
     componentDidMount() {
         this.socket.on('offer', this.handleReceiveOffer);
         this.socket.on('answer', this.handleReceiveAnswer);
@@ -66,6 +68,35 @@ class ClassSession extends Component {
         this.setState({ remoteStream });
         document.getElementById('remote-video').srcObject = remoteStream;
     };
+
+    /*-------------------------------Chat-------------------------------------*/
+    handleReceiveMessage = (message) => {
+        this.setState((prevState) => ({
+            messages: [...prevState.messages, message],
+        }));
+    };
+
+    handleInputChange = (event) => {
+        this.setState({messageInput: event.target.value});
+    };
+
+    handleSendMessage = () => {
+        const {messageInput} = this.state;
+        if (messageInput.trim()) {
+            this.socket.emit('chat message', messageInput);
+            this.setState((prevState) => ({
+                messages: [...prevState.messages, messageInput],
+                messageInput: '',
+            }));
+        }
+    };
+
+    handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            this.handleSendMessage();
+        }
+    };
+    /*-------------------------------Controls' Functionality-------------------------------------*/
     startScreenShare = async () => {
         try {
             const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
@@ -191,54 +222,93 @@ class ClassSession extends Component {
         }
     };
 
+    /*-------------------------------Containers-------------------------------------*/
+
     render() {
         return (
-            <div>
-                <div id="video-container" className="d-flex justify-content-center align-items-end position-relative">
-                    <div id="webcam-container" className="rounded-circle border border-light" style={{ position: 'absolute', top: '10px', right: '10px', width: '150px', height: '150px', display: 'none', overflow: 'hidden' }}>
-                        <video id="webcam-video" autoPlay muted className="w-100 h-100" style={{ objectFit: 'cover' }}></video>
+            /*-------------------------------Menu-------------------------------------*/
+            <div style={{display: 'flex'}}>
+                <div className="menu-bar" style={{width: '200px', backgroundColor: '#f8f9fa', padding: '15px'}}>
+                    <ul className="nav flex-column">
+                        <li className="nav-item">
+                            <a className="nav-link active" href="profile"
+                               style={{color: '#333', display: 'flex', alignItems: 'center'}}>
+                                <i className="fas fa-user" style={{marginRight: '5px'}}></i> Profile
+                            </a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="portal"
+                               style={{color: '#333', display: 'flex', alignItems: 'center'}}>
+                                <i className="fas fa-door-open" style={{marginRight: '5px'}}></i> Portal
+                            </a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="calender"
+                               style={{color: '#333', display: 'flex', alignItems: 'center'}}>
+                                <i className="fas fa-calendar-alt" style={{marginRight: '5px'}}></i> Calendar
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                {/*-------------------------------Webcam-------------------------------------*/}
+                <div id="main-content" style={{flexGrow: 1}}>
+                    <div id="video-container"
+                         className="d-flex justify-content-center align-items-end position-relative">
+                        <div id="webcam-container" className="rounded-circle border border-light" style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            width: '150px',
+                            height: '150px',
+                            display: 'none',
+                            overflow: 'hidden'
+                        }}>
+                            <video id="webcam-video" autoPlay muted className="w-100 h-100"
+                                   style={{objectFit: 'cover'}}></video>
+                        </div>
+                        {/*-------------------------------Shared screen-------------------------------------*/}
+                        <video id="tutorSideVideo" autoPlay className="bg-dark border border-dark"
+                               style={{width: '80%', marginTop: '20px', display: 'block', marginLeft: 'auto', marginRight: 'auto'}}></video>
                     </div>
-                    <video id="tutorSideVideo" autoPlay className="bg-dark border border-dark" style={{ width: '80%' }}></video>
+                    {/*-------------------------------controls icons-------------------------------------*/}
+                    <div id="controls"
+                         className="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center mb-3">
+                        <button className="btn btn-primary me-2" id="startScreenShare" onClick={this.startScreenShare}>
+                            <i className="fas fa-share-square"></i>
+                        </button>
+                        <button className="btn btn-danger me-2" id="stopScreenShare" onClick={this.stopScreenShare}
+                                style={{display: 'none'}}>
+                            <i className="fas fa-ban"></i>
+                        </button>
+                        <button className="btn btn-primary me-2" id="startWebcam" onClick={this.startWebcam}>
+                            <i className="fas fa-video"></i>
+                        </button>
+                        <button className="btn btn-danger me-2" id="stopWebcam" style={{display: 'none'}}>
+                            <i className="fas fa-ban"></i>
+                        </button>
+                        <button className="btn btn-primary me-2" id="microphone" style={{display: 'none'}}>
+                            <i className="fas fa-microphone"></i>
+                        </button>
+                        <button className="btn btn-danger me-2" id="mute-microphone" onClick={this.unmuteMicrophone}>
+                            <i className="fas fa-microphone-slash"></i>
+                        </button>
+                        <button className="btn btn-primary me-2" id="startRecording" onClick={this.startRecording}>
+                            <i className="fas fa-circle"></i>
+                        </button>
+                        <button className="btn btn-danger me-2" id="stopRecording" onClick={this.stopRecording}
+                                style={{display: 'none'}}>
+                            <i className="fas fa-stop"></i>
+                        </button>
+                        <button className="btn btn-success" id="downloadIcon" onClick={this.downloadRecording}
+                                style={{display: 'none'}}>
+                            <i className="fas fa-download"></i>
+                        </button>
+                    </div>
                 </div>
-
-                <div id="controls"
-                     className="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center">
-                    <button className="btn btn-primary me-2" id="startScreenShare" onClick={this.startScreenShare}>
-                        <i className="fas fa-share-square"></i>
-                    </button>
-                    <button className="btn btn-danger me-2" id="stopScreenShare" onClick={this.stopScreenShare}
-                            style={{display: 'none'}}>
-                        <i className="fas fa-ban"></i>
-                    </button>
-                    <button className="btn btn-primary me-2" id="startWebcam" onClick={this.startWebcam}>
-                        <i className="fas fa-video"></i>
-                    </button>
-                    <button className="btn btn-danger me-2" id="stopWebcam" style={{display: 'none'}}>
-                        <i className="fas fa-ban"></i>
-                    </button>
-                    <button className="btn btn-primary me-2" id="microphone" style={{display: 'none'}}>
-                        <i className="fas fa-microphone"></i>
-                    </button>
-                    <button className="btn btn-danger me-2" id="mute-microphone" onClick={this.unmuteMicrophone}>
-                        <i className="fas fa-microphone-slash"></i>
-                    </button>
-
-                    <button className="btn btn-primary me-2" id="startRecording" onClick={this.startRecording}>
-                        <i className="fas fa-circle"></i>
-                    </button>
-                    <button className="btn btn-danger me-2" id="stopRecording" onClick={this.stopRecording}
-                            style={{display: 'none'}}>
-                        <i className="fas fa-stop"></i>
-                    </button>
-                    <button className="btn btn-success" id="downloadIcon" onClick={this.downloadRecording}
-                            style={{display: 'none'}}>
-                        <i className="fas fa-download"></i>
-                    </button>
-                </div>
-
             </div>
         );
     }
 }
+
 
 export default ClassSession;
