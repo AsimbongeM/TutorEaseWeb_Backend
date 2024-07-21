@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
 
-const SIGNALING_SERVER_URL = 'http://localhost:3000'; // Update this with your signaling server URL
+const SIGNALING_SERVER_URL = 'http://localhost:3000';
 const ICE_SERVERS = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
