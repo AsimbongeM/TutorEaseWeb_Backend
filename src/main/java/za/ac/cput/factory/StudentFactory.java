@@ -11,14 +11,13 @@ import za.ac.cput.util.Helper;
  */
 
 public class StudentFactory {
-    public static Student buildStudent(Long studentId, String firstName, String lastName, int age, String email, String cellNumber, String password){
-        if(Helper.isLong(studentId) || Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(lastName)|| Helper.isIntNotValid(age) ||
+    public static Student buildStudent(String firstName, String lastName, int age, String email, String cellNumber, String password){
+        if( Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(lastName)|| Helper.isIntNotValid(age) ||
                 !Helper.isValidEmail(email) || !Helper.isValidCellNumber(cellNumber) || Helper.isNullOrEmpty(password)){
             return null;
         }
 
         return new Student.Builder()
-                .setId(studentId)
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setAge(age)

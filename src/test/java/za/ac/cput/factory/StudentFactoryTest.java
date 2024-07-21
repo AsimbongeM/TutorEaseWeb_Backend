@@ -20,10 +20,10 @@ class StudentFactoryTest {
 
     @BeforeEach
     void setUp() {
-        student1 = StudentFactory.buildStudent(30l, "Thando", "Khoza", 16, "thando@gmail.com",
+        student1 = StudentFactory.buildStudent( "Thando", "Khoza", 16, "thando@gmail.com",
                 "0727897635", "Thando@05");
 
-        student2 = StudentFactory.buildStudent(31l, "Olwethu", "Khoza", 17, "olwethu@yahoo.com",
+        student2 = StudentFactory.buildStudent( "Olwethu", "Khoza", 17, "olwethu@yahoo.com",
                 "0876543211", "olwethu56");
 
         student3 = student1;

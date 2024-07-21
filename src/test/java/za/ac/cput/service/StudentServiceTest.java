@@ -22,15 +22,17 @@ class StudentServiceTest {
     private StudentService studentService;
     static Student student1;
     static Student student2;
+    private static Long generatedInsuranceId;
+    private static Long generatedInsuranceId2;
 
     @Order(1)
     @BeforeEach
     void setUp() {
-        student1 = StudentFactory.buildStudent(34L, "Thando", "Khoza", 18,
+        student1 = StudentFactory.buildStudent( "Thando", "Khoza", 18,
                 "thando@gmail.com", "0767475524", "thando7865");
         System.out.println(student1);
 
-        student2 = StudentFactory.buildStudent(54L, "Azande", "Sibisi", 19,
+        student2 = StudentFactory.buildStudent( "Azande", "Sibisi", 19,
                 "Azande@Yahoo.com", "0876411245", "aza@31452");
         System.out.println(student2);
     }
@@ -42,21 +44,23 @@ class StudentServiceTest {
         Student savedstudent1 = studentService.create(student1);
         System.out.println(savedstudent1);
         assertNotNull(savedstudent1);
+        generatedInsuranceId=savedstudent1.getId();
 
         System.out.println("Student 2:" + student2.getId());
         Student savedstudent2 = studentService.create(student2);
         System.out.println(savedstudent2);
         assertNotNull(savedstudent2);
+        generatedInsuranceId2=savedstudent1.getId();
     }
 
     @Order(3)
     @Test
     void read() {
-        Student read1 = studentService.read(student1.getId());
+        Student read1 = studentService.read(generatedInsuranceId);
         assertNotNull(read1);
         System.out.println("read: " + read1);
 
-        Student read2 = studentService.read(student2.getId());
+        Student read2 = studentService.read(generatedInsuranceId2);
         assertNotNull(read2);
         System.out.println("read: " + read2);
     }
@@ -64,11 +68,20 @@ class StudentServiceTest {
     @Order(4)
     @Test
     void update() {
-        Student newStudent = new Student.Builder().copy(student2).setFirstName("Lwazi").build();
+        Student studentToUpdate = studentService.read(generatedInsuranceId2);
+        assertNotNull(studentToUpdate);
+
+        // Build new student object with updated first name and existing ID
+        Student newStudent = new Student.Builder()
+                .copy(studentToUpdate)
+                .setFirstName("Lwazi")
+                .build();
+
         Student updatedStudent = studentService.update(newStudent);
         assertNotNull(updatedStudent);
         System.out.println(updatedStudent);
     }
+
 
     @Order(5)
     @Test
