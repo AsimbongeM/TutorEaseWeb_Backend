@@ -9,7 +9,12 @@ import za.ac.cput.repository.AdminRepository;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * AdminFactoryTest.java
+ * This is the admin service test class
+ * @author Siyanda Mthimkhulu
+ * Date: 16 July 2024
+ */
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
@@ -26,12 +31,19 @@ class AdminServiceTest {
     @BeforeEach
     void setUp() {
         adminRepository.deleteAll(); // Clean up the database
+
         admin = new Admin.Builder()
                 .setUsername("admin1")
                 .setPassword("password1")
+                .setFirstName("Siyanda")
+                .setLastName("Doe")
+                .setEmail("fury@x.com")
+                .setCellphoneNumber("10111")
                 .build();
+
         adminRepository.save(admin); // Save the admin to the database
     }
+
 
     @Test
     @Order(1)
@@ -39,6 +51,10 @@ class AdminServiceTest {
         Admin newAdmin = new Admin.Builder()
                 .setUsername("admin2")
                 .setPassword("password2")
+                .setFirstName("John2")
+                .setLastName("Doe")
+                .setEmail("john.doe2@example.com")
+                .setCellphoneNumber("0780969828")
                 .build();
         Admin createdAdmin = adminService.create(newAdmin);
 

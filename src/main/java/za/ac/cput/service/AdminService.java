@@ -46,7 +46,5 @@ public class AdminService implements IAdminService {
         adminRepository.deleteById(adminId);
     }
 
-    public Admin readByUsername(String username) {
-        return adminRepository.findByUsername(username);
-    }
+
 }
