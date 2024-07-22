@@ -21,12 +21,12 @@ public class TutorController {
     }
 
     @GetMapping("/read/{id}")
-    public Tutor read(@PathVariable Long id) {
+    public Tutor read(@PathVariable String id) {
         return tutorService.read(id);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Tutor> update(@PathVariable Long id, @RequestBody Tutor tutor) {
+    public ResponseEntity<Tutor> update(@PathVariable String id, @RequestBody Tutor tutor) {
         Tutor existingTutor = tutorService.read(id);
         if (existingTutor == null) {
             return ResponseEntity.notFound().build();
@@ -41,14 +41,14 @@ public class TutorController {
                 .setExperience(tutor.getExperience())
                 .setIdDocument(tutor.getIdDocument())
                 .setSarsDocument(tutor.getSarsDocument())
-                .setApproved(tutor.isApproved())
+                .setApprovalStatus(tutor.getApprovalStatus())
                 .build();
         updatedTutor = tutorService.update(updatedTutor);
         return ResponseEntity.ok(updatedTutor);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable String id) {
         tutorService.delete(id);
     }
 

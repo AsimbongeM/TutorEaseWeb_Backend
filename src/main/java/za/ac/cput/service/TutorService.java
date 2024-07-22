@@ -22,21 +22,21 @@ public class TutorService implements ITutorService {
     }
 
     @Override
-    public Tutor read(Long tutorId) {
-        return this.tutorRepository.findById(tutorId).orElse(null);
+    public Tutor read(String tutorEmail) {
+        return this.tutorRepository.findById(tutorEmail).orElse(null);
     }
 
     @Override
     public Tutor update(Tutor tutor) {
-        if (tutorRepository.existsById(tutor.getId())) {
+        if (tutorRepository.existsById(tutor.getEmail())) {
             return tutorRepository.save(tutor);
         }
         return null;
     }
 
     @Override
-    public void delete(Long tutorId) {
-        tutorRepository.deleteById(tutorId);
+    public void delete(String tutorEmail) {
+        tutorRepository.deleteById(tutorEmail);
     }
 
     @Override

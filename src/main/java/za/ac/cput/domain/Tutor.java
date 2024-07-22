@@ -9,13 +9,10 @@ import java.util.Objects;
 public class Tutor {
     //Asimbonge
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String email;
     private String firstName;
     private String lastName;
     private int age;
-    @Column(unique = true)
-    private String email;
     @Column(unique = true)
     private String cellNumber;
     private String password;
@@ -27,29 +24,26 @@ public class Tutor {
     @Lob
     @Column(length = 10000000)
     private byte[] sarsDocument;
-    private boolean isApproved;
+    @Enumerated(EnumType.STRING)
+    private TutorApprovalStatus approvalStatus;
 
     protected Tutor() {
     }
 
     private Tutor(Builder builder) {
-        this.id = builder.id;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
-        this.age = builder.age;
         this.email = builder.email;
+        this.age = builder.age;
         this.cellNumber = builder.cellNumber;
         this.password = builder.password;
         this.skills = builder.skills;
         this.experience = builder.experience;
         this.idDocument = builder.idDocument;
         this.sarsDocument = builder.sarsDocument;
-        this.isApproved = builder.isApproved;
+        this.approvalStatus = builder.approvalStatus;
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -91,21 +85,22 @@ public class Tutor {
         return sarsDocument;
     }
 
-    public boolean isApproved() {
-        return isApproved;
+    public TutorApprovalStatus getApprovalStatus() {
+        return approvalStatus;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-        return age == tutor.age && experience == tutor.experience && isApproved == tutor.isApproved && Objects.equals(id, tutor.id) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(email, tutor.email) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && Arrays.equals(idDocument, tutor.idDocument) && Arrays.equals(sarsDocument, tutor.sarsDocument);
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && Arrays.equals(idDocument, tutor.idDocument) && Arrays.equals(sarsDocument, tutor.sarsDocument) && approvalStatus == tutor.approvalStatus;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, firstName, lastName, age, email, cellNumber, password, skills, experience, isApproved);
+        int result = Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus);
         result = 31 * result + Arrays.hashCode(idDocument);
         result = 31 * result + Arrays.hashCode(sarsDocument);
         return result;
@@ -114,39 +109,33 @@ public class Tutor {
     @Override
     public String toString() {
         return "Tutor{" +
-                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", age=" + age +
                 ", email='" + email + '\'' +
+                ", age=" + age +
                 ", cellNumber='" + cellNumber + '\'' +
                 ", password='" + password + '\'' +
                 ", skills='" + skills + '\'' +
                 ", experience=" + experience +
                 ", idDocument=" + Arrays.toString(idDocument) +
                 ", sarsDocument=" + Arrays.toString(sarsDocument) +
-                ", isApproved=" + isApproved +
+                ", approvalStatus=" + approvalStatus +
                 '}';
     }
 
     public static class Builder {
-        private Long id;
         private String firstName;
         private String lastName;
-        private int age;
         private String email;
+        private int age;
         private String cellNumber;
         private String password;
         private String skills;
         private int experience;
         private byte[] idDocument;
         private byte[] sarsDocument;
-        private boolean isApproved;
+        private TutorApprovalStatus approvalStatus;
 
-        public Builder setId(Long id) {
-            this.id = id;
-            return this;
-        }
 
         public Builder setFirstName(String firstName) {
             this.firstName = firstName;
@@ -198,24 +187,23 @@ public class Tutor {
             return this;
         }
 
-        public Builder setApproved(boolean approved) {
-            isApproved = approved;
+        public Builder setApprovalStatus(TutorApprovalStatus approvalStatus) {
+            this.approvalStatus = approvalStatus;
             return this;
         }
 
         public Builder copy(Tutor tutor) {
-            this.id = tutor.id;
             this.firstName = tutor.firstName;
             this.lastName = tutor.lastName;
-            this.age = tutor.age;
             this.email = tutor.email;
+            this.age = tutor.age;
             this.cellNumber = tutor.cellNumber;
             this.password = tutor.password;
             this.skills = tutor.skills;
             this.experience = tutor.experience;
             this.idDocument = tutor.idDocument;
             this.sarsDocument = tutor.sarsDocument;
-            this.isApproved = tutor.isApproved;
+            this.approvalStatus = tutor.approvalStatus;
             return this;
 
         }

@@ -1,10 +1,11 @@
 package za.ac.cput.factory;
 
 import za.ac.cput.domain.Tutor;
+import za.ac.cput.domain.TutorApprovalStatus;
 import za.ac.cput.util.Helper;
 
 public class TutorFactory {
-    public static Tutor buildTutor(String firstName, String lastName, int age, String email, String cellNumber, String password, String skills, int experience, byte[] idDocument, byte[] sarsDocument, boolean isApproved) {
+    public static Tutor buildTutor(String firstName, String lastName, String email,int age,  String cellNumber, String password, String skills, int experience, byte[] idDocument, byte[] sarsDocument, TutorApprovalStatus approvalStatus) {
         if (idDocument == null || idDocument.length == 0) {
             idDocument = new byte[1];
         }
@@ -31,7 +32,7 @@ public class TutorFactory {
                 .setExperience(experience)
                 .setIdDocument(idDocument)
                 .setSarsDocument(sarsDocument)
-                .setApproved(isApproved)
+                .setApprovalStatus(approvalStatus)
                 .build();
     }
 }
