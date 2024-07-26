@@ -1,0 +1,112 @@
+.ClassSession {
+    display: flex;
+    height: 100vh;
+}
+
+.ClassSession .menu-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    display: none;
+}
+
+.ClassSession .menu-bar.visible {
+    display: block;
+}
+
+.ClassSession .menu-bar .nav-link {
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.ClassSession .menu-bar .nav-link i {
+    margin-right: 5px;
+}
+
+.ClassSession .chatbox {
+    position: absolute;
+    margin-top: 10px;
+   right: 20px;
+    margin-bottom: 20px;
+    width: 300px;
+    height: 95%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-left: 1px solid #ccc;
+}
+
+.ClassSession .chatbox .messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.ClassSession .chatbox input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.ClassSession .chatbox button {
+    width: 25%;
+    text-align: center;
+    font-weight: bold;
+    color: white;
+    background-color: green;
+}
+
+.ClassSession .video-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.ClassSession .webcam-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 150px;
+    height: 150px;
+    display: none;
+    overflow: hidden;
+    z-index: 2;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.ClassSession #tutorSideVideo {
+    width: 70%;
+    margin-top: 20px;
+    display: block;
+}
+
+.ClassSession .controls-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.ClassSession .controls-container .toggle-controls {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+}
+
+.ClassSession .controls-container .controls {
+    display: flex;
+}
+
+.ClassSession .controls-container .controls button {
+    margin-right: 10px;
+}

@@ -41,5 +41,6 @@ class ScheduleSessionFactoryTest {
         assertNull(ScheduleSessionFactory.buildScheduleSession(id, date, null, endTime, topic));
         assertNull(ScheduleSessionFactory.buildScheduleSession(id, date, startTime, null, topic));
         assertNull(ScheduleSessionFactory.buildScheduleSession(id, date, startTime, endTime, ""));
+
     }
 }
