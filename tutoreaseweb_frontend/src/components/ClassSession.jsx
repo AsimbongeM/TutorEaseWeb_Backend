@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import io from 'socket.io-client';
 // import '../styles/ClassSession.css'
+import 'react-calendar/dist/Calendar.css';
+
 
 const SIGNALING_SERVER_URL = 'http://localhost:3000';
 const ICE_SERVERS = {
@@ -28,6 +30,7 @@ class ClassSession extends Component {
             isChatboxVisible: false,
             isMenuVisible: false,
             areControlsVisible: true,
+            isCalendarVisible: false,
             sessionId,
         };
         this.socket = io(SIGNALING_SERVER_URL);
@@ -38,6 +41,7 @@ class ClassSession extends Component {
         this.handleSendMessage = this.handleSendMessage.bind(this);
         this.toggleChatbox = this.toggleChatbox.bind(this);
         this.toggleControls = this.toggleControls.bind(this);
+        this.toggleCalendar = this.toggleCalendar.bind(this);
     }
 
     generateSessionId() {
@@ -261,13 +265,24 @@ class ClassSession extends Component {
         }));
     }
 
+    toggleCalendar() {
+        this.setState({isCalendarVisible: !this.state.isCalendarVisible});
+    }
+
+    componentDidUpdate() {
+        const chatbox = document.getElementById('chatbox');
+        if (chatbox) {
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    }
     /*-------------------------------Containers-------------------------------------*/
 
     render() {
         return (
-            <div style={{display: 'flex'}}>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 {/*-------------------------------Menu-------------------------------------*/}
-                <div className="dropdown">
+                    <div className="dropdown" style={{marginLeft: '5px'}}>
                     <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                         <i className="fas fa-bars" style={{marginRight: '5px'}}></i>
@@ -275,22 +290,31 @@ class ClassSession extends Component {
                     <ul className="dropdown-menu">
                         <li>
                             <a className="dropdown-item" href="profile">
-                                <i className="fas fa-user" style={{marginRight: '5px'}}></i> Profile
+                                <i className="fas fa-user"></i> Profile
                             </a>
                         </li>
                         <li>
                             <a className="dropdown-item" href="portal">
-                                <i className="fas fa-door-open" style={{marginRight: '5px'}}></i> Portal
+                                <i className="fas fa-door-open"></i> Portal
                             </a>
                         </li>
                         <li>
                             <a className="dropdown-item" href="calendar">
-                                <i className="fas fa-calendar-alt" style={{marginRight: '5px'}}></i> Calendar
+                                <i className="fas fa-calendar-alt"></i> Calendar
                             </a>
                         </li>
                     </ul>
                 </div>
-
+                    {/*-------------------------------Chatbox Toggle Button-------------------------------------*/}
+                    <button
+                        className="btn btn-info"
+                        onClick={this.toggleChatbox}
+                        style={{width: '130px', marginTop: '5px', marginRight: '5px'}}
+                    >
+                        <i className="fas fa-comments" style={{marginRight: '5px'}}></i>
+                        {this.state.isChatboxVisible ? "Hide chat" : "Show chat"}
+                    </button>
+                </div>
 
                 {/*-------------------------------Webcam-------------------------------------*/}
                 <div id="main-content" style={{flexGrow: 1, display: 'flex'}}>
@@ -300,7 +324,7 @@ class ClassSession extends Component {
                         <div id="webcam-container" className="rounded-circle border border-light" style={{
                             position: 'absolute',
                             top: '10px',
-                            right: '10px',
+                            right: '-130px',
                             width: '150px',
                             height: '150px',
                             display: 'none',
@@ -313,13 +337,14 @@ class ClassSession extends Component {
                         {/*-------------------------------Shared screen-------------------------------------*/}
                         <video id="tutorSideVideo" autoPlay className="bg-dark border border-dark"
                                style={{
-                                   width: '85%',
-                                   // height:'445px',
-                                   marginTop: '20px',
+                                   width: this.state.isChatboxVisible ? '85%' : '100%',
+                                   marginTop: '10px',
                                    display: 'block',
-                                   marginLeft: 'auto',
-                                   marginRight: 'auto'
-                               }}></video>
+                                   marginLeft: '115px',
+                                   marginRight: '5px',
+                                   position: 'static'
+                               }}
+                        ></video>
                     </div>
 
                     {/*-------------------------------Chatbox-------------------------------------*/}
@@ -327,22 +352,15 @@ class ClassSession extends Component {
                         position: 'relative',
                         width: '20%',
                         marginTop: '20px',
-                        marginRight: '20px',
+                        marginRight: '10px',
                         marginLeft: '20px',
                         display: 'flex',
                         flexDirection: 'column'
                     }}>
-                        <button
-                            className="btn btn-info mb-2"
-                            onClick={this.toggleChatbox}
-                            style={{width: '130px', marginRight:'5px'}}
-                        >
-                            <i className="" style={{marginRight: '5px'}}></i>
-                            {this.state.isChatboxVisible ? "Hide chat": "Show chat"}
-                        </button>
                         {this.state.isChatboxVisible && (
                             <div id="chatbox" style={{
                                 flexGrow: 1,
+                                height: '300px',
                                 overflowY: 'scroll',
                                 border: '1px solid #ccc',
                                 padding: '10px'
@@ -376,10 +394,14 @@ class ClassSession extends Component {
                 </div>
                 {/*-------------------------------Controls and Toggle Buttons-------------------------------------*/}
                 <div
-                    className="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center mb-3">
+                    className="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center mb-1">
+                    <button className="btn btn-info me-2  bottom-0  d-flex  mb-3"
+                            onClick={this.toggleControls}>
+                        <i className={`fas ${this.state.areControlsVisible ? 'fa-toggle-on' : 'fa-toggle-off'}`}></i>
+                    </button>
                     {this.state.areControlsVisible && (
                         <div id="controls" className="d-flex justify-content-center mb-3">
-                        <button className="btn btn-primary me-2" id="startScreenShare"
+                            <button className="btn btn-primary me-2" id="startScreenShare"
                                     onClick={this.startScreenShare}>
                                 <i className="fas fa-share-square"></i>
                             </button>
@@ -413,10 +435,6 @@ class ClassSession extends Component {
                             </button>
                         </div>
                     )}
-                    <button className="btn btn-info me-2 position-absolute bottom-0 start-100  d-flex  mb-3"
-                            onClick={this.toggleControls}>
-                        <i className={`fas ${this.state.areControlsVisible ? 'fa-toggle-on' : 'fa-toggle-off'}`}></i>
-                    </button>
                 </div>
             </div>
         );
