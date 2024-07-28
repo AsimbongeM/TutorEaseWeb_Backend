@@ -279,83 +279,75 @@ class ClassSession extends Component {
 
     render() {
         return (
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                {/*-------------------------------Menu-------------------------------------*/}
-                    <div className="dropdown" style={{marginLeft: '5px'}}>
-                    <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                        <i className="fas fa-bars" style={{marginRight: '5px'}}></i>
-                    </button>
-                    <ul className="dropdown-menu">
-                        <li>
-                            <a className="dropdown-item" href="profile">
-                                <i className="fas fa-user"></i> Profile
-                            </a>
-                        </li>
-                        <li>
-                            <a className="dropdown-item" href="portal">
-                                <i className="fas fa-door-open"></i> Portal
-                            </a>
-                        </li>
-                        <li>
-                            <a className="dropdown-item" href="calendar">
-                                <i className="fas fa-calendar-alt"></i> Calendar
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/*-------------------------------Menu-------------------------------------*/}
+                    <div className="dropdown" style={{ marginLeft: '5px' }}>
+                        <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i className="fas fa-bars" style={{ marginRight: '5px' }}></i>
+                        </button>
+                        <ul className="dropdown-menu">
+                            <li>
+                                <a className="dropdown-item" href="profile">
+                                    <i className="fas fa-user"></i> Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a className="dropdown-item" href="portal">
+                                    <i className="fas fa-door-open"></i> Portal
+                                </a>
+                            </li>
+                            <li>
+                                <a className="dropdown-item" href="calendar">
+                                    <i className="fas fa-calendar-alt"></i> Calendar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     {/*-------------------------------Chatbox Toggle Button-------------------------------------*/}
                     <button
                         className="btn btn-info"
                         onClick={this.toggleChatbox}
-                        style={{width: '130px', marginTop: '5px', marginRight: '5px'}}
+                        style={{ width: '130px', marginTop: '5px', marginRight: '5px' }}
                     >
-                        <i className="fas fa-comments" style={{marginRight: '5px'}}></i>
+                        <i className="fas fa-comments" style={{ marginRight: '5px' }}></i>
                         {this.state.isChatboxVisible ? "Hide chat" : "Show chat"}
                     </button>
                 </div>
 
-                {/*-------------------------------Webcam-------------------------------------*/}
-                <div id="main-content" style={{flexGrow: 1, display: 'flex'}}>
-                    <div id="video-container"
-                         className="position-relative"
-                         style={{flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                {/*-------------------------------Webcam and Shared Screen-------------------------------------*/}
+                <div id="main-content" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+                    <div id="video-container" className="position-relative" style={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', height: 'calc(100vh - 150px)', width: '85%', margin: 'auto' }}>
                         <div id="webcam-container" className="rounded-circle border border-light" style={{
                             position: 'absolute',
-                            top: '10px',
-                            right: '-130px',
+                            top: '0px',
+                            right: '85px',
                             width: '150px',
                             height: '150px',
                             display: 'none',
                             overflow: 'hidden',
                             zIndex: 2
                         }}>
-                            <video id="webcam-video" autoPlay muted className="w-100 h-100"
-                                   style={{objectFit: 'cover'}}></video>
+                            <video id="webcam-video" autoPlay muted className="w-100 h-100" style={{ objectFit: 'cover' }}></video>
                         </div>
-                        {/*-------------------------------Shared screen-------------------------------------*/}
-                        <video id="tutorSideVideo" autoPlay className="bg-dark border border-dark"
-                               style={{
-                                   width: this.state.isChatboxVisible ? '85%' : '100%',
-                                   marginTop: '10px',
-                                   display: 'block',
-                                   marginLeft: '115px',
-                                   marginRight: '5px',
-                                   position: 'static'
-                               }}
-                        ></video>
+                        <video id="tutorSideVideo" autoPlay className="bg-dark border border-dark" style={{
+                            width: '70%',
+                            marginRight: '150px',
+                            marginTop: '10px',
+                            marginBottom: '110px',
+                            position: 'relative'
+                        }}></video>
                     </div>
 
                     {/*-------------------------------Chatbox-------------------------------------*/}
                     <div style={{
-                        position: 'relative',
+                        position: 'absolute',
+                        right: '10px',
+                        top: '10px',
                         width: '20%',
-                        marginTop: '20px',
-                        marginRight: '10px',
-                        marginLeft: '20px',
                         display: 'flex',
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+                        zIndex: 2
                     }}>
                         {this.state.isChatboxVisible && (
                             <div id="chatbox" style={{
@@ -371,14 +363,14 @@ class ClassSession extends Component {
                             </div>
                         )}
                         {this.state.isChatboxVisible && (
-                            <div style={{display: 'flex'}}>
+                            <div style={{ display: 'flex' }}>
                                 <input
                                     type="text"
                                     placeholder="Say something"
                                     value={this.state.messageInput}
                                     onChange={this.handleInputChange}
                                     onKeyPress={this.handleKeyPress}
-                                    style={{flexGrow: 1}}
+                                    style={{ flexGrow: 1 }}
                                 />
                                 <button onClick={this.handleSendMessage} style={{
                                     width: '25%',
@@ -393,44 +385,37 @@ class ClassSession extends Component {
                     </div>
                 </div>
                 {/*-------------------------------Controls and Toggle Buttons-------------------------------------*/}
-                <div
-                    className="position-absolute bottom-0 start-50 translate-middle-x d-flex justify-content-center mb-1">
-                    <button className="btn btn-info me-2  bottom-0  d-flex  mb-3"
-                            onClick={this.toggleControls}>
+                <div className="position-fixed bottom-0 start-50 translate-middle-x d-flex justify-content-center mb-1" style={{ zIndex: 3 }}>
+                    <button className="btn btn-info me-2 bottom-0 d-flex mb-3" onClick={this.toggleControls}>
                         <i className={`fas ${this.state.areControlsVisible ? 'fa-toggle-on' : 'fa-toggle-off'}`}></i>
                     </button>
                     {this.state.areControlsVisible && (
                         <div id="controls" className="d-flex justify-content-center mb-3">
-                            <button className="btn btn-primary me-2" id="startScreenShare"
-                                    onClick={this.startScreenShare}>
+                            <button className="btn btn-primary me-2" id="startScreenShare" onClick={this.startScreenShare}>
                                 <i className="fas fa-share-square"></i>
                             </button>
-                            <button className="btn btn-danger me-2" id="stopScreenShare" onClick={this.stopScreenShare}
-                                    style={{display: 'none'}}>
+                            <button className="btn btn-danger me-2" id="stopScreenShare" onClick={this.stopScreenShare} style={{ display: this.state.isScreenSharing ? 'block' : 'none' }}>
                                 <i className="fas fa-ban"></i>
                             </button>
                             <button className="btn btn-primary me-2" id="startWebcam" onClick={this.startWebcam}>
                                 <i className="fas fa-video"></i>
                             </button>
-                            <button className="btn btn-danger me-2" id="stopWebcam" style={{display: 'none'}}>
+                            <button className="btn btn-danger me-2" id="stopWebcam" style={{ display: 'none' }}>
                                 <i className="fas fa-ban"></i>
                             </button>
-                            <button className="btn btn-primary me-2" id="microphone" style={{display: 'none'}}>
+                            <button className="btn btn-primary me-2" id="microphone" style={{ display: 'none' }}>
                                 <i className="fas fa-microphone"></i>
                             </button>
-                            <button className="btn btn-danger me-2" id="mute-microphone"
-                                    onClick={this.unmuteMicrophone}>
+                            <button className="btn btn-danger me-2" id="mute-microphone" onClick={this.unmuteMicrophone}>
                                 <i className="fas fa-microphone-slash"></i>
                             </button>
                             <button className="btn btn-primary me-2" id="startRecording" onClick={this.startRecording}>
                                 <i className="fas fa-circle"></i>
                             </button>
-                            <button className="btn btn-danger me-2" id="stopRecording" onClick={this.stopRecording}
-                                    style={{display: 'none'}}>
+                            <button className="btn btn-danger me-2" id="stopRecording" onClick={this.stopRecording} style={{ display: 'none' }}>
                                 <i className="fas fa-stop"></i>
                             </button>
-                            <button className="btn btn-success" id="downloadIcon" onClick={this.downloadRecording}
-                                    style={{display: 'none'}}>
+                            <button className="btn btn-success" id="downloadIcon" onClick={this.downloadRecording} style={{ display: 'none' }}>
                                 <i className="fas fa-download"></i>
                             </button>
                         </div>
@@ -439,6 +424,8 @@ class ClassSession extends Component {
             </div>
         );
     }
+
+
 }
 
 export default ClassSession;
