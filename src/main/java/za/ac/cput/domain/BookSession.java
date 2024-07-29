@@ -12,22 +12,21 @@ public class BookSession implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookSessionID;
     //ScheduleSession id as a foreign key
-    @Column(nullable=false)
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "scheduleSession_ID")
     private ScheduleSession scheduleSession;
     //Topic id as a foreign key
-    @Column(nullable=false)
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "topic_ID")
     private Topics topic;
     //Tutor id as a foreign key
-    @Column(nullable=false)
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "tutor_ID")
     private Tutor tutor;
     //Student id as a foreign key
-    @Column(nullable=false)
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "student_ID")
     private Student student;
