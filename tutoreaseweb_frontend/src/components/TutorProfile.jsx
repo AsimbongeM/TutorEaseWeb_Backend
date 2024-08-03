@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
-
+import NavBar from "../navigation/NavBar.jsx";
+// import StudentProfile from "./components/StudentProfile.jsx";
 const TutorProfile = () => {
     const [isEditable, setIsEditable] = useState(false);
 
@@ -9,58 +10,64 @@ const TutorProfile = () => {
     };
 
     return (
-        <div style={styles.profileContent}>
-            <div style={styles.profilePicture}>
-                <img src="person.jpg" alt="Profile Picture" style={styles.profileImage} />
+        <div style={styles.container}>
+            <NavBar />
+            <div style={styles.profileContent}>
+                <div style={styles.profilePicture}>
+                    <img src="person.jpg" alt="Profile Picture" style={styles.profileImage} />
+                </div>
+                <form style={styles.profileForm}>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="name" style={styles.label}>Name:</label>
+                        <input type="text" id="name" name="name" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="age" style={styles.label}>Age:</label>
+                        <input type="number" id="age" name="age" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="gender" style={styles.label}>Gender:</label>
+                        <select id="gender" name="gender" disabled={!isEditable} style={styles.select}>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="email" style={styles.label}>Email Address:</label>
+                        <input type="email" id="email" name="email" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="mobile" style={styles.label}>Mobile Number:</label>
+                        <input type="tel" id="mobile" name="mobile" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="qualification" style={styles.label}>Qualification:</label>
+                        <input type="text" id="qualification" name="qualification" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="experience" style={styles.label}>Experience:</label>
+                        <input type="text" id="experience" name="experience" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.formGroup}>
+                        <label htmlFor="subjects" style={styles.label}>Subjects:</label>
+                        <input type="text" id="subjects" name="subjects" disabled={!isEditable} style={styles.input} />
+                    </div>
+                    <div style={styles.btnContainer}>
+                        <button type="button" style={styles.btn} onClick={toggleEdit}>
+                            {isEditable ? 'Save' : 'Edit'}
+                        </button>
+                    </div>
+                </form>
             </div>
-            <form style={styles.profileForm}>
-                <div style={styles.formGroup}>
-                    <label htmlFor="name" style={styles.label}>Name:</label>
-                    <input type="text" id="name" name="name" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="age" style={styles.label}>Age:</label>
-                    <input type="number" id="age" name="age" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="gender" style={styles.label}>Gender:</label>
-                    <select id="gender" name="gender" disabled={!isEditable} style={styles.select}>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="email" style={styles.label}>Email Address:</label>
-                    <input type="email" id="email" name="email" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="mobile" style={styles.label}>Mobile Number:</label>
-                    <input type="tel" id="mobile" name="mobile" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="qualification" style={styles.label}>Qualification:</label>
-                    <input type="text" id="qualification" name="qualification" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="experience" style={styles.label}>Experience:</label>
-                    <input type="text" id="experience" name="experience" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="subjects" style={styles.label}>Subjects:</label>
-                    <input type="text" id="subjects" name="subjects" disabled={!isEditable} style={styles.input} />
-                </div>
-                <div style={styles.btnContainer}>
-                    <button type="button" style={styles.btn} onClick={toggleEdit}>
-                        {isEditable ? 'Save' : 'Edit'}
-                    </button>
-                </div>
-            </form>
         </div>
     );
 };
 
 const styles = {
+    container: {
+        display: 'flex',
+    },
     profileContent: {
         maxWidth: '800px',
         margin: '0 auto',
@@ -68,7 +75,8 @@ const styles = {
         background: '#e6f2ff',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: 1
     },
     profilePicture: {
         textAlign: 'center',
