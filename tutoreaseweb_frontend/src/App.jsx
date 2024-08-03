@@ -5,6 +5,7 @@ import ClassSession from "./components/ClassSession.jsx";
 import NavBar from "./navigation/NavBar.jsx";
 import StudentDashboard from "./components/StudentDashboard.jsx";
 import StudentProfile from "./components/StudentProfile.jsx";
+import {TutorDashboard} from "./components/TutorDashboard.jsx";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
               <Route exact path="/" element={<StudentDashboard />} />
               <Route path="/class_session" element={<ClassSession />} />
               <Route path="/student_profile" element={<StudentProfile />} />
+              <Route path="/tutor_dashboard" element={<TutorDashboard />} />
               </Routes>
       </div>
 
