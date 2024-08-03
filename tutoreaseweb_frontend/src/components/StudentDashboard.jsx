@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
 
-const TutorEase = () => {
-    const [activeSection, setActiveSection] = useState('');
+const StudentDashboard = () => {
+    const [activeSection, setActiveSection] = useState('content-section'); // Set 'content-section' as the default section
     const [selectedSlot, setSelectedSlot] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
@@ -77,7 +77,7 @@ const TutorEase = () => {
         container: {
             display: 'flex',
             height: '100vh',
-            overflow: 'hidden',
+            overflow: 'auto', // Updated to allow scrolling
         },
         sidebar: {
             width: '200px',
@@ -104,6 +104,7 @@ const TutorEase = () => {
             flex: 1,
             padding: '20px',
             overflowY: 'auto',
+            overflowX: 'auto', // Updated to allow horizontal scrolling
         },
         header: {
             backgroundColor: 'hsl(211, 42%, 58%)',
@@ -171,7 +172,18 @@ const TutorEase = () => {
             border: 'none',
             borderRadius: '5px',
             cursor: 'pointer',
-        }
+        },
+        signOutButton: {
+            position: 'fixed',
+            bottom: '20px',
+            left: '20px',
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+        },
     };
 
     return (
@@ -332,8 +344,11 @@ const TutorEase = () => {
                     </section>
                 </main>
             </div>
+
+            {/* Sign Out Button */}
+            <button style={styles.signOutButton}>Sign Out</button>
         </div>
     );
 };
 
-export default TutorEase;
+export default StudentDashboard;
