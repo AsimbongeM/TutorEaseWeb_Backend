@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
+import {NavLink, useNavigate} from 'react-router-dom';
 
 const TutorEase = () => {
     const [activeSection, setActiveSection] = useState('');
@@ -11,7 +12,7 @@ const TutorEase = () => {
     const [profile, setProfile] = useState({ name: 'Student Name', email: 'student@example.com', courses: ['Java'] });
     const [assignments, setAssignments] = useState([{ title: 'Assignment 1', dueDate: '2024-08-10', status: 'Pending' }]);
     const [grades, setGrades] = useState([{ course: 'Java', grade: 'A' }]);
-
+    const navigate = useNavigate(); // Initialize the useNavigate hook
     const showSection = (sectionId) => {
         setActiveSection(sectionId);
     };
@@ -182,37 +183,37 @@ const TutorEase = () => {
             <div style={styles.container}>
                 <aside style={styles.sidebar}>
                     <button
-                        style={{ ...styles.sidebarButton, ...(activeSection === 'profile-section' ? styles.sidebarButtonActive : {}) }}
-                        onClick={() => showSection('profile-section')}
+                        style={{...styles.sidebarButton, ...(activeSection === 'profile-section' ? styles.sidebarButtonActive : {})}}
+                        onClick={() => navigate('/student_profile')}
                     >
                         Profile
                     </button>
                     <button
-                        style={{ ...styles.sidebarButton, ...(activeSection === 'content-section' ? styles.sidebarButtonActive : {}) }}
+                        style={{...styles.sidebarButton, ...(activeSection === 'content-section' ? styles.sidebarButtonActive : {})}}
                         onClick={() => showSection('content-section')}
                     >
                         Content
                     </button>
                     <button
-                        style={{ ...styles.sidebarButton, ...(activeSection === 'resource-section' ? styles.sidebarButtonActive : {}) }}
+                        style={{...styles.sidebarButton, ...(activeSection === 'resource-section' ? styles.sidebarButtonActive : {})}}
                         onClick={() => showSection('resource-section')}
                     >
                         Resources
                     </button>
                     <button
-                        style={{ ...styles.sidebarButton, ...(activeSection === 'schedule-section' ? styles.sidebarButtonActive : {}) }}
+                        style={{...styles.sidebarButton, ...(activeSection === 'schedule-section' ? styles.sidebarButtonActive : {})}}
                         onClick={() => showSection('schedule-section')}
                     >
                         Schedule
                     </button>
                     <button
-                        style={{ ...styles.sidebarButton, ...(activeSection === 'announcements-section' ? styles.sidebarButtonActive : {}) }}
+                        style={{...styles.sidebarButton, ...(activeSection === 'announcements-section' ? styles.sidebarButtonActive : {})}}
                         onClick={() => showSection('announcements-section')}
                     >
                         Announcements
                     </button>
                     <button
-                        style={{ ...styles.sidebarButton, ...(activeSection === 'chat-section' ? styles.sidebarButtonActive : {}) }}
+                        style={{...styles.sidebarButton, ...(activeSection === 'chat-section' ? styles.sidebarButtonActive : {})}}
                         onClick={() => showSection('chat-section')}
                     >
                         Chat
@@ -222,12 +223,9 @@ const TutorEase = () => {
                 <main style={styles.contentArea}>
                     <section
                         id="profile-section"
-                        style={activeSection === 'profile-section' ? { ...styles.mainSection, ...styles.mainSectionActive } : styles.mainSection}
+                        style={activeSection === 'profile-section' ? {...styles.mainSection, ...styles.mainSectionActive} : styles.mainSection}
                     >
                         <h2>Profile</h2>
-                        <p>Name: {profile.name}</p>
-                        <p>Email: {profile.email}</p>
-                        <h3>Enrolled Courses</h3>
                         <ul>
                             {profile.courses.map((course, index) => (
                                 <li key={index}>{course}</li>
@@ -245,7 +243,7 @@ const TutorEase = () => {
                         <p>Tutor</p>
                         <section id="collaboration-section">
                             <h3>Class Collaboration</h3>
-                            <a href="class_session_link">Join Session</a>
+                            <NavLink to="/class_session">Join Session</NavLink>
                         </section>
                     </section>
 
