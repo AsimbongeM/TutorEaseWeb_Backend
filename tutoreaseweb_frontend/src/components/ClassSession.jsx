@@ -279,7 +279,7 @@ class ClassSession extends Component {
 
     render() {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#e6f2ff'}}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {/*-------------------------------Menu-------------------------------------*/}
                     <div className="dropdown" style={{ marginLeft: '5px' }}>

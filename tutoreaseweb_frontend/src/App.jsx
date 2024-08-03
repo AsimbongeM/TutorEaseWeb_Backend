@@ -17,7 +17,7 @@ function App() {
               <Route exact path="/" element={<TutorProfile />} />
               <Route path="/class_session" element={<ClassSession />} />
               <Route path="/student_dashboard" element={<StudentDashboard />} />
-              {/*<Route path="/studentdashboard" element={<StudentDashboard />} />*/}
+              <Route path="/student_profile" element={<StudentProfile />} />
               <Route path="/tutorprofile" element={<TutorProfile />} />
 
               </Routes>
