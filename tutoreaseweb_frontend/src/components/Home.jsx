@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+// src/components/Home.jsx
+import React from 'react';
 
 const Home = () => {
     return (
@@ -9,7 +10,4 @@ const Home = () => {
     );
 };
 
-class Home extends Component {
-
-}
 export default Home;
