@@ -283,7 +283,7 @@ class ClassSession extends Component {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {/*-------------------------------Menu-------------------------------------*/}
                     <div className="dropdown" style={{ marginLeft: '5px' }}>
-                        <button className="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor: '#007bff',color: '#fff'}} >
                             <i className="fas fa-bars" style={{ marginRight: '5px' }}></i>
                         </button>
                         <ul className="dropdown-menu">
@@ -306,9 +306,9 @@ class ClassSession extends Component {
                     </div>
                     {/*-------------------------------Chatbox Toggle Button-------------------------------------*/}
                     <button
-                        className="btn btn-info"
+                        className="btn"
                         onClick={this.toggleChatbox}
-                        style={{ width: '130px', marginTop: '5px', marginRight: '5px' }}
+                        style={{ width: '130px', marginTop: '5px', marginRight: '5px' ,backgroundColor: '#007bff',color: '#fff'}}
                     >
                         <i className="fas fa-comments" style={{ marginRight: '5px' }}></i>
                         {this.state.isChatboxVisible ? "Hide chat" : "Show chat"}
@@ -386,7 +386,7 @@ class ClassSession extends Component {
                 </div>
                 {/*-------------------------------Controls and Toggle Buttons-------------------------------------*/}
                 <div className="position-fixed bottom-0 start-50 translate-middle-x d-flex justify-content-center mb-1" style={{ zIndex: 3 }}>
-                    <button className="btn btn-info me-2 bottom-0 d-flex mb-3" onClick={this.toggleControls}>
+                    <button className="btn me-2 bottom-0 d-flex mb-3" style={{backgroundColor: '#007bff',color: '#fff'}} onClick={this.toggleControls}>
                         <i className={`fas ${this.state.areControlsVisible ? 'fa-toggle-on' : 'fa-toggle-off'}`}></i>
                     </button>
                     {this.state.areControlsVisible && (

@@ -102,6 +102,7 @@ const StudentDashboard = () => {
         },
         contentArea: {
             flex: 1,
+            background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
             padding: '20px',
             overflowY: 'auto',
             overflowX: 'auto', // Updated to allow horizontal scrolling
