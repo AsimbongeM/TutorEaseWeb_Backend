@@ -134,19 +134,18 @@ class ClassSession extends Component {
             document.getElementById('startScreenShare').style.display = 'none';
             document.getElementById('stopScreenShare').style.display = 'inline';
 
-            const peerConnection = new RTCPeerConnection(ICE_SERVERS);
-            this.setState({ peerConnection });
+            // const peerConnection = new RTCPeerConnection(ICE_SERVERS);
+            // this.setState({ peerConnection });
+            // screenStream.getTracks().forEach(track => peerConnection.addTrack(track, screenStream));
+            // peerConnection.onicecandidate = this.handleIceCandidate;
+            // peerConnection.ontrack = this.handleTrackEvent;
+            const { peerConnection } = this.state;
             screenStream.getTracks().forEach(track => peerConnection.addTrack(track, screenStream));
-            peerConnection.onicecandidate = this.handleIceCandidate;
-            peerConnection.ontrack = this.handleTrackEvent;
-
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            this.socket.emit('offer', offer);
         } catch (error) {
             console.error('Error starting screen share:', error);
         }
     };
+
 
     stopScreenShare = () => {
         const { screenStream, peerConnection } = this.state;
@@ -167,9 +166,16 @@ class ClassSession extends Component {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             document.getElementById('webcam-video').srcObject = stream;
             this.setState({ webcamActive: true });
+
             document.getElementById('startWebcam').style.display = 'none';
             document.getElementById('stopWebcam').style.display = 'inline';
             document.getElementById('webcam-container').style.display = 'block';
+
+            const { peerConnection } = this.state;
+            if (peerConnection) {
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+            }
+
             document.getElementById('stopWebcam').onclick = () => {
                 stream.getTracks().forEach((track) => track.stop());
                 document.getElementById('webcam-video').srcObject = null;
@@ -177,11 +183,20 @@ class ClassSession extends Component {
                 document.getElementById('startWebcam').style.display = 'inline';
                 document.getElementById('stopWebcam').style.display = 'none';
                 document.getElementById('webcam-container').style.display = 'none';
+
+                if (peerConnection) {
+                    peerConnection.getSenders().forEach(sender => {
+                        if (sender.track && sender.track.kind === 'video') {
+                            peerConnection.removeTrack(sender);
+                        }
+                    });
+                }
             };
         } catch (error) {
             console.error('Error starting webcam:', error);
         }
     };
+
 
     startRecording = () => {
         const { screenStream } = this.state;
@@ -243,6 +258,10 @@ class ClassSession extends Component {
             audioElement.srcObject = stream;
             audioElement.play();
             this.setState({ micStream: stream, audioElement: audioElement });
+            // Add microphone stream to the peer connection
+            const { peerConnection } = this.state;
+            stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+
             document.getElementById('mute-microphone').style.display = 'none';
             document.getElementById('microphone').style.display = 'inline';
             document.getElementById('microphone').onclick = this.muteMicrophone;

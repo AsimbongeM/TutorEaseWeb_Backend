@@ -7,25 +7,24 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('A user connected');
 
-    socket.on('offer', (offer) => {
-        socket.broadcast.emit('offer', offer);
+    // Joining a session
+    socket.on('joinSession', (sessionId) => {
+        socket.join(sessionId);
+        console.log(`User joined session: ${sessionId}`);
     });
 
-    socket.on('answer', (answer) => {
-        socket.broadcast.emit('answer', answer);
-    });
-
-    socket.on('candidate', (candidate) => {
-        socket.broadcast.emit('candidate', candidate);
+    // Handle any other events (messages, media sharing, etc.)
+    socket.on('message', (message, sessionId) => {
+        socket.to(sessionId).emit('message', message);
     });
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
+        console.log('User disconnected');
     });
 });
 
 server.listen(3000, () => {
-    console.log('listening on *:3000');
+    console.log('Listening on *:3000');
 });

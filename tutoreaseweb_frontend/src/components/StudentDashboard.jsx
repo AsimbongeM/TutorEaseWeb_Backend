@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
-
+// Helper function to generate a unique session ID
+const generateSessionId = () => {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+};
 const StudentDashboard = () => {
     const [activeSection, setActiveSection] = useState('content-section'); // Set 'content-section' as the default section
     const [selectedSlot, setSelectedSlot] = useState(null);
@@ -13,6 +16,17 @@ const StudentDashboard = () => {
     const [assignments, setAssignments] = useState([{ title: 'Assignment 1', dueDate: '2024-08-10', status: 'Pending' }]);
     const [grades, setGrades] = useState([{ course: 'Java', grade: 'A' }]);
     const navigate = useNavigate(); // Initialize the useNavigate hook
+
+    const [sessionId, setSessionId] = useState(() => {
+        const savedSessionId = localStorage.getItem('sessionId');
+        return savedSessionId || generateSessionId();
+    });
+
+    useEffect(() => {
+        localStorage.setItem('sessionId', sessionId);
+    }, [sessionId]);
+
+
     const showSection = (sectionId) => {
         setActiveSection(sectionId);
     };
@@ -256,7 +270,7 @@ const StudentDashboard = () => {
                         <p>Tutor</p>
                         <section id="collaboration-section">
                             <h3>Class Collaboration</h3>
-                            <NavLink to="/class_session">Join Session</NavLink>
+                            <NavLink to={`/class_session/${sessionId}`}>Join Session</NavLink>
                         </section>
                     </section>
 

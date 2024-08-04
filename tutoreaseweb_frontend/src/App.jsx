@@ -15,7 +15,7 @@ function App() {
           {/*<NavBar />*/}
           <Routes>
               <Route exact path="/" element={<TutorProfile />} />
-              <Route path="/class_session" element={<ClassSession />} />
+              <Route path="/class_session/:sessionId" element={<ClassSession />} />
               <Route path="/student_dashboard" element={<StudentDashboard />} />
               <Route path="/student_profile" element={<StudentProfile />} />
               <Route path="/tutorprofile" element={<TutorProfile />} />
