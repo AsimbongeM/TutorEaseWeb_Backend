@@ -1,30 +1,33 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav';
+import { NavLink} from 'react-router-dom';
 
-const NavBar = () => {
+function NavBar() {
     return (
-        <nav className="navbar navbar-expand-lg navbar-secondary bg-primary">
-            <div className="container">
-                <Link className="navbar-brand" to="/">TutorEase</Link>
-                <div className="collapse navbar-collapse">
-                    <ul className="navbar-nav me-auto">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/">Home</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/class_session">Class Session</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/student_registration">Student Registration</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/tutor_registration">Tutor Registration</Link>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <Nav defaultActiveKey="/home" className="flex-column" style={styles.nav}>
+            <NavLink to="/tutorprofile" style={styles.link}>Tutor Profile</NavLink>
+            <NavLink  to="/student_dashboard" style={styles.link}>Student Dashboard</NavLink>
+        </Nav>
     );
+}
+
+const styles = {
+    nav: {
+        background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
+        padding: '10px',
+        borderRadius: '10px',
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+        margin: '20px',
+    },
+    link: {
+        color: '#fff',
+        padding: '10px 15px',
+        textDecoration: 'none',
+        borderRadius: '5px',
+    },
+    linkHover: {
+        background: '#0056b3',
+    }
 };
 
 export default NavBar;
