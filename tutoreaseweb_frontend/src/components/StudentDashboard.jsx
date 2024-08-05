@@ -361,7 +361,7 @@ const StudentDashboard = () => {
             </div>
 
             {/* Sign Out Button */}
-            <button style={styles.signOutButton}>Sign Out</button>
+            <button style={styles.signOutButton}  onClick={() => navigate('/home')}>Sign Out</button>
         </div>
     );
 };
