@@ -20,6 +20,9 @@ public class Tutor {
     private int experience;
     @Lob
     @Column(length = 10000000)
+    private byte[] profilePicture;
+    @Lob
+    @Column(length = 10000000)
     private byte[] idDocument;
     @Lob
     @Column(length = 10000000)
@@ -39,6 +42,7 @@ public class Tutor {
         this.password = builder.password;
         this.skills = builder.skills;
         this.experience = builder.experience;
+        this.profilePicture = builder.profilePicture;
         this.idDocument = builder.idDocument;
         this.sarsDocument = builder.sarsDocument;
         this.approvalStatus = builder.approvalStatus;
@@ -77,6 +81,10 @@ public class Tutor {
         return experience;
     }
 
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
     public byte[] getIdDocument() {
         return idDocument;
     }
@@ -95,12 +103,13 @@ public class Tutor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && Arrays.equals(idDocument, tutor.idDocument) && Arrays.equals(sarsDocument, tutor.sarsDocument) && approvalStatus == tutor.approvalStatus;
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && Arrays.equals(profilePicture, tutor.profilePicture)&& Arrays.equals(idDocument, tutor.idDocument) && Arrays.equals(sarsDocument, tutor.sarsDocument) && approvalStatus == tutor.approvalStatus;
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus);
+        result = 31 * result + Arrays.hashCode(profilePicture);
         result = 31 * result + Arrays.hashCode(idDocument);
         result = 31 * result + Arrays.hashCode(sarsDocument);
         return result;
@@ -117,6 +126,7 @@ public class Tutor {
                 ", password='" + password + '\'' +
                 ", skills='" + skills + '\'' +
                 ", experience=" + experience +
+                ", profilePicture=" + Arrays.toString(profilePicture) +
                 ", idDocument=" + Arrays.toString(idDocument) +
                 ", sarsDocument=" + Arrays.toString(sarsDocument) +
                 ", approvalStatus=" + approvalStatus +
@@ -132,6 +142,7 @@ public class Tutor {
         private String password;
         private String skills;
         private int experience;
+        private byte[] profilePicture;
         private byte[] idDocument;
         private byte[] sarsDocument;
         private TutorApprovalStatus approvalStatus;
@@ -177,6 +188,10 @@ public class Tutor {
             return this;
         }
 
+        public Builder setProfilePicture(byte[] profilePicture) {
+            this.profilePicture = profilePicture;
+            return this;
+        }
         public Builder setIdDocument(byte[] idDocument) {
             this.idDocument = idDocument;
             return this;
@@ -201,6 +216,7 @@ public class Tutor {
             this.password = tutor.password;
             this.skills = tutor.skills;
             this.experience = tutor.experience;
+            this.profilePicture = tutor.profilePicture;
             this.idDocument = tutor.idDocument;
             this.sarsDocument = tutor.sarsDocument;
             this.approvalStatus = tutor.approvalStatus;

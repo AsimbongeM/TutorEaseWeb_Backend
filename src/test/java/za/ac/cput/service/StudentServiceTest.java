@@ -28,12 +28,13 @@ class StudentServiceTest {
     @Order(1)
     @BeforeEach
     void setUp() {
+        byte[] profilePicture = new byte[0];
         student1 = StudentFactory.buildStudent( "Thando", "Khoza", 18,
-                "thando@gmail.com", "0767475524", "thando7865");
+                "thando@gmail.com", "0767475524", profilePicture,"thando7865");
         System.out.println(student1);
 
         student2 = StudentFactory.buildStudent( "Azande", "Sibisi", 19,
-                "Azande@Yahoo.com", "0876411245", "aza@31452");
+                "Azande@Yahoo.com", "0876411245", profilePicture,"aza@31452");
         System.out.println(student2);
     }
 

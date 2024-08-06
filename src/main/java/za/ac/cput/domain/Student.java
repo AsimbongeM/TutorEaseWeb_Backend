@@ -2,6 +2,7 @@ package za.ac.cput.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -24,6 +25,9 @@ public class Student {
     private String email;
     @Column(unique = true)
     private String cellNumber;
+    @Lob
+    @Column(length = 10000000)
+    private byte[] profilePicture;
     private String password;
 
 
@@ -38,6 +42,7 @@ public class Student {
         this.age = builder.age;
         this.email = builder.email;
         this.cellNumber = builder.cellNumber;
+        this.profilePicture = builder.profilePicture;
         this.password = builder.password;
     }
 
@@ -65,6 +70,10 @@ public class Student {
         return cellNumber;
     }
 
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -74,12 +83,14 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return age == student.age && Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(cellNumber, student.cellNumber) && Objects.equals(password, student.password);
+        return age == student.age && Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(cellNumber, student.cellNumber) && Arrays.equals(profilePicture, student.profilePicture) && Objects.equals(password, student.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, age, email, cellNumber, password);
+        int result = Objects.hash(id, firstName, lastName, age, email, cellNumber, password);
+        result = 31 * result + Arrays.hashCode(profilePicture);
+        return result;
     }
 
     @Override
@@ -91,6 +102,7 @@ public class Student {
                 ", age=" + age +
                 ", email='" + email + '\'' +
                 ", cellNumber='" + cellNumber + '\'' +
+                ", profilePicture=" + Arrays.toString(profilePicture) +
                 ", password='" + password + '\'' +
                 '}';
     }
@@ -101,6 +113,7 @@ public class Student {
         private int age;
         private String email;
         private String cellNumber;
+        private byte[] profilePicture;
         private String password;
 
         public Builder() {
@@ -136,6 +149,10 @@ public class Student {
             return this;
         }
 
+        public Builder setProfilePicture(byte[] profilePicture) {
+            this.profilePicture = profilePicture;
+            return this;
+        }
         public Builder setPassword(String password) {
             this.password = password;
             return this;
@@ -148,6 +165,7 @@ public class Student {
             this.age = student.age;
             this.email = student.email;
             this.cellNumber = student.cellNumber;
+            this.profilePicture = student.profilePicture;
             this.password = student.password;
             return this;
         }

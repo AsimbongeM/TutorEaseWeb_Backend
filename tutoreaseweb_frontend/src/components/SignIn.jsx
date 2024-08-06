@@ -18,14 +18,16 @@ const styles = {
         maxWidth: '400px',
         padding: '20px',
         boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-        backgroundColor: 'white',
+        background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
         borderRadius: '10px',
     },
     SignInHeader: {
         marginBottom: '20px',
     },
     SignInLogo: {
-        height: '50px',
+        maxWidth: '120px',
+        height: 'auto',
+        borderRadius: '50%'
     },
     SignInForm: {
         display: 'flex',
@@ -42,7 +44,7 @@ const styles = {
     },
     ForgotPasswordLink: {
         alignSelf: 'flex-end',
-        color: '#007BFF',
+        color: '#00274d',
         textDecoration: 'none',
         fontSize: '0.9rem',
     },

@@ -3,7 +3,7 @@ import 'font-awesome/css/font-awesome.min.css';
 
 const StudentProfile = () => {
     const [isEditable, setIsEditable] = useState(false);
-
+    const [isButtonHovered, setIsButtonHovered] = useState(false);
     const toggleEdit = () => {
         setIsEditable(!isEditable);
     };
@@ -11,7 +11,7 @@ const StudentProfile = () => {
     return (
         <div style={styles.profileContent}>
             <div style={styles.profilePicture}>
-                <img src="person.jpg" alt="Profile Picture" style={styles.profileImage} />
+                <img src="/images/logo.png" alt="Profile Picture" style={styles.profileImage} />
             </div>
             <form style={styles.profileForm}>
                 <div style={styles.formGroup}>
@@ -54,12 +54,14 @@ const StudentProfile = () => {
                     <label htmlFor="skill" style={styles.label}>Skill:</label>
                     <input type="text" id="skill" name="skill" disabled={!isEditable} style={styles.input} />
                 </div>
-                <div style={styles.formGroup}>
-                    <label htmlFor="experience" style={styles.label}>Experience:</label>
-                    <input type="text" id="experience" name="experience" disabled={!isEditable} style={styles.input} />
-                </div>
+                {/*<div style={styles.formGroup}>*/}
+                {/*    <label htmlFor="experience" style={styles.label}>Experience:</label>*/}
+                {/*    <input type="text" id="experience" name="experience" disabled={!isEditable} style={styles.input} />*/}
+                {/*</div>*/}
                 <div style={styles.btnContainer}>
-                    <button type="button" style={styles.btn} onClick={toggleEdit}>
+                    <button type="button" style={isButtonHovered ? {...styles.btn, ...styles.btnHover} : styles.btn}
+                            onMouseOver={() => setIsButtonHovered(true)}
+                            onMouseOut={() => setIsButtonHovered(false)} onClick={toggleEdit}>
                         {isEditable ? 'Save' : 'Edit'}
                     </button>
                 </div>
@@ -83,10 +85,11 @@ const styles = {
         marginTop: '20px'
     },
     profileImage: {
-        width: '150px',
-        height: '150px',
+        width: '120px',
+        height: '120px',
         borderRadius: '100%',
-        border: '2px solid #fff'
+        border: '2px solid #fff',
+        marginBottom: '20px'
     },
     profileForm: {
         maxWidth: '400px',
@@ -124,15 +127,17 @@ const styles = {
         textAlign: 'center'
     },
     btn: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#00274d',
         color: '#fff',
         border: 'none',
-        padding: '10px 20px',
+        padding: '15px 30px',
         cursor: 'pointer',
-        borderRadius: '5px'
+        borderRadius: '50px'
     },
     btnHover: {
-        backgroundColor: '#0056b3'
+        backgroundColor: '#ffcc00',
+        color: '#00274d',
+        transform: 'scale(1.05)',
     }
 };
 

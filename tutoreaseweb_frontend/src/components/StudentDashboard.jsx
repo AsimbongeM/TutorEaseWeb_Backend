@@ -16,7 +16,7 @@ const StudentDashboard = () => {
     const [assignments, setAssignments] = useState([{ title: 'Assignment 1', dueDate: '2024-08-10', status: 'Pending' }]);
     const [grades, setGrades] = useState([{ course: 'Java', grade: 'A' }]);
     const navigate = useNavigate(); // Initialize the useNavigate hook
-
+    const [isSignOutButtonHovered, setIsSignOutButtonHovered] = useState(false);
     const [sessionId, setSessionId] = useState(() => {
         const savedSessionId = localStorage.getItem('sessionId');
         return savedSessionId || generateSessionId();
@@ -115,14 +115,17 @@ const StudentDashboard = () => {
             backgroundColor: '#444',
         },
         contentArea: {
+            marginTop: '60px',
             flex: 1,
-            background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
+            background: '#e6f2ff',
+            // background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
             padding: '20px',
             overflowY: 'auto',
             overflowX: 'auto', // Updated to allow horizontal scrolling
         },
         header: {
-            backgroundColor: 'hsl(211, 42%, 58%)',
+            // backgroundColor: 'hsl(211, 42%, 58%)',
+            backgroundColor: '#00274d',
             color: '#fff',
             textAlign: 'center',
             padding: '10px',
@@ -193,11 +196,17 @@ const StudentDashboard = () => {
             bottom: '20px',
             left: '20px',
             padding: '10px 20px',
-            backgroundColor: '#007bff',
+            backgroundColor: '#00274d',
             color: '#fff',
             border: 'none',
-            borderRadius: '5px',
+            borderRadius: '50px',
             cursor: 'pointer',
+            transition: 'background-color 0.3s, transform 0.3s'
+        },
+        signOutButtonHover: {
+            backgroundColor: '#ffcc00',
+            color: '#00274d',
+            transform: 'scale(1.05)',
         },
     };
 
@@ -265,9 +274,9 @@ const StudentDashboard = () => {
                         style={activeSection === 'content-section' ? { ...styles.mainSection, ...styles.mainSectionActive } : styles.mainSection}
                     >
                         <h2>Course Content</h2>
-                        <img src="tutor_profile.jpg" alt="Tutor" />
-                        <p>John Doe</p>
-                        <p>Tutor</p>
+                        {/*<img src="tutor_profile.jpg" alt="Tutor" />*/}
+                        {/*<p>John Doe</p>*/}
+                        {/*<p>Tutor</p>*/}
                         <section id="collaboration-section">
                             <h3>Class Collaboration</h3>
                             <NavLink to={`/class_session/${sessionId}`}>Join Session</NavLink>
@@ -361,7 +370,11 @@ const StudentDashboard = () => {
             </div>
 
             {/* Sign Out Button */}
-            <button style={styles.signOutButton}  onClick={() => navigate('/home')}>Sign Out</button>
+            <button style={isSignOutButtonHovered ? {...styles.signOutButton, ...styles.signOutButtonHover} : styles.signOutButton}
+                    onMouseOver={() => setIsSignOutButtonHovered(true)}
+                    onMouseOut={() => setIsSignOutButtonHovered(false)}
+                    onClick={() => navigate('/home')}>
+                Sign Out</button>
         </div>
     );
 };

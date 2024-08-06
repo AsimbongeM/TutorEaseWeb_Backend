@@ -11,7 +11,10 @@ import za.ac.cput.util.Helper;
  */
 
 public class StudentFactory {
-    public static Student buildStudent(String firstName, String lastName, int age, String email, String cellNumber, String password){
+    public static Student buildStudent(String firstName, String lastName, int age, String email, String cellNumber,byte[] profilePicture, String password){
+        if (profilePicture == null || profilePicture.length == 0) {
+            profilePicture = new byte[1];
+        }
         if( Helper.isNullOrEmpty(firstName) || Helper.isNullOrEmpty(lastName)|| Helper.isIntNotValid(age) ||
                 !Helper.isValidEmail(email) || !Helper.isValidCellNumber(cellNumber) || Helper.isNullOrEmpty(password)){
             return null;
@@ -23,6 +26,7 @@ public class StudentFactory {
                 .setAge(age)
                 .setEmail(email)
                 .setCellNumber(cellNumber)
+                .setProfilePicture(profilePicture)
                 .setPassword(password)
                 .build();
     }

@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
-import {NavLink} from 'react-router-dom';
+import {NavLink,useNavigate} from 'react-router-dom';
 
 const styles = {
     App: {
         textAlign: 'center',
+        background: '#e6f2ff',
+        // background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
     },
     AppHeader: {
         backgroundColor: '#00274d',
@@ -76,7 +78,7 @@ const styles = {
 function Home() {
     const [isTutorButtonHovered, setIsTutorButtonHovered] = useState(false);
     const [isStudentButtonHovered, setIsStudentButtonHovered] = useState(false);
-
+    const navigate = useNavigate();
     return (
         <div style={styles.App}>
             <header style={styles.AppHeader}>
@@ -108,6 +110,7 @@ function Home() {
                             style={isTutorButtonHovered ? {...styles.TutorButton, ...styles.TutorButtonHover} : styles.TutorButton}
                             onMouseOver={() => setIsTutorButtonHovered(true)}
                             onMouseOut={() => setIsTutorButtonHovered(false)}
+                            onClick={() => navigate('/tutor_registration')}
                         >
                             Tutor
                         </button>
@@ -115,6 +118,7 @@ function Home() {
                             style={isStudentButtonHovered ? {...styles.TutorButton, ...styles.TutorButtonHover} : styles.TutorButton}
                             onMouseOver={() => setIsStudentButtonHovered(true)}
                             onMouseOut={() => setIsStudentButtonHovered(false)}
+                            onClick={() => navigate('/student_registration')}
                         >
                             Student
                         </button>

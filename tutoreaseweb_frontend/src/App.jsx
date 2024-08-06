@@ -5,6 +5,8 @@ import ClassSession from "./components/ClassSession.jsx";
 import StudentDashboard from "./components/StudentDashboard.jsx";
 import StudentProfile from "./components/StudentProfile.jsx";
 import TutorProfile from "./components/TutorProfile.jsx";
+import TutorRegistration from "./components/TutorRegistration.jsx";
+import StudentRegistration from "./components/StudentRegistration.jsx";
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
               <Route path="/student_dashboard" element={<StudentDashboard />} />
               <Route path="/student_profile" element={<StudentProfile />} />
               <Route path="/tutorprofile" element={<TutorProfile />} />
+              <Route path="/tutor_registration" element={<TutorRegistration />} />
+              <Route path="/student_registration" element={<StudentRegistration />} />
 
               </Routes>
       </div>

@@ -20,11 +20,12 @@ class StudentFactoryTest {
 
     @BeforeEach
     void setUp() {
+        byte[] profilePicture = new byte[0];
         student1 = StudentFactory.buildStudent( "Thando", "Khoza", 16, "thando@gmail.com",
-                "0727897635", "Thando@05");
+                "0727897635", profilePicture,"Thando@05");
 
         student2 = StudentFactory.buildStudent( "Olwethu", "Khoza", 17, "olwethu@yahoo.com",
-                "0876543211", "olwethu56");
+                "0876543211", profilePicture,"olwethu56");
 
         student3 = student1;
     }

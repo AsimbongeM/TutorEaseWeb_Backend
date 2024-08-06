@@ -4,7 +4,7 @@ import NavBar from "../navigation/NavBar.jsx";
 // import StudentProfile from "./components/StudentProfile.jsx";
 const TutorProfile = () => {
     const [isEditable, setIsEditable] = useState(false);
-
+    const [isButtonHovered, setIsButtonHovered] = useState(false);
     const toggleEdit = () => {
         setIsEditable(!isEditable);
     };
@@ -14,7 +14,7 @@ const TutorProfile = () => {
             <NavBar />
             <div style={styles.profileContent}>
                 <div style={styles.profilePicture}>
-                    <img src="person.jpg" alt="Profile Picture" style={styles.profileImage} />
+                    <img src="/images/logo.png" alt="Profile Picture" style={styles.profileImage } />
                 </div>
                 <form style={styles.profileForm}>
                     <div style={styles.formGroup}>
@@ -54,7 +54,9 @@ const TutorProfile = () => {
                         <input type="text" id="subjects" name="subjects" disabled={!isEditable} style={styles.input} />
                     </div>
                     <div style={styles.btnContainer}>
-                        <button type="button" style={styles.btn} onClick={toggleEdit}>
+                        <button type="button"                       style={isButtonHovered ? {...styles.btn, ...styles.btnHover} : styles.btn}
+                                onMouseOver={() => setIsButtonHovered(true)}
+                                onMouseOut={() => setIsButtonHovered(false)} onClick={toggleEdit}>
                             {isEditable ? 'Save' : 'Edit'}
                         </button>
                     </div>
@@ -67,12 +69,13 @@ const TutorProfile = () => {
 const styles = {
     container: {
         display: 'flex',
+        // background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
+        background: '#e6f2ff'
     },
     profileContent: {
         maxWidth: '800px',
         margin: '0 auto',
         padding: '20px',
-        background: '#e6f2ff',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -83,10 +86,11 @@ const styles = {
         marginTop: '20px'
     },
     profileImage: {
-        width: '150px',
-        height: '150px',
-        borderRadius: '100%',
-        border: '2px solid #fff'
+        width: '120px',
+        height: '120px',
+        borderRadius: '50%',
+        border: '2px solid #fff',
+        marginBottom: '20px'
     },
     profileForm: {
         maxWidth: '400px',
@@ -124,15 +128,18 @@ const styles = {
         textAlign: 'center'
     },
     btn: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#00274d',
         color: '#fff',
+        fontSize: '1rem',
         border: 'none',
-        padding: '10px 20px',
+        padding: '15px 30px',
         cursor: 'pointer',
-        borderRadius: '5px'
+        borderRadius: '50px'
     },
     btnHover: {
-        backgroundColor: '#0056b3'
+        backgroundColor: '#ffcc00',
+        color: '#00274d',
+        transform: 'scale(1.05)',
     }
 };
 
