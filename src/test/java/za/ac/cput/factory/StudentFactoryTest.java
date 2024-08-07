@@ -2,6 +2,7 @@ package za.ac.cput.factory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import za.ac.cput.domain.SkillLevel;
 import za.ac.cput.domain.Student;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,10 +23,10 @@ class StudentFactoryTest {
     void setUp() {
         byte[] profilePicture = new byte[0];
         student1 = StudentFactory.buildStudent( "Thando", "Khoza", 16, "thando@gmail.com",
-                "0727897635", profilePicture,"Thando@05");
+                "0727897635", profilePicture,"Thando@05", SkillLevel.BEGINNER);
 
         student2 = StudentFactory.buildStudent( "Olwethu", "Khoza", 17, "olwethu@yahoo.com",
-                "0876543211", profilePicture,"olwethu56");
+                "0876543211", profilePicture,"olwethu56",SkillLevel.INTERMEDIATE);
 
         student3 = student1;
     }

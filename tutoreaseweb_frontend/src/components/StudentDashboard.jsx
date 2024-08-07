@@ -95,7 +95,7 @@ const StudentDashboard = () => {
         },
         sidebar: {
             width: '200px',
-            backgroundColor: '#333',
+            background: '#333',
             color: '#fff',
             padding: '20px',
             display: 'flex',
@@ -112,7 +112,7 @@ const StudentDashboard = () => {
             marginBottom: '10px',
         },
         sidebarButtonActive: {
-            backgroundColor: '#444',
+            background: '#444',
         },
         contentArea: {
             marginTop: '60px',
@@ -124,8 +124,8 @@ const StudentDashboard = () => {
             overflowX: 'auto', // Updated to allow horizontal scrolling
         },
         header: {
-            // backgroundColor: 'hsl(211, 42%, 58%)',
-            backgroundColor: '#00274d',
+            // background: 'hsl(211, 42%, 58%)',
+            background: '#00274d',
             color: '#fff',
             textAlign: 'center',
             padding: '10px',
@@ -141,7 +141,7 @@ const StudentDashboard = () => {
             display: 'block',
         },
         announcement: {
-            backgroundColor: '#f2f2f2',
+            background: '#f2f2f2',
             border: '1px solid #ccc',
             padding: '10px',
             marginBottom: '10px',
@@ -156,11 +156,11 @@ const StudentDashboard = () => {
             textAlign: 'left',
         },
         th: {
-            backgroundColor: '#e6f2ff',
+            background: '#e6f2ff',
         },
         button: {
             padding: '10px 20px',
-            backgroundColor: 'hsl(211, 42%, 58%)',
+            background: 'hsl(211, 42%, 58%)',
             color: '#fff',
             border: 'none',
             borderRadius: '5px',
@@ -185,7 +185,7 @@ const StudentDashboard = () => {
         },
         chatButton: {
             padding: '10px 20px',
-            backgroundColor: 'hsl(211, 42%, 58%)',
+            background: 'hsl(211, 42%, 58%)',
             color: '#fff',
             border: 'none',
             borderRadius: '5px',
@@ -196,7 +196,7 @@ const StudentDashboard = () => {
             bottom: '20px',
             left: '20px',
             padding: '10px 20px',
-            backgroundColor: '#00274d',
+            background: '#00274d',
             color: '#fff',
             border: 'none',
             borderRadius: '50px',
@@ -204,7 +204,7 @@ const StudentDashboard = () => {
             transition: 'background-color 0.3s, transform 0.3s'
         },
         signOutButtonHover: {
-            backgroundColor: '#ffcc00',
+            background: '#ffcc00',
             color: '#00274d',
             transform: 'scale(1.05)',
         },
@@ -220,7 +220,7 @@ const StudentDashboard = () => {
                 <aside style={styles.sidebar}>
                     <button
                         style={{...styles.sidebarButton, ...(activeSection === 'profile-section' ? styles.sidebarButtonActive : {})}}
-                        onClick={() => navigate('/student_profile')}
+                        onClick={() => navigate('/student-profile')}
                     >
                         Profile
                     </button>
@@ -279,7 +279,7 @@ const StudentDashboard = () => {
                         {/*<p>Tutor</p>*/}
                         <section id="collaboration-section">
                             <h3>Class Collaboration</h3>
-                            <NavLink to={`/class_session/${sessionId}`}>Join Session</NavLink>
+                            <NavLink to={`/class-session/${sessionId}`}>Join Session</NavLink>
                         </section>
                     </section>
 

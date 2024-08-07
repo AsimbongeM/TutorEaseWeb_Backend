@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
+import {auth} from "../services/AuthServices.js";
 
 const styles = {
     SignIn: {
@@ -51,6 +52,7 @@ const styles = {
     ForgotPasswordLinkHover: {
         textDecoration: 'underline',
         color: '#0a108c',
+        cursor: 'pointer'
     },
     SignInButton: {
         padding: '10px',
@@ -79,42 +81,62 @@ const styles = {
 };
 
 function SignIn() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isSignInButtonHovered, setIsSignInButtonHovered] = useState(false);
     const [isForgotPasswordLinkHovered, setIsForgotPasswordLinkHovered] = useState(false);
     const [isJoinUsLinkHovered, setIsJoinUsLinkHovered] = useState(false);
     const navigate = useNavigate();
-
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await auth(email, password);
+            const studentId = response.data.id;
+            localStorage.setItem('studentId', studentId);
+            navigate('/student-profile');
+        } catch (error) {
+            console.error("Sign-in failed:", error);
+        }
+    };
+    const handleForgotPasswordClick = (e) => {
+        e.preventDefault(); // Prevent default anchor behavior
+        navigate('/forgot-password'); // Programmatically navigate
+    };
     return (
         <div style={styles.SignIn}>
             <div style={styles.SignInMain}>
                 <header style={styles.SignInHeader}>
                     <img src={`/images/logo.png`} style={styles.SignInLogo} alt="logo"/>
                 </header>
-                <form style={styles.SignInForm}>
+                <form style={styles.SignInForm} onSubmit={handleSignIn}>
                     <input
                         type="text"
-                        placeholder="Username"
+                        placeholder="Email"
                         style={styles.SignInInput}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <input
                         type="password"
                         placeholder="Password"
                         style={styles.SignInInput}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
-                    <NavLink
-                        to="/forgot-password"
+                    <a
                         style={isForgotPasswordLinkHovered ? {...styles.ForgotPasswordLink, ...styles.ForgotPasswordLinkHover} : styles.ForgotPasswordLink}
                         onMouseOver={() => setIsForgotPasswordLinkHovered(true)}
                         onMouseOut={() => setIsForgotPasswordLinkHovered(false)}
+                        onClick={handleForgotPasswordClick}
                     >
                         Forgot password?
-                    </NavLink>
+                    </a>
                     <button
                         type="submit"
                         style={isSignInButtonHovered ? {...styles.SignInButton, ...styles.SignInButtonHover} : styles.SignInButton}
                         onMouseOver={() => setIsSignInButtonHovered(true)}
                         onMouseOut={() => setIsSignInButtonHovered(false)}
-                        onClick={() => navigate('/tutorprofile')}
+                        onClick={() => navigate('/tutor-profile')}
                     >
                         Sign In
                     </button>

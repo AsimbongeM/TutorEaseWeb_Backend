@@ -7,6 +7,7 @@ import StudentProfile from "./components/StudentProfile.jsx";
 import TutorProfile from "./components/TutorProfile.jsx";
 import TutorRegistration from "./components/TutorRegistration.jsx";
 import StudentRegistration from "./components/StudentRegistration.jsx";
+import ForgotPassword from "./components/ForgotPassword.jsx";
 
 
 function App() {
@@ -17,14 +18,15 @@ function App() {
           {/*<NavBar />*/}
           <Routes>
               <Route exact path="/" element={<Home />} />
-              <Route exact path="/home" element={<Home />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/class_session/:sessionId" element={<ClassSession />} />
-              <Route path="/student_dashboard" element={<StudentDashboard />} />
-              <Route path="/student_profile" element={<StudentProfile />} />
-              <Route path="/tutorprofile" element={<TutorProfile />} />
-              <Route path="/tutor_registration" element={<TutorRegistration />} />
-              <Route path="/student_registration" element={<StudentRegistration />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/class-session/:sessionId" element={<ClassSession />} />
+              <Route path="/student-dashboard" element={<StudentDashboard />} />
+              <Route path="/student-profile" element={<StudentProfile />} />
+              <Route path="/tutor-profile" element={<TutorProfile />} />
+              <Route path="/tutor-registration" element={<TutorRegistration />} />
+              <Route path="/student-registration" element={<StudentRegistration />} />
 
               </Routes>
       </div>

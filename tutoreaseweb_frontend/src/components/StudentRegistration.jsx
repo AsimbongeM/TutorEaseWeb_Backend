@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
+import {getStudentById,createStudent} from "../services/StudentService.js";
 
 const styles = {
     registrationContent: {
@@ -84,7 +85,46 @@ const styles = {
 };
 
 const StudentRegistration = () => {
-    const [isHovered, setIsHovered] = React.useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [formData, setFormData] = useState({
+        name: '',
+        surname: '',
+        email: '',
+        cell: '',
+        age: '',
+        skillLevel: 'beginner',
+        profileUpload: null,
+        password: '',
+        confirmPassword: '',
+    });
+
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: files ? files[0] : value,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            // Check if student already exists by email
+            const existingStudent = await getStudentById(formData.email);
+
+            if (existingStudent.data) {
+                alert("A student with this email already exists.");
+            } else {
+                // Create new student
+                await createStudent(formData);
+                alert("Student registered successfully!");
+            }
+        } catch (error) {
+            console.error("Error during student registration:", error);
+            alert("An error occurred during registration. Please try again.");
+        }
+    };
 
     return (
         <div style={styles.registrationContent}>
@@ -92,30 +132,30 @@ const StudentRegistration = () => {
                 <img src="/images/logo.png" alt="Logo" style={styles.logo} />
             </div>
             <h2 style={styles.formTitle}>Student Registration</h2>
-            <form style={styles.registrationForm}>
+            <form style={styles.registrationForm} onSubmit={handleSubmit}>
                 <div style={styles.formGroup}>
                     <label htmlFor="name" style={styles.label}>Name:</label>
-                    <input type="text" id="name" name="name" required style={styles.input} />
+                    <input type="text" id="name" name="name" required style={styles.input} onChange={handleChange}/>
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="surname" style={styles.label}>Surname:</label>
-                    <input type="text" id="surname" name="surname" required style={styles.input} />
+                    <input type="text" id="surname" name="surname" required style={styles.input} onChange={handleChange} />
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="email" style={styles.label}>Email address or username:</label>
-                    <input type="email" id="email" name="email" required style={styles.input} />
+                    <input type="email" id="email" name="email" required style={styles.input} onChange={handleChange}/>
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="cell" style={styles.label}>Cell number:</label>
-                    <input type="tel" id="cell" name="cell" required style={styles.input} />
+                    <input type="tel" id="cell" name="cell" required style={styles.input} onChange={handleChange} />
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="age" style={styles.label}>Age:</label>
-                    <input type="number" id="age" name="age" required style={styles.input} />
+                    <input type="number" id="age" name="age" required style={styles.input} onChange={handleChange} />
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="skill-level" style={styles.label}>Skill level:</label>
-                    <select id="skill-level" name="skill-level" required style={styles.select}>
+                    <select id="skill-level" name="skill-level" required style={styles.select} onChange={handleChange}>
                         <option value="beginner">Beginner</option>
                         <option value="intermediate">Intermediate</option>
                         <option value="advanced">Advanced</option>
@@ -123,15 +163,15 @@ const StudentRegistration = () => {
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="profile-upload" style={styles.label}>Profile Picture:</label>
-                    <input type="file" id="profile-upload" name="profile-upload" required style={styles.fileInput} />
+                    <input type="file" id="profile-upload" name="profile-upload" required style={styles.fileInput} onChange={handleChange}/>
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="password" style={styles.label}>Password:</label>
-                    <input type="password" id="password" name="password" required style={styles.input} />
+                    <input type="password" id="password" name="password" required style={styles.input} onChange={handleChange} />
                 </div>
                 <div style={styles.formGroup}>
                     <label htmlFor="confirm-password" style={styles.label}>Confirm password:</label>
-                    <input type="password" id="confirm-password" name="confirm-password" required style={styles.input} />
+                    <input type="password" id="confirm-password" name="confirm-password" required style={styles.input} onChange={handleChange}/>
                 </div>
                 <div style={styles.btnContainer}>
                     <button

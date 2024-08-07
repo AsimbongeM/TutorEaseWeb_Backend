@@ -29,6 +29,8 @@ public class Student {
     @Column(length = 10000000)
     private byte[] profilePicture;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private SkillLevel skillLevel;
 
 
     protected Student() {
@@ -44,6 +46,7 @@ public class Student {
         this.cellNumber = builder.cellNumber;
         this.profilePicture = builder.profilePicture;
         this.password = builder.password;
+        this.skillLevel = builder.skillLevel;
     }
 
     public Long getId() {
@@ -78,17 +81,21 @@ public class Student {
         return password;
     }
 
+    public SkillLevel getSkillLevel() {
+        return skillLevel;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return age == student.age && Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(cellNumber, student.cellNumber) && Arrays.equals(profilePicture, student.profilePicture) && Objects.equals(password, student.password);
+        return age == student.age && Objects.equals(id, student.id) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(email, student.email) && Objects.equals(cellNumber, student.cellNumber) && Arrays.equals(profilePicture, student.profilePicture) && Objects.equals(password, student.password) && skillLevel == student.skillLevel;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, firstName, lastName, age, email, cellNumber, password);
+        int result = Objects.hash(id, firstName, lastName, age, email, cellNumber, password, skillLevel);
         result = 31 * result + Arrays.hashCode(profilePicture);
         return result;
     }
@@ -104,6 +111,7 @@ public class Student {
                 ", cellNumber='" + cellNumber + '\'' +
                 ", profilePicture=" + Arrays.toString(profilePicture) +
                 ", password='" + password + '\'' +
+                ", skillLevel='" + skillLevel + '\'' +
                 '}';
     }
     public static class Builder{
@@ -115,6 +123,7 @@ public class Student {
         private String cellNumber;
         private byte[] profilePicture;
         private String password;
+        private SkillLevel skillLevel;
 
         public Builder() {
         }
@@ -158,6 +167,11 @@ public class Student {
             return this;
         }
 
+        public Builder setSkillLevel(SkillLevel skillLevel) {
+            this.skillLevel = skillLevel;
+            return this;
+        }
+
         public Builder copy(Student student) {
             this.id = student.id;
             this.firstName = student.firstName;
@@ -167,6 +181,7 @@ public class Student {
             this.cellNumber = student.cellNumber;
             this.profilePicture = student.profilePicture;
             this.password = student.password;
+            this.skillLevel = student.skillLevel;
             return this;
         }
 

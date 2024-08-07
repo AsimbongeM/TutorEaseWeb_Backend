@@ -85,7 +85,7 @@ function Home() {
                 <div style={styles.AppHeaderContent}>
                     <img src={`/images/logo.png`} style={styles.AppLogo} alt="logo"/>
                     <NavLink
-                        to="/signin"
+                        to="/sign-in"
                         style={styles.SignInLink}
                         onMouseOver={(e) => e.currentTarget.style.color = styles.SignInLinkHover.color}
                         onMouseOut={(e) => e.currentTarget.style.color = styles.SignInLink.color}
@@ -110,7 +110,7 @@ function Home() {
                             style={isTutorButtonHovered ? {...styles.TutorButton, ...styles.TutorButtonHover} : styles.TutorButton}
                             onMouseOver={() => setIsTutorButtonHovered(true)}
                             onMouseOut={() => setIsTutorButtonHovered(false)}
-                            onClick={() => navigate('/tutor_registration')}
+                            onClick={() => navigate('/tutor-registration')}
                         >
                             Tutor
                         </button>
@@ -118,7 +118,7 @@ function Home() {
                             style={isStudentButtonHovered ? {...styles.TutorButton, ...styles.TutorButtonHover} : styles.TutorButton}
                             onMouseOver={() => setIsStudentButtonHovered(true)}
                             onMouseOut={() => setIsStudentButtonHovered(false)}
-                            onClick={() => navigate('/student_registration')}
+                            onClick={() => navigate('/student-registration')}
                         >
                             Student
                         </button>

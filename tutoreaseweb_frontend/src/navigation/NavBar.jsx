@@ -5,8 +5,8 @@ import { NavLink} from 'react-router-dom';
 function NavBar() {
     return (
         <Nav defaultActiveKey="/home" className="flex-column" style={styles.nav}>
-            <NavLink to="/tutorprofile" style={styles.link}>Tutor Profile</NavLink>
-            <NavLink  to="/student_dashboard" style={styles.link}>Student Dashboard</NavLink>
+            <NavLink to="/tutor-profile" style={styles.link}>Tutor Profile</NavLink>
+            <NavLink  to="/student-dashboard" style={styles.link}>Student Dashboard</NavLink>
         </Nav>
     );
 }

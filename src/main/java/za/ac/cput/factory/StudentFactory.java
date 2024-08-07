@@ -1,5 +1,6 @@
 package za.ac.cput.factory;
 
+import za.ac.cput.domain.SkillLevel;
 import za.ac.cput.domain.Student;
 import za.ac.cput.util.Helper;
 
@@ -11,7 +12,7 @@ import za.ac.cput.util.Helper;
  */
 
 public class StudentFactory {
-    public static Student buildStudent(String firstName, String lastName, int age, String email, String cellNumber,byte[] profilePicture, String password){
+    public static Student buildStudent(String firstName, String lastName, int age, String email, String cellNumber, byte[] profilePicture, String password, SkillLevel skillLevel){
         if (profilePicture == null || profilePicture.length == 0) {
             profilePicture = new byte[1];
         }
@@ -28,6 +29,7 @@ public class StudentFactory {
                 .setCellNumber(cellNumber)
                 .setProfilePicture(profilePicture)
                 .setPassword(password)
+                .setSkillLevel(skillLevel)
                 .build();
     }
 }

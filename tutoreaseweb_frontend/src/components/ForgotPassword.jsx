@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 const styles = {
     container: {
         maxWidth: '400px',
@@ -23,18 +23,28 @@ const styles = {
         padding: '10px',
         margin: '10px 0',
         border: 'none',
-        borderRadius: '3px',
+        fontSize: '1rem',
+        borderRadius: '50px',
         backgroundColor: '#00274d',
         color: '#fff',
         cursor: 'pointer',
-    },
-    otpTimer: {
-        display: 'none',
-        textAlign: 'center',
+        transition: 'all 0.3s ease',
+        boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
     },
     buttonHover: {
-        backgroundColor: '#00274d',
+        backgroundColor: '#ffcc00',
+        color: '#00274d',
+        transform: 'scale(1.05)',
+        boxShadow: '0 6px 12px rgba(0,0,0,0.3)',
     },
+    buttonActive: {
+        backgroundColor: '#002f6c',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+    },
+    otpTimer: {
+        textAlign: 'center',
+        margin: '10px 0',
+    }
 };
 
 function ForgotPassword() {
@@ -42,92 +52,139 @@ function ForgotPassword() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [otp, setOtp] = useState('');
+    const [otpSent, setOtpSent] = useState(false);
+    const [otpVerified, setOtpVerified] = useState(false);
     const [otpTimer, setOtpTimer] = useState(false);
-    const [countdown, setCountdown] = useState(59);
+    const [countdown, setCountdown] = useState(0);
+    const navigate = useNavigate();
+    useEffect(() => {
+        let timerInterval;
+        if (otpTimer) {
+            timerInterval = setInterval(() => {
+                setCountdown(prevCountdown => {
+                    if (prevCountdown <= 0) {
+                        clearInterval(timerInterval);
+                        setOtpTimer(false);
+                        return 0;
+                    }
+                    return prevCountdown - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(timerInterval);
+    }, [otpTimer]);
 
     const sendOTP = () => {
         // Code to send OTP
+        setOtpSent(true);
         setOtpTimer(true);
         setCountdown(59);
-        startTimer();
     };
 
-    const startTimer = () => {
-        const timerInterval = setInterval(() => {
-            setCountdown((prevCountdown) => {
-                if (prevCountdown <= 0) {
-                    clearInterval(timerInterval);
-                    setOtpTimer(false);
-                    return 59;
-                }
-                return prevCountdown - 1;
-            });
-        }, 1000);
-    };
-
-    const resendOTP = () => {
-        // Code to resend OTP
-        setCountdown(59);
-        startTimer();
+    const verifyOTP = () => {
+        // Code to verify OTP
+        if (otp) {
+            setOtpVerified(true);
+            setOtpTimer(false);
+        }
     };
 
     const resetPassword = () => {
         // Code to reset password
+        if (newPassword === confirmPassword) {
+            // Password reset logic here
+        } else {
+            alert("Passwords do not match.");
+        }
     };
 
     const backToSignIn = () => {
         // Redirect to sign in page
+        navigate('/sign-in');
     };
 
     return (
         <div style={styles.container}>
             <h2>Forgot Password</h2>
-            <input
-                type="text"
-                id="email"
-                placeholder="Email or Phone Number"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={styles.input}
-            />
-            <input
-                type="password"
-                id="newPassword"
-                placeholder="New Password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                style={styles.input}
-            />
-            <input
-                type="password"
-                id="confirmPassword"
-                placeholder="Confirm New Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                style={styles.input}
-            />
-            <button onClick={sendOTP} style={styles.button}>Send OTP</button>
-            {otpTimer && (
-                <div style={styles.otpTimer}>
-                    We have sent you an OTP. Please check your email or phone.<br />
-                    Time remaining: <span id="timer">{countdown}</span> seconds
-                </div>
-            )}
-            {otpTimer && (
+            {!otpSent ? (
                 <>
                     <input
                         type="text"
-                        id="otp"
+                        placeholder="Email or Phone Number"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        style={styles.input}
+                    />
+                    <button
+                        onClick={sendOTP}
+                        style={styles.button}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffcc00'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#00274d'}>
+                        Send OTP
+                    </button>
+                </>
+            ) : !otpVerified ? (
+                <>
+                    <input
+                        type="text"
                         placeholder="Enter OTP"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
                         style={styles.input}
                     />
-                    <button onClick={resendOTP} style={styles.button}>Resend OTP</button>
-                    <button onClick={resetPassword} style={styles.button}>Reset Password</button>
+                    <button
+                        onClick={verifyOTP}
+                        style={styles.button}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffcc00'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#00274d'}>
+                        Verify OTP
+                    </button>
+                    {otpTimer && (
+                        <div style={styles.otpTimer}>
+                            We have sent you an OTP. Please check your email or phone.<br />
+                            Time remaining: {countdown} seconds
+                        </div>
+                    )}
+                    <button
+                        onClick={() => setOtpSent(false)}
+                        style={styles.button}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffcc00'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#00274d'}>
+                        Back
+                    </button>
+                </>
+            ) : (
+                <>
+                    <input
+                        type="password"
+                        placeholder="New Password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        style={styles.input}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Confirm New Password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        style={styles.input}
+                    />
+                    <button
+                        onClick={resetPassword}
+                        style={styles.button}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffcc00'}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#00274d'}>
+                        Reset Password
+                    </button>
                 </>
             )}
-            <button onClick={backToSignIn} style={styles.button}>Back to Sign In</button>
+            <button
+                onClick={backToSignIn}
+                style={styles.button}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffcc00'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#00274d'}>
+                Back to Sign In
+            </button>
         </div>
     );
 }

@@ -3,6 +3,7 @@ package za.ac.cput.service;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import za.ac.cput.domain.SkillLevel;
 import za.ac.cput.domain.Student;
 import za.ac.cput.factory.StudentFactory;
 
@@ -28,13 +29,13 @@ class StudentServiceTest {
     @Order(1)
     @BeforeEach
     void setUp() {
-        byte[] profilePicture = new byte[0];
+        byte[] profilePicture = new byte[1];
         student1 = StudentFactory.buildStudent( "Thando", "Khoza", 18,
-                "thando@gmail.com", "0767475524", profilePicture,"thando7865");
+                "thando@gmail.com", "0767475524", profilePicture,"thando7865", SkillLevel.BEGINNER);
         System.out.println(student1);
 
         student2 = StudentFactory.buildStudent( "Azande", "Sibisi", 19,
-                "Azande@Yahoo.com", "0876411245", profilePicture,"aza@31452");
+                "Azande@Yahoo.com", "0876411245", profilePicture,"aza@31452",SkillLevel.INTERMEDIATE);
         System.out.println(student2);
     }
 
