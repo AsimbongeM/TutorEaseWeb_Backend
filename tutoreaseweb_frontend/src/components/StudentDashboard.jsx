@@ -12,7 +12,7 @@ const StudentDashboard = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [resources, setResources] = useState([]);
     const [reminders, setReminders] = useState([]);
-    const [profile, setProfile] = useState({ name: 'Student Name', email: 'student@example.com', courses: ['Java'] });
+    const [profile, setProfile] = useState({ name: 'Student Name', email: 'student@example.com', topics: ['Java'] });
     const [assignments, setAssignments] = useState([{ title: 'Assignment 1', dueDate: '2024-08-10', status: 'Pending' }]);
     const [grades, setGrades] = useState([{ course: 'Java', grade: 'A' }]);
     const navigate = useNavigate(); // Initialize the useNavigate hook
@@ -68,8 +68,8 @@ const StudentDashboard = () => {
         ]);
 
         setReminders([
-            { day: 'Monday', time: '10:00 AM', course: 'Java', message: 'Upcoming class session' },
-            { day: 'Wednesday', time: '2:00 PM', course: 'Java', message: 'Guest lecture reminder' }
+            { day: 'Monday', time: '10:00 AM', topic: 'Java', message: 'Upcoming class session' },
+            { day: 'Wednesday', time: '2:00 PM', topic: 'Java', message: 'Guest lecture reminder' }
         ]);
     }, []);
 
@@ -263,8 +263,8 @@ const StudentDashboard = () => {
                     >
                         <h2>Profile</h2>
                         <ul>
-                            {profile.courses.map((course, index) => (
-                                <li key={index}>{course}</li>
+                            {profile.topics.map((topic, index) => (
+                                <li key={index}>{topic}</li>
                             ))}
                         </ul>
                     </section>
@@ -273,7 +273,7 @@ const StudentDashboard = () => {
                         id="content-section"
                         style={activeSection === 'content-section' ? { ...styles.mainSection, ...styles.mainSectionActive } : styles.mainSection}
                     >
-                        <h2>Course Content</h2>
+                        <h2>Topic Content</h2>
                         {/*<img src="tutor_profile.jpg" alt="Tutor" />*/}
                         {/*<p>John Doe</p>*/}
                         {/*<p>Tutor</p>*/}
@@ -305,7 +305,7 @@ const StudentDashboard = () => {
                             <tr>
                                 <th style={{ ...styles.thTd, ...styles.th }}>Day</th>
                                 <th style={{ ...styles.thTd, ...styles.th }}>Time</th>
-                                <th style={{ ...styles.thTd, ...styles.th }}>Course</th>
+                                <th style={{ ...styles.thTd, ...styles.th }}>Topic</th>
                                 <th style={{ ...styles.thTd, ...styles.th }}>Action</th>
                             </tr>
                             </thead>

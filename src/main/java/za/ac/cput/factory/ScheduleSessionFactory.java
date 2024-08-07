@@ -8,13 +8,13 @@ import java.time.LocalTime;
 
 public class ScheduleSessionFactory {
 
-    public static ScheduleSession buildScheduleSession(Long id, LocalDate date, LocalTime startTime, LocalTime endTime, String topic) {
-        if (id == null || date == null || startTime == null || endTime == null || Helper.isNullOrEmpty(topic)) {
+    public static ScheduleSession buildScheduleSession( LocalDate date, LocalTime startTime, LocalTime endTime, String topic) {
+        if ( date == null || startTime == null || endTime == null || Helper.isNullOrEmpty(topic)) {
             return null;
         }
 
         return new ScheduleSession.Builder()
-                .setId(id)
+//                .setId(id)
                 .setDate(date)
                 .setStartTime(startTime)
                 .setEndTime(endTime)
