@@ -4,7 +4,11 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;
-
+/**
+ * BookSession.java
+ * This is the BookSession class is for the student to choose a tutor
+ * @author Sbonga Shweni
+ */
 @Entity
 public class BookSession implements Serializable {
     //Sbonga Shweni

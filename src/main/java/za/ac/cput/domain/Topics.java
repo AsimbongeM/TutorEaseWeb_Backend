@@ -79,9 +79,9 @@ public class Topics {
 
     public static class Builder {
         private Long id;
-        private String beginnerTopics = "Introduction to Java, Variables and Data Types, Control Flow Statements, Basic Object-Oriented Programming (OOP) Concepts, Arrays and Strings";
-        private String intermediateTopics = "Advanced OOP Concepts (Inheritance, Polymorphism, Encapsulation), Exception Handling, Collections Framework, Generics, File I/O";
-        private String advancedTopics = "Multithreading and Concurrency, Java Streams and Lambda Expressions, JavaFX for GUI Development, Network Programming, Design Patterns in Java";
+        private String beginnerTopics;
+        private String intermediateTopics;
+        private String advancedTopics;
 
         public Builder setId(Long id) {
             this.id = id;

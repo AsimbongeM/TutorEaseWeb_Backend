@@ -3,6 +3,10 @@ package za.ac.cput.factory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import za.ac.cput.domain.BookSession;
+import za.ac.cput.domain.ScheduleSession;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 class BookSessionFactoryTest {
     private BookSession bookSession1;
@@ -10,8 +14,9 @@ class BookSessionFactoryTest {
 
     @BeforeEach
     void setUp() {
-       // ScheduleSession =
-        //bookSession1 = BookSessionFactory.buildBooksession()
+        ScheduleSession session = ScheduleSessionFactory.buildScheduleSession( LocalDate.of(2024, 7, 21), LocalTime.of(10, 0), LocalTime.of(12, 0), "Design patterns");
+
+//        bookSession1 = BookSessionFactory.buildBooksession(session,)
     }
 
     @Test
