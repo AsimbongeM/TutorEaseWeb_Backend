@@ -95,7 +95,7 @@ const StudentDashboard = () => {
         },
         sidebar: {
             width: '200px',
-            background: '#333',
+            background: '#007bff',
             color: '#fff',
             padding: '20px',
             display: 'flex',
@@ -166,31 +166,7 @@ const StudentDashboard = () => {
             borderRadius: '5px',
             cursor: 'pointer',
         },
-        chatBox: {
-            border: '1px solid #ccc',
-            padding: '10px',
-            marginTop: '20px',
-        },
-        chatMessages: {
-            maxHeight: '200px',
-            overflowY: 'scroll',
-            marginBottom: '10px',
-        },
-        chatInput: {
-            width: 'calc(100% - 22px)',
-            padding: '10px',
-            marginBottom: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '5px',
-        },
-        chatButton: {
-            padding: '10px 20px',
-            background: 'hsl(211, 42%, 58%)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-        },
+
         signOutButton: {
             position: 'fixed',
             bottom: '20px',
@@ -248,12 +224,7 @@ const StudentDashboard = () => {
                     >
                         Announcements
                     </button>
-                    <button
-                        style={{...styles.sidebarButton, ...(activeSection === 'chat-section' ? styles.sidebarButtonActive : {})}}
-                        onClick={() => showSection('chat-section')}
-                    >
-                        Chat
-                    </button>
+
                 </aside>
 
                 <main style={styles.contentArea}>
@@ -343,29 +314,7 @@ const StudentDashboard = () => {
                         ))}
                     </section>
 
-                    <section
-                        id="chat-section"
-                        style={activeSection === 'chat-section' ? { ...styles.mainSection, ...styles.mainSectionActive } : styles.mainSection}
-                    >
-                        <h2>Chat with Tutor</h2>
-                        <div style={styles.chatBox}>
-                            <div style={styles.chatMessages}>
-                                {messages.map((message, index) => (
-                                    <div key={index}>
-                                        <strong>{message.sender}:</strong> {message.text}
-                                    </div>
-                                ))}
-                            </div>
-                            <input
-                                type="text"
-                                style={styles.chatInput}
-                                value={newMessage}
-                                onChange={(e) => setNewMessage(e.target.value)}
-                                placeholder="Type a message..."
-                            />
-                            <button style={styles.chatButton} onClick={handleSendMessage}>Send</button>
-                        </div>
-                    </section>
+
                 </main>
             </div>
 

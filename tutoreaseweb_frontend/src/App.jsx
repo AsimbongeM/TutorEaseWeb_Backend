@@ -1,3 +1,4 @@
+
 import {Route, Routes} from 'react-router-dom';
 import Home from './components/Home.jsx';
 import SignIn from './components/SignIn';
@@ -8,6 +9,7 @@ import TutorProfile from "./components/TutorProfile.jsx";
 import TutorRegistration from "./components/TutorRegistration.jsx";
 import StudentRegistration from "./components/StudentRegistration.jsx";
 import ForgotPassword from "./components/ForgotPassword.jsx";
+import TutorDashboard from "./components/TutorDashboard.jsx";
 
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
               <Route path="/class-session/:sessionId" element={<ClassSession />} />
               <Route path="/student-dashboard" element={<StudentDashboard />} />
               <Route path="/student-profile" element={<StudentProfile />} />
+              <Route path="/tutor-dashboard" element={<TutorDashboard/>} />
               <Route path="/tutor-profile" element={<TutorProfile />} />
               <Route path="/tutor-registration" element={<TutorRegistration />} />
               <Route path="/student-registration" element={<StudentRegistration />} />
