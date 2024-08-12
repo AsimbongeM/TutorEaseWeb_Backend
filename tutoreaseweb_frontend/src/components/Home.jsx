@@ -5,6 +5,7 @@ const styles = {
     App: {
         textAlign: 'center',
         background: '#e6f2ff',
+        minHeight: '100vh'
         // background: 'linear-gradient(#57adeb, rgb(182, 208, 226))',
     },
     AppHeader: {
@@ -25,6 +26,8 @@ const styles = {
         color: '#ffcc00',
         textDecoration: 'none',
         fontWeight: 'bold',
+        fontSize: '24px'
+
     },
     SignInLinkHover: {
         color: 'white',
@@ -60,9 +63,11 @@ const styles = {
     },
     TutorButton: {
         padding: '15px 30px',
-        fontSize: '1rem',
+        // fontSize: '1rem',
         cursor: 'pointer',
         border: 'none',
+        fontSize: '24px',
+        fontWeight: 'bold',
         borderRadius: '50px',
         backgroundColor: '#00274d',
         color: 'white',

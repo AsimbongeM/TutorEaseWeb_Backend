@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Student;
 import za.ac.cput.repository.StudentRepository;
+
 import java.util.List;
 
 /**
@@ -28,25 +29,40 @@ public class StudentService implements IStudentService{
     }
 
     @Override
-    public Student read(Long studentId) {
-        return this.studentRepository.findById(studentId).orElse(null);
+    public Student read(String email) {
+        return this.studentRepository.findById(email).orElse(null);
     }
 
     @Override
-    public Student update(Student student) {
-        if (studentRepository.existsById(student.getId())) {
-            return studentRepository.save(student);
+    public Student update(String email, Student student) {
+        Student existingStudent = read(email);
+
+        if (existingStudent != null) {
+            Student updatedStudent = new Student.Builder()
+                    .copy(existingStudent)
+                    .setFirstName(student.getFirstName())
+                    .setLastName(student.getLastName())
+                    .setPassword(student.getPassword())
+                    .setAge(student.getAge())
+                    .setCellNumber(student.getCellNumber())
+                    .setSkillLevel(student.getSkillLevel())
+                    .build();
+            return studentRepository.save(updatedStudent);
         }
         return null;
     }
 
     @Override
-    public void delete(Long studentId) {
-        studentRepository.deleteById(studentId);
+    public void delete(String email) {
+        studentRepository.deleteById(email);
     }
 
     @Override
     public List<Student> getAll() {
         return studentRepository.findAll();
+    }
+
+    public Student authenticate(String email, String password) {
+        return studentRepository.findByEmailAndPassword(email, password);
     }
 }

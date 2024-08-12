@@ -8,39 +8,39 @@ import za.ac.cput.repository.TopicsRepository;
 import java.util.List;
 @Service
 public class TopicsService implements ITopicsService{
-    private TopicsRepository TopicsRepository;
+    private TopicsRepository topicsRepository;
 
     @Autowired
-    TopicsService(TopicsRepository TopicsRepository) {
-        this.TopicsRepository = TopicsRepository;
+    TopicsService(TopicsRepository topicsRepository) {
+        this.topicsRepository = topicsRepository;
     }
 
     @Override
-    public Topics create(Topics Topics) {
-        return TopicsRepository.save(Topics);
+    public Topics create(Topics topics) {
+        return topicsRepository.save(topics);
     }
 
     @Override
-    public Topics read(Long TopicsId) {
-        return this.TopicsRepository.findById(TopicsId).orElse(null);
+    public Topics read(Long topicsId) {
+        return this.topicsRepository.findById(topicsId).orElse(null);
     }
 
     @Override
-    public Topics update(Topics Topics) {
-        if (TopicsRepository.existsById(Topics.getId())) {
-            return TopicsRepository.save(Topics);
+    public Topics update(Topics topics) {
+        if (topicsRepository.existsById(topics.getId())) {
+            return topicsRepository.save(topics);
         }
         return null;
     }
 
     @Override
-    public void delete(Long TopicsId) {
-        TopicsRepository.deleteById(TopicsId);
+    public void delete(Long topicsId) {
+        topicsRepository.deleteById(topicsId);
     }
 
     @Override
     public List<Topics> getAll() {
-        return TopicsRepository.findAll();
+        return topicsRepository.findAll();
     }
 }
 

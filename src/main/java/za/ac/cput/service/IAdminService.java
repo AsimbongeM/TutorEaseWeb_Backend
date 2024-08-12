@@ -8,4 +8,5 @@ import za.ac.cput.domain.Admin;
  * Date: 16 July 2024
  */
 public interface IAdminService extends IService<Admin, Long> {
+    Admin update(Admin admin);
 }

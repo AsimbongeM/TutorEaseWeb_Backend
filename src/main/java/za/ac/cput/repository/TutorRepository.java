@@ -6,4 +6,5 @@ import za.ac.cput.domain.Tutor;
 
 @Repository
 public interface TutorRepository extends JpaRepository<Tutor,String> {
+    Tutor findByEmailAndPassword(String email, String password);
 }

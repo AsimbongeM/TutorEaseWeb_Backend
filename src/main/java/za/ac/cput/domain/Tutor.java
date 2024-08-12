@@ -2,7 +2,6 @@ package za.ac.cput.domain;
 
 import jakarta.persistence.*;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -18,15 +17,15 @@ public class Tutor {
     private String password;
     private String skills;
     private int experience;
-    @Lob
-    @Column(length = 10000000)
-    private byte[] profilePicture;
-    @Lob
-    @Column(length = 10000000)
-    private byte[] idDocument;
-    @Lob
-    @Column(length = 10000000)
-    private byte[] sarsDocument;
+    //    @Lob
+//    @Column(length = 10000000)
+//    private byte[] profilePicture;
+//    @Lob
+//    @Column(length = 10000000)
+//    private byte[] idDocument;
+//    @Lob
+//    @Column(length = 10000000)
+//    private byte[] sarsDocument;
     @Enumerated(EnumType.STRING)
     private TutorApprovalStatus approvalStatus;
 
@@ -42,10 +41,10 @@ public class Tutor {
         this.password = builder.password;
         this.skills = builder.skills;
         this.experience = builder.experience;
-        this.profilePicture = builder.profilePicture;
-        this.idDocument = builder.idDocument;
-        this.sarsDocument = builder.sarsDocument;
-        this.approvalStatus = builder.approvalStatus;
+//        this.profilePicture = builder.profilePicture;
+//        this.idDocument = builder.idDocument;
+//        this.sarsDocument = builder.sarsDocument;
+        this.approvalStatus = builder.approvalStatus != null ? builder.approvalStatus : TutorApprovalStatus.PENDING;
     }
 
 
@@ -81,17 +80,17 @@ public class Tutor {
         return experience;
     }
 
-    public byte[] getProfilePicture() {
-        return profilePicture;
-    }
-
-    public byte[] getIdDocument() {
-        return idDocument;
-    }
-
-    public byte[] getSarsDocument() {
-        return sarsDocument;
-    }
+//    public byte[] getProfilePicture() {
+//        return profilePicture;
+//    }
+//
+//    public byte[] getIdDocument() {
+//        return idDocument;
+//    }
+//
+//    public byte[] getSarsDocument() {
+//        return sarsDocument;
+//    }
 
     public TutorApprovalStatus getApprovalStatus() {
         return approvalStatus;
@@ -103,16 +102,12 @@ public class Tutor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && Arrays.equals(profilePicture, tutor.profilePicture)&& Arrays.equals(idDocument, tutor.idDocument) && Arrays.equals(sarsDocument, tutor.sarsDocument) && approvalStatus == tutor.approvalStatus;
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus);
-        result = 31 * result + Arrays.hashCode(profilePicture);
-        result = 31 * result + Arrays.hashCode(idDocument);
-        result = 31 * result + Arrays.hashCode(sarsDocument);
-        return result;
+        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus);
     }
 
     @Override
@@ -126,9 +121,9 @@ public class Tutor {
                 ", password='" + password + '\'' +
                 ", skills='" + skills + '\'' +
                 ", experience=" + experience +
-                ", profilePicture=" + Arrays.toString(profilePicture) +
-                ", idDocument=" + Arrays.toString(idDocument) +
-                ", sarsDocument=" + Arrays.toString(sarsDocument) +
+//                ", profilePicture=" + Arrays.toString(profilePicture) +
+//                ", idDocument=" + Arrays.toString(idDocument) +
+//                ", sarsDocument=" + Arrays.toString(sarsDocument) +
                 ", approvalStatus=" + approvalStatus +
                 '}';
     }
@@ -142,9 +137,9 @@ public class Tutor {
         private String password;
         private String skills;
         private int experience;
-        private byte[] profilePicture;
-        private byte[] idDocument;
-        private byte[] sarsDocument;
+        //        private byte[] profilePicture;
+//        private byte[] idDocument;
+//        private byte[] sarsDocument;
         private TutorApprovalStatus approvalStatus;
 
 
@@ -188,19 +183,19 @@ public class Tutor {
             return this;
         }
 
-        public Builder setProfilePicture(byte[] profilePicture) {
-            this.profilePicture = profilePicture;
-            return this;
-        }
-        public Builder setIdDocument(byte[] idDocument) {
-            this.idDocument = idDocument;
-            return this;
-        }
-
-        public Builder setSarsDocument(byte[] sarsDocument) {
-            this.sarsDocument = sarsDocument;
-            return this;
-        }
+//        public Builder setProfilePicture(byte[] profilePicture) {
+//            this.profilePicture = profilePicture;
+//            return this;
+//        }
+//        public Builder setIdDocument(byte[] idDocument) {
+//            this.idDocument = idDocument;
+//            return this;
+//        }
+//
+//        public Builder setSarsDocument(byte[] sarsDocument) {
+//            this.sarsDocument = sarsDocument;
+//            return this;
+//        }
 
         public Builder setApprovalStatus(TutorApprovalStatus approvalStatus) {
             this.approvalStatus = approvalStatus;
@@ -216,9 +211,9 @@ public class Tutor {
             this.password = tutor.password;
             this.skills = tutor.skills;
             this.experience = tutor.experience;
-            this.profilePicture = tutor.profilePicture;
-            this.idDocument = tutor.idDocument;
-            this.sarsDocument = tutor.sarsDocument;
+//            this.profilePicture = tutor.profilePicture;
+//            this.idDocument = tutor.idDocument;
+//            this.sarsDocument = tutor.sarsDocument;
             this.approvalStatus = tutor.approvalStatus;
             return this;
 

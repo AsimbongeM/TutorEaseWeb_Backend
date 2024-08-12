@@ -296,44 +296,23 @@ class ClassSession extends Component {
         const {isMicMuted} = this.state;
         return (
             <div style={{display: 'flex', flexDirection: 'column', height: '100vh', background: '#e6f2ff'}}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    {/*-------------------------------Menu-------------------------------------*/}
-                    <div className="dropdown" style={{ marginLeft: '5px' }}>
-                        <button className="btn dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false" style={{backgroundColor: '#00274d', color: '#fff'}}>
-                            <i className="fas fa-bars" style={{ marginRight: '5px' }}></i>
-                        </button>
-                        <ul className="dropdown-menu">
-                            <li>
-                                <a className="dropdown-item" href="profile">
-                                    <i className="fas fa-user"></i> Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdown-item" href="portal">
-                                    <i className="fas fa-door-open"></i> Portal
-                                </a>
-                            </li>
-                            <li>
-                                <a className="dropdown-item" href="calendar">
-                                    <i className="fas fa-calendar-alt"></i> Calendar
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                <div style={{position: 'relative', flexGrow: 1 }}>
+
                     {/*-------------------------------Chatbox Toggle Button-------------------------------------*/}
                     <button
                         className="btn"
                         onClick={this.toggleChatbox}
                         style={{
-                            width: '130px',
-                            marginTop: '5px',
-                            marginRight: '5px',
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
                             backgroundColor: '#00274d',
-                            color: '#fff'
+                            color: '#fff',
+                            margin: '10px',
+                            zIndex: 2
                         }}
                     >
-                        <i className="fas fa-comments" style={{ marginRight: '5px' }}></i>
+                        <i className="fas fa-comments" style={{ marginLeft: '5px' }}></i>
                         {this.state.isChatboxVisible ? "Hide chat" : "Show chat"}
                     </button>
                 </div>

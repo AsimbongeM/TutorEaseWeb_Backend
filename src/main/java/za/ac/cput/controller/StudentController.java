@@ -29,36 +29,34 @@ public class StudentController  {
         return studentService.create(student);
     }
 
-    @GetMapping("/read/{id}")
-    public Student read(@PathVariable Long id) {
-        return studentService.read(id);
+    @GetMapping("/read/{email}")
+    public Student read(@PathVariable String email) {
+        return studentService.read(email);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Student> update(@PathVariable Long id, @RequestBody Student student) {
-        Student existingStudent = studentService.read(id);
-        if (existingStudent == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Student updatedStudent = new Student.Builder().copy(existingStudent)
-                .setFirstName(student.getFirstName())
-                .setLastName(student.getLastName())
-                .setAge(student.getAge())
-                .setEmail(student.getEmail())
-                .setCellNumber(student.getCellNumber())
-                .setPassword(student.getPassword())
-                .build();
-        updatedStudent = studentService.update(updatedStudent);
-        return ResponseEntity.ok(updatedStudent);
+    @PutMapping("/update/{email}")
+    public Student update(@PathVariable String email, @RequestBody Student student) {
+        return studentService.update(email, student);
+
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable Long id) {
-        studentService.delete(id);
+    @DeleteMapping("/delete/{email}")
+    public void delete(@PathVariable String email) {
+        studentService.delete(email);
     }
 
     @GetMapping("/getAll")
     public List<Student> getAll() {
         return studentService.getAll();
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestBody Student student) {
+        Student authenticatedStudent = studentService.authenticate(student.getEmail(), student.getPassword());
+        if (authenticatedStudent != null) {
+            return ResponseEntity.ok(authenticatedStudent);
+        } else {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
     }
 }

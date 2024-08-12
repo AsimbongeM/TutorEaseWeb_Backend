@@ -20,40 +20,34 @@ public class TutorController {
         return tutorService.create(tutor);
     }
 
-    @GetMapping("/read/{id}")
-    public Tutor read(@PathVariable String id) {
-        return tutorService.read(id);
+    @GetMapping("/read/{email}")
+    public Tutor read(@PathVariable String email) {
+        return tutorService.read(email);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Tutor> update(@PathVariable String id, @RequestBody Tutor tutor) {
-        Tutor existingTutor = tutorService.read(id);
-        if (existingTutor == null) {
-            return ResponseEntity.notFound().build();
-        }
-        Tutor updatedTutor = new Tutor.Builder().copy(existingTutor)
-                .setFirstName(tutor.getFirstName())
-                .setLastName(tutor.getLastName())
-                .setAge(tutor.getAge())
-                .setEmail(tutor.getEmail())
-                .setCellNumber(tutor.getCellNumber())
-                .setSkills(tutor.getSkills())
-                .setExperience(tutor.getExperience())
-                .setIdDocument(tutor.getIdDocument())
-                .setSarsDocument(tutor.getSarsDocument())
-                .setApprovalStatus(tutor.getApprovalStatus())
-                .build();
-        updatedTutor = tutorService.update(updatedTutor);
-        return ResponseEntity.ok(updatedTutor);
+    @PutMapping("/update/{email}")
+    public Tutor update(@PathVariable String email, @RequestBody Tutor tutor) {
+        return tutorService.update(email, tutor);
+        
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void delete(@PathVariable String id) {
-        tutorService.delete(id);
+    @DeleteMapping("/delete/{email}")
+    public void delete(@PathVariable String email) {
+        tutorService.delete(email);
     }
 
     @GetMapping("/getAll")
     public List<Tutor> getAll() {
         return tutorService.getAll();
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestBody Tutor tutor) {
+        Tutor authenticatedTutor = tutorService.authenticate(tutor.getEmail(), tutor.getPassword());
+        if (authenticatedTutor != null) {
+            return ResponseEntity.ok(authenticatedTutor);
+        } else {
+            return ResponseEntity.status(401).body("Invalid email or password");
+        }
     }
 }

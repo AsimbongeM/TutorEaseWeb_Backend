@@ -1,6 +1,9 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
 import {auth} from "../services/AuthServices.js";
+import {tutorSignIn} from "../services/TutorServices.js";
+import {AuthContext} from "./AuthContext.jsx";
+import {studentSignIn} from "../services/StudentService.js";
 
 const styles = {
     SignIn: {
@@ -86,18 +89,40 @@ function SignIn() {
     const [isSignInButtonHovered, setIsSignInButtonHovered] = useState(false);
     const [isForgotPasswordLinkHovered, setIsForgotPasswordLinkHovered] = useState(false);
     const [isJoinUsLinkHovered, setIsJoinUsLinkHovered] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { setAuth } = useContext(AuthContext);
+
+
     const handleSignIn = async (e) => {
         e.preventDefault();
         try {
-            const response = await auth(email, password);
-            const studentId = response.data.id;
-            localStorage.setItem('studentId', studentId);
-            navigate('/student-profile');
+            // tutor sign-in
+            const tutorResponse = await tutorSignIn(email, password);
+            if (tutorResponse.status === 200 && tutorResponse.data) {
+                setAuth({ ...tutorResponse.data, role: 'tutor' });
+                setError('');
+                navigate('/dashboard');
+                return;
+            }
+
+            // student sign-in
+            const studentResponse = await studentSignIn(email, password);
+            if (studentResponse.status === 200 && studentResponse.data) {
+                setAuth({ ...studentResponse.data, role: 'student' });
+                setError('');
+                navigate('/dashboard');
+            } else {
+                setError('Invalid email or password');
+            }
         } catch (error) {
-            console.error("Sign-in failed:", error);
+            console.error("Error during sign in:", error);
+            setError('Invalid email or password');
         }
     };
+
+
+
     const handleForgotPasswordClick = (e) => {
         e.preventDefault(); // Prevent default anchor behavior
         navigate('/forgot-password'); // Programmatically navigate
@@ -136,11 +161,12 @@ function SignIn() {
                         style={isSignInButtonHovered ? {...styles.SignInButton, ...styles.SignInButtonHover} : styles.SignInButton}
                         onMouseOver={() => setIsSignInButtonHovered(true)}
                         onMouseOut={() => setIsSignInButtonHovered(false)}
-                        onClick={() => navigate('/tutor-profile')}
+
                     >
                         Sign In
                     </button>
                 </form>
+                {error && <p style={{ color: 'red' }} className="text-center">{error}</p>}
                 <NavLink
                     to="/"
                     style={isJoinUsLinkHovered ? {...styles.JoinUsLink, ...styles.JoinUsLinkHover} : styles.JoinUsLink}

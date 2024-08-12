@@ -11,6 +11,8 @@ import java.util.List;
  * Date: 08 July 2024
  */
 
-public interface IStudentService extends IService <Student, Long>{
+public interface IStudentService extends IService <Student, String>{
+    Student update(String email, Student student);
+
     List <Student> getAll();
 }
