@@ -1,9 +1,6 @@
 package za.ac.cput.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +15,9 @@ public class ScheduleSession {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-    private String topic;
+    @ManyToOne
+    @JoinColumn(name = "topic_id")
+    private Topics topic;
 
     protected ScheduleSession() {
     }
@@ -48,7 +47,7 @@ public class ScheduleSession {
         return endTime;
     }
 
-    public String getTopic() {
+    public Topics getTopic() {
         return topic;
     }
 
@@ -80,7 +79,7 @@ public class ScheduleSession {
         private LocalDate date;
         private LocalTime startTime;
         private LocalTime endTime;
-        private String topic;
+        private Topics topic;
 
         public Builder(){
 
@@ -106,7 +105,7 @@ public class ScheduleSession {
             return this;
         }
 
-        public Builder setTopic(String topic) {
+        public Builder setTopic(Topics topic) {
             this.topic = topic;
             return this;
         }

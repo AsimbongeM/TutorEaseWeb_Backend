@@ -1,7 +1,6 @@
 package za.ac.cput.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.ScheduleSession;
 import za.ac.cput.service.ScheduleSessionService;
@@ -28,19 +27,8 @@ public class ScheduleSessionController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ScheduleSession> update(@PathVariable Long id, @RequestBody ScheduleSession scheduleSession) {
-        ScheduleSession existingScheduleSession = scheduleSessionService.read(id);
-        if (existingScheduleSession == null) {
-            return ResponseEntity.notFound().build();
-        }
-        ScheduleSession updatedScheduleSession = new ScheduleSession.Builder().copy(existingScheduleSession)
-                .setDate(scheduleSession.getDate())
-                .setStartTime(scheduleSession.getStartTime())
-                .setEndTime(scheduleSession.getEndTime())
-                .setTopic(scheduleSession.getTopic())
-                .build();
-        updatedScheduleSession = scheduleSessionService.update(updatedScheduleSession);
-        return ResponseEntity.ok(updatedScheduleSession);
+    public ScheduleSession update(@PathVariable Long id, @RequestBody ScheduleSession scheduleSession) {
+        return scheduleSessionService.update(id, scheduleSession);
     }
 
     @DeleteMapping("/delete/{id}")

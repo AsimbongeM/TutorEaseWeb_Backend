@@ -1,22 +1,21 @@
 package za.ac.cput.service;
 
 import org.junit.jupiter.api.*;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import za.ac.cput.domain.ScheduleSession;
+import za.ac.cput.domain.TopicLevel;
+import za.ac.cput.domain.Topics;
+import za.ac.cput.factory.TopicsFactory;
 import za.ac.cput.repository.ScheduleSessionRepository;
+import za.ac.cput.repository.TopicsRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest
 class ScheduleSessionServiceTest {
@@ -24,27 +23,49 @@ class ScheduleSessionServiceTest {
     @Autowired
     private ScheduleSessionService scheduleSessionService;
 
+    @Autowired
+    private ScheduleSessionRepository scheduleSessionRepository;
+
+    @Autowired
+    private TopicsRepository topicsRepository;
+
     private static ScheduleSession session1;
     private static ScheduleSession session2;
     private static Long generatedSessionId1;
     private static Long generatedSessionId2;
 
+    private static Topics topic1;
+    private static Topics topic2;
+
     @Order(1)
     @BeforeEach
     void setUp() {
+        // Clear repositories before each test
+        scheduleSessionRepository.deleteAll();
+        topicsRepository.deleteAll();
+
+        topic1 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.BEGINNER, "Design patterns"));
+        topic2 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.INTERMEDIATE, "Advanced Design patterns"));
+
         session1 = new ScheduleSession.Builder()
                 .setDate(LocalDate.of(2024, 7, 21))
                 .setStartTime(LocalTime.of(10, 0))
                 .setEndTime(LocalTime.of(12, 0))
-                .setTopic("Design patterns")
+                .setTopic(topic1)
                 .build();
 
         session2 = new ScheduleSession.Builder()
                 .setDate(LocalDate.of(2024, 7, 22))
                 .setStartTime(LocalTime.of(11, 0))
                 .setEndTime(LocalTime.of(13, 0))
-                .setTopic("Advanced Design patterns")
+                .setTopic(topic2)
                 .build();
+
+        session1 = scheduleSessionRepository.save(session1);
+        session2 = scheduleSessionRepository.save(session2);
+
+        generatedSessionId1 = session1.getId();
+        generatedSessionId2 = session2.getId();
 
         System.out.println("Setup complete with sessions:");
         System.out.println("Session 1: " + session1);
@@ -85,12 +106,12 @@ class ScheduleSessionServiceTest {
 
         ScheduleSession updatedSession = new ScheduleSession.Builder()
                 .copy(sessionToUpdate)
-                .setTopic("Updated Design patterns")
+                .setTopic(topic1) // Updated to use a topic
                 .build();
 
-        ScheduleSession result = scheduleSessionService.update(updatedSession);
+        ScheduleSession result = scheduleSessionService.update(generatedSessionId2, updatedSession);
         assertNotNull(result);
-        assertEquals("Updated Design patterns", result.getTopic());
+        assertEquals(topic1, result.getTopic());
         System.out.println("Updated Session: " + result);
     }
 
@@ -99,6 +120,7 @@ class ScheduleSessionServiceTest {
     @Disabled
     void delete() {
         scheduleSessionService.delete(generatedSessionId1);
+        assertFalse(scheduleSessionRepository.findById(generatedSessionId1).isPresent());
         System.out.println("Successfully deleted session with ID: " + generatedSessionId1);
     }
 

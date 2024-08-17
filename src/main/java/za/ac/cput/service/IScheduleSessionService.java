@@ -8,5 +8,5 @@ public interface IScheduleSessionService extends IService<ScheduleSession, Long>
 
     List<ScheduleSession> getAll();
 
-    ScheduleSession update(ScheduleSession scheduleSession);
+    ScheduleSession update(Long id,ScheduleSession scheduleSession);
 }

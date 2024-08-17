@@ -1,6 +1,7 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
+
 import java.util.Objects;
 
 /**
@@ -16,39 +17,32 @@ public class Topics {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "Beginner_Topics")
-    private String beginnerTopics;
+    @Column(name = "Topic_Level")
+    @Enumerated(EnumType.STRING)
+    private TopicLevel topicLevel;
 
-    @Column(name = "Intermediate_Topics")
-    private String intermediateTopics;
-
-    @Column(name = "Advanced_Topics")
-    private String advancedTopics;
+    @Column(name = "Topic_Description")
+    private String description;
 
     protected Topics() {
     }
 
     private Topics(Builder builder) {
         this.id = builder.id;
-        this.beginnerTopics = builder.beginnerTopics;
-        this.intermediateTopics = builder.intermediateTopics;
-        this.advancedTopics = builder.advancedTopics;
+        this.topicLevel = builder.topicLevel;
+        this.description = builder.description;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getBeginnerTopics() {
-        return beginnerTopics;
+    public TopicLevel getLevel() {
+        return topicLevel;
     }
 
-    public String getIntermediateTopics() {
-        return intermediateTopics;
-    }
-
-    public String getAdvancedTopics() {
-        return advancedTopics;
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -57,57 +51,48 @@ public class Topics {
         if (o == null || getClass() != o.getClass()) return false;
         Topics topics = (Topics) o;
         return Objects.equals(id, topics.id) &&
-                Objects.equals(beginnerTopics, topics.beginnerTopics) &&
-                Objects.equals(intermediateTopics, topics.intermediateTopics) &&
-                Objects.equals(advancedTopics, topics.advancedTopics);
+                topicLevel == topics.topicLevel &&
+                Objects.equals(description, topics.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, beginnerTopics, intermediateTopics, advancedTopics);
+        return Objects.hash(id, topicLevel, description);
     }
 
     @Override
     public String toString() {
         return "Topics{" +
                 "id=" + id +
-                ", beginnerTopics='" + beginnerTopics + '\'' +
-                ", intermediateTopics='" + intermediateTopics + '\'' +
-                ", advancedTopics='" + advancedTopics + '\'' +
+                ", level=" + topicLevel +
+                ", description='" + description + '\'' +
                 '}';
     }
 
     public static class Builder {
         private Long id;
-        private String beginnerTopics;
-        private String intermediateTopics;
-        private String advancedTopics;
+        private TopicLevel topicLevel;
+        private String description;
 
         public Builder setId(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder setBeginnerTopics(String beginnerTopics) {
-            this.beginnerTopics = beginnerTopics;
+        public Builder setLevel(TopicLevel topicLevel) {
+            this.topicLevel = topicLevel;
             return this;
         }
 
-        public Builder setIntermediateTopics(String intermediateTopics) {
-            this.intermediateTopics = intermediateTopics;
-            return this;
-        }
-
-        public Builder setAdvancedTopics(String advancedTopics) {
-            this.advancedTopics = advancedTopics;
+        public Builder setDescription(String description) {
+            this.description = description;
             return this;
         }
 
         public Builder copy(Topics topics) {
             this.id = topics.id;
-            this.beginnerTopics = topics.beginnerTopics;
-            this.intermediateTopics = topics.intermediateTopics;
-            this.advancedTopics = topics.advancedTopics;
+            this.topicLevel = topics.topicLevel;
+            this.description = topics.description;
             return this;
         }
 
@@ -116,4 +101,5 @@ public class Topics {
         }
     }
 }
+
 

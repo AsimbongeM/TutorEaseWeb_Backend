@@ -12,14 +12,14 @@ class BookSessionFactoryTest {
     private BookSession bookSession1;
     private BookSession bookSession2;
 
-    @BeforeEach
-    void setUp() {
-        ScheduleSession session = ScheduleSessionFactory.buildScheduleSession( LocalDate.of(2024, 7, 21), LocalTime.of(10, 0), LocalTime.of(12, 0), "Design patterns");
-
-//        bookSession1 = BookSessionFactory.buildBooksession(session,)
-    }
-
-    @Test
-    void buildBooksession() {
-    }
+//    @BeforeEach
+//    void setUp() {
+//        ScheduleSession session = ScheduleSessionFactory.buildScheduleSession( LocalDate.of(2024, 7, 21), LocalTime.of(10, 0), LocalTime.of(12, 0), "Design patterns");
+//
+////        bookSession1 = BookSessionFactory.buildBooksession(session,)
+//    }
+//
+//    @Test
+//    void buildBooksession() {
+//    }
 }

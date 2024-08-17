@@ -33,7 +33,7 @@ public class ScheduleSessionService implements IScheduleSessionService {
     }
 
     @Override
-    public ScheduleSession update(ScheduleSession scheduleSession) {
+    public ScheduleSession update(Long id, ScheduleSession scheduleSession) {
         if (scheduleSessionRepository.existsById(scheduleSession.getId())) {
             return scheduleSessionRepository.save(scheduleSession);
         }

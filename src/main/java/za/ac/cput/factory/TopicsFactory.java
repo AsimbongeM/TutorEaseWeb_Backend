@@ -1,12 +1,17 @@
 package za.ac.cput.factory;
 
+import za.ac.cput.domain.TopicLevel;
 import za.ac.cput.domain.Topics;
 import za.ac.cput.util.Helper;
 
 public class TopicsFactory {
-    public static Topics buildTopics(String beginnerTopics, String intermediateTopics, String advancedTopics){
-        if (Helper.isNullOrEmpty(beginnerTopics) || Helper.isNullOrEmpty(intermediateTopics) || Helper.isNullOrEmpty(advancedTopics))
+    public static Topics buildTopics(TopicLevel level, String description) {
+        if (level == null || Helper.isNullOrEmpty(description)) {
             return null;
-       return new Topics.Builder().setBeginnerTopics(beginnerTopics).setIntermediateTopics(intermediateTopics).setAdvancedTopics(advancedTopics).build();
+        }
+        return new Topics.Builder()
+                .setLevel(level)
+                .setDescription(description)
+                .build();
     }
 }
