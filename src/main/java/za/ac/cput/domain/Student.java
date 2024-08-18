@@ -16,6 +16,7 @@ import java.util.Objects;
 public class Student {
     //Thandolwethu
     @Id
+    @Column(unique = true)
     private String email;
     private String firstName;
     private String lastName;

@@ -1,9 +1,8 @@
-import React, {useContext, useState} from 'react';
-import {NavLink, useNavigate} from 'react-router-dom';
-import {auth} from "../services/AuthServices.js";
-import {tutorSignIn} from "../services/TutorServices.js";
-import {AuthContext} from "./AuthContext.jsx";
-import {studentSignIn} from "../services/StudentService.js";
+import React, { useContext, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext.jsx';
+import { tutorSignIn } from '../services/TutorServices.js';
+import { studentSignIn } from '../services/StudentService.js';
 
 const styles = {
     SignIn: {
@@ -93,25 +92,27 @@ function SignIn() {
     const navigate = useNavigate();
     const { setAuth } = useContext(AuthContext);
 
-
     const handleSignIn = async (e) => {
         e.preventDefault();
         try {
-            // tutor sign-in
+            // Tutor sign-in
             const tutorResponse = await tutorSignIn(email, password);
             if (tutorResponse.status === 200 && tutorResponse.data) {
                 setAuth({ ...tutorResponse.data, role: 'tutor' });
                 setError('');
-                navigate('/dashboard');
-                return;
+                return navigate('/TutorDashboard'); // Navigate to the tutor dashboard
             }
+        } catch (error) {
+            console.log("Not a tutor. Checking student credentials...");
+        }
 
-            // student sign-in
+        try {
+            // Student sign-in
             const studentResponse = await studentSignIn(email, password);
             if (studentResponse.status === 200 && studentResponse.data) {
                 setAuth({ ...studentResponse.data, role: 'student' });
                 setError('');
-                navigate('/dashboard');
+                return navigate('/StudentDashboard'); // Navigate to the student dashboard
             } else {
                 setError('Invalid email or password');
             }
@@ -121,17 +122,16 @@ function SignIn() {
         }
     };
 
-
-
     const handleForgotPasswordClick = (e) => {
-        e.preventDefault(); // Prevent default anchor behavior
-        navigate('/forgot-password'); // Programmatically navigate
+        e.preventDefault();
+        navigate('/forgot-password');
     };
+
     return (
         <div style={styles.SignIn}>
             <div style={styles.SignInMain}>
                 <header style={styles.SignInHeader}>
-                    <img src={`/images/logo.png`} style={styles.SignInLogo} alt="logo"/>
+                    <img src={`/images/logo.png`} style={styles.SignInLogo} alt="logo" />
                 </header>
                 <form style={styles.SignInForm} onSubmit={handleSignIn}>
                     <input
@@ -161,7 +161,6 @@ function SignIn() {
                         style={isSignInButtonHovered ? {...styles.SignInButton, ...styles.SignInButtonHover} : styles.SignInButton}
                         onMouseOver={() => setIsSignInButtonHovered(true)}
                         onMouseOut={() => setIsSignInButtonHovered(false)}
-
                     >
                         Sign In
                     </button>
