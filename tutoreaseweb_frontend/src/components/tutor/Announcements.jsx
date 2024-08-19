@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
+import {AuthContext} from "../AuthContext.jsx";
 
 function Announcements() {
+    const {auth} = useContext(AuthContext);
     const [announcements, setAnnouncements] = useState([]);
     const [newAnnouncement, setNewAnnouncement] = useState('');
     const [editingIndex, setEditingIndex] = useState(null);
@@ -42,7 +44,7 @@ function Announcements() {
     return (
         <section className="container mt-4">
             <h2 className="mb-4">Announcements</h2>
-
+            {auth.role === 'tutor' && (
             <div className="mb-4">
                 <textarea
                     value={newAnnouncement}
@@ -58,12 +60,13 @@ function Announcements() {
                     {editingIndex !== null ? 'Update Announcement' : 'Post Announcement'}
                 </button>
             </div>
-
+            )}
             {announcements.length > 0 && (
                 <div className="list-group">
                     {announcements.map((announcement, index) => (
                         <div key={index} className="list-group-item d-flex justify-content-between align-items-center">
                             <div>{announcement}</div>
+                            {auth.role === 'tutor' && (
                             <div>
                                 <button
                                     className="btn btn-warning btn-sm me-2"
@@ -78,6 +81,7 @@ function Announcements() {
                                     Delete
                                 </button>
                             </div>
+                            )}
                         </div>
                     ))}
                 </div>

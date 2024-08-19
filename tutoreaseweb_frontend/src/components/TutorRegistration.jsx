@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 import {createTutor, getTutorById} from '../services/TutorServices.js';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCheckCircle, faEye, faEyeSlash, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
+
 
 const TutorRegistration = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -19,6 +20,16 @@ const TutorRegistration = () => {
     const [experience, setExperience] = useState('');
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState('');
+    const [passwordConstraints, setPasswordConstraints] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,11 +39,11 @@ const TutorRegistration = () => {
         };
     }, []);
 
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         if (validateForm()) {
-            getTutorById(email)
-                .then((response) => {
+            try {
+                const response = await getTutorById(email);
                     if (response.data) {
                         setErrors({ email: 'Email is already registered' });
                         setApiError('');
@@ -58,19 +69,19 @@ const TutorRegistration = () => {
                             experience,
                             approvalStatus: 'PENDING'
                         };
-                        return createTutor(tutor);
-                    }
-                })
-                .then((response) => {
-                    if (response) {
-                        console.log(response.data);
+                        await createTutor(tutor);
+                        setSuccessMessage(`Registration successful! Welcome, ${firstName} ${lastName}. Your email is ${email}.`);
+                        setTimeout(() => {
                         navigate('/sign-in');
+                        }, 5000);
                     }
-                })
-                .catch((error) => {
+            } catch (error) {
                     console.error(error);
-                    setApiError('An error occurred during registration. Please try again.');
-                });
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    apiError: 'An error occurred during registration. Please try again.'
+                }));
+            }
         }
     };
 
@@ -107,34 +118,17 @@ const TutorRegistration = () => {
         if (!email.trim()) {
             errorsCopy.email = 'Email is required';
             valid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorsCopy.email = 'Invalid email format';
+            valid = false;
         }
 
         // Validate password
         if (!password.trim()) {
             errorsCopy.password = 'Password is required';
             valid = false;
-        } else if (password.length < 8) {
-            errorsCopy.password = 'Password must be at least 8 characters long';
-            valid = false;
-        } else if (!/[A-Z]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one uppercase letter';
-            valid = false;
-        } else if (!/[a-z]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one lowercase letter';
-            valid = false;
-        } else if (!/[0-9]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one number';
-            valid = false;
-        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one special character';
-            valid = false;
         }
 
-        // Validate confirmPassword
-        if (password !== confirmPassword) {
-            errorsCopy.confirmPassword = 'Passwords do not match';
-            valid = false;
-        }
 
         // Validate age
         if (!age.trim()) {
@@ -176,12 +170,15 @@ const TutorRegistration = () => {
         return valid;
     };
 
-    const handleChange = (setter, field) => (e) => {
+    const handleFieldChange = (field, setter) => (e) => {
         setter(e.target.value);
-        setErrors((prevErrors) => {
-            const {[field]: _, ...rest} = prevErrors;
-            return rest;
-        });
+        if (field === 'email') {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) {
+                setErrors(prevErrors => ({...prevErrors, email: 'Invalid email format'}));
+            } else {
+                setErrors(prevErrors => ({...prevErrors, email: ''}));
+            }
+        }
     };
 
     const handlePhoneChange = (value, countryData, e, formattedValue) => {
@@ -195,33 +192,40 @@ const TutorRegistration = () => {
         }
     };
 
-    const isFieldValid = (field) => {
-        switch (field) {
-            case 'firstName':
-                return !!firstName.trim() && !errors.firstName;
-            case 'lastName':
-                return !!lastName.trim() && !errors.lastName;
-            case 'email':
-                return !!email.trim() && !errors.email;
-            case 'password':
-                return !!password.trim() && !errors.password;
-            case 'confirmPassword':
-                return password && confirmPassword && password === confirmPassword;
-            case 'age':
-                return !!age.trim() && !errors.age;
-            case 'cellNumber':
-                return !!cellNumber.trim() && !errors.cellNumber;
-            case 'skills':
-                return !!skills.trim() && !errors.skills;
-            case 'experience':
-                return !!experience.trim() && !errors.experience;
-            default:
-                return false;
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        validatePassword(newPassword);
+        setErrors(prevErrors => ({...prevErrors, password: '', confirmPassword: ''}));
+    };
+
+    const handleConfirmPasswordChange = (e) => {
+        const newConfirmPassword = e.target.value;
+        setConfirmPassword(newConfirmPassword);
+        if (newConfirmPassword === password) {
+            setErrors(prevErrors => ({...prevErrors, confirmPassword: ''}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, confirmPassword: 'Passwords do not match'}));
         }
     };
 
+    const validatePassword = (password) => {
+        const constraints = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+        setPasswordConstraints(constraints);
+        if (Object.values(constraints).every(Boolean) && confirmPassword === password) {
+            setErrors(prevErrors => ({...prevErrors, password: '', confirmPassword: ''}));
+        }
+    };
+
+
     return (
-        <div className="container my-5" style={{ maxWidth: '500px', background: '#e6f2ff' }}>
+        <div className="container my-5" style={{maxWidth: '500px', background: '#e6f2ff'}}>
             <div className="text-center mb-4">
                 <img
                     src="/images/logo.png"
@@ -229,14 +233,14 @@ const TutorRegistration = () => {
                     style={{maxWidth: '120px', borderRadius: '50%', border: '2px solid #fff'}}
                 />
             </div>
-            <h2 className="text-center mb-4" style={{ color: 'black' }}>Tutor Registration</h2>
+            <h2 className="text-center mb-4" style={{color: 'black'}}>Tutor Registration</h2>
             <form
                 className="p-4 rounded shadow-sm"
                 style={{background: 'linear-gradient(#57adeb, rgb(182, 225, 248))'}}
                 onSubmit={handleSignUp}
             >
                 <div className="mb-3">
-                    <label htmlFor="firstName" className="form-label" style={{ fontWeight: 'bold' }}>First Name:</label>
+                    <label htmlFor="firstName" className="form-label" style={{fontWeight: 'bold'}}>First Name:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="text"
@@ -244,16 +248,16 @@ const TutorRegistration = () => {
                             name="firstName"
                             className="form-control"
                             value={firstName}
-                            onChange={handleChange(setFirstName, 'firstName')}
+                            onChange={handleFieldChange('firstName', setFirstName)}
+                            placeholder="Enter your first name"
                         />
-                        {isFieldValid('firstName') &&
+                        {firstName && !errors.firstName &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('firstName') && errors.firstName &&
-                        <div className="text-danger">{errors.firstName}</div>}
+                    {errors.firstName && <div className="text-danger">{errors.firstName}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="lastName" className="form-label" style={{ fontWeight: 'bold' }}>Last Name:</label>
+                    <label htmlFor="lastName" className="form-label" style={{fontWeight: 'bold'}}>Last Name:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="text"
@@ -261,16 +265,16 @@ const TutorRegistration = () => {
                             name="lastName"
                             className="form-control"
                             value={lastName}
-                            onChange={handleChange(setLastName, 'lastName')}
+                            onChange={handleFieldChange('lastName', setLastName)}
+                            placeholder="Enter your last name"
                         />
-                        {isFieldValid('lastName') &&
+                        {lastName && !errors.lastName &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('lastName') && errors.lastName &&
-                        <div className="text-danger">{errors.lastName}</div>}
+                    {errors.lastName && <div className="text-danger">{errors.lastName}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="email" className="form-label" style={{ fontWeight: 'bold' }}>Email address:</label>
+                    <label htmlFor="email" className="form-label" style={{fontWeight: 'bold'}}>Email:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="email"
@@ -278,15 +282,16 @@ const TutorRegistration = () => {
                             name="email"
                             className="form-control"
                             value={email}
-                            onChange={handleChange(setEmail, 'email')}
+                            onChange={handleFieldChange('email', setEmail)}
+                            placeholder="Enter your email"
                         />
-                        {isFieldValid('email') &&
+                        {email && !errors.email &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('email') && errors.email && <div className="text-danger">{errors.email}</div>}
+                    {errors.email && <div className="text-danger">{errors.email}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="cellNumber" className="form-label" style={{ fontWeight: 'bold' }}>Cell number:</label>
+                    <label htmlFor="cellNumber" className="form-label" style={{fontWeight: 'bold'}}>Cell number:</label>
                     <div className="d-flex align-items-center">
                         <PhoneInput
                             country="za"
@@ -297,14 +302,13 @@ const TutorRegistration = () => {
                             onChange={handlePhoneChange}
                             inputProps={{required: true, autoFocus: true}}
                         />
-                        {isFieldValid('cellNumber') &&
+                        {cellNumber && !errors.cellNumber &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('cellNumber') && errors.cellNumber &&
-                        <div className="text-danger">{errors.cellNumber}</div>}
+                    {errors.cellNumber && <div className="text-danger">{errors.cellNumber}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="age" className="form-label" style={{ fontWeight: 'bold' }}>Age:</label>
+                    <label htmlFor="age" className="form-label" style={{fontWeight: 'bold'}}>Age:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="number"
@@ -312,69 +316,156 @@ const TutorRegistration = () => {
                             name="age"
                             className="form-control"
                             value={age}
-                            onChange={handleChange(setAge, 'age')}
+                            min="10"
+                            onChange={handleFieldChange('age', setAge)}
+                            placeholder="Enter your age"
                         />
-                        {isFieldValid('age') &&
+                        {age && !errors.age &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('age') && errors.age && <div className="text-danger">{errors.age}</div>}
+                    {errors.age && <div className="text-danger">{errors.age}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="password" className="form-label" style={{ fontWeight: 'bold' }}>Password:</label>
-                    <div className="d-flex align-items-center">
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className="form-control"
-                            value={password}
-                            onChange={handleChange(setPassword, 'password')}
-                        />
-                        {isFieldValid('password') &&
-                            <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
+                    <label htmlFor="password" className="form-label" style={{fontWeight: 'bold'}}>Password:</label>
+                    <div className="d-flex align-items-center position-relative">
+                        <div className="position-relative flex-grow-1">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                name="password"
+                                className="form-control custom-width"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                placeholder="Enter your password"
+                                style={{paddingRight: '40px'}}
+                            />
+                            <FontAwesomeIcon
+                                icon={showPassword ? faEyeSlash : faEye}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    right: '10px',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer',
+                                    zIndex: 1
+                                }}
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        </div>
+                        {/* Container for check icon outside of input */}
+                        {password && !errors.password &&
+                            <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                style={{color: 'green', marginLeft: '10px', zIndex: 1}}
+                            />
+                        }
                     </div>
-                    {!isFieldValid('password') && errors.password &&
-                        <div className="text-danger">{errors.password}</div>}
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="confirm-password" className="form-label" style={{ fontWeight: 'bold' }}>Confirm password:</label>
-                    <div className="d-flex align-items-center">
-                        <input
-                            type="password"
-                            id="confirm-password"
-                            name="confirm-password"
-                            className="form-control"
-                            value={confirmPassword}
-                            onChange={handleChange(setConfirmPassword, 'confirmPassword')}
-                        />
-                        {password && confirmPassword && password === confirmPassword &&
-                            <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
+                    <div className="mt-2">
+                        {password && (
+                            <div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.length ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.length ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>Minimum 8 characters</span>
+                                </div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.uppercase ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.uppercase ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one uppercase letter</span>
+                                </div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.lowercase ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.lowercase ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one lowercase letter</span>
+                                </div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.number ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.number ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one number</span>
+                                </div>
+                                <div>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.special ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.special ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one special character (!@#$%^&*)</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    {!isFieldValid('confirmPassword') && errors.confirmPassword &&
-                        <div className="text-danger">{errors.confirmPassword}</div>}
+                    {errors.password && <div className="text-danger">{errors.password}</div>}
                 </div>
+
                 <div className="mb-3">
-                    <label htmlFor="skills" className="form-label" style={{ fontWeight: 'bold' }}>Skill level:</label>
+                    <label htmlFor="confirm-password" className="form-label" style={{fontWeight: 'bold'}}>Confirm
+                        password:</label>
+                    <div className="d-flex align-items-center position-relative">
+                        <div className="position-relative flex-grow-1">
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                id="confirm-password"
+                                name="confirm-password"
+                                className="form-control custom-width"
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                                placeholder="Confirm your password"
+                                style={{paddingRight: '40px'}}
+                            />
+                            <FontAwesomeIcon
+                                icon={showConfirmPassword ? faEyeSlash : faEye}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    right: '10px',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer',
+                                    zIndex: 1
+                                }}
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            />
+                        </div>
+                        {confirmPassword && !errors.confirmPassword &&
+                            <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                style={{color: 'green', marginLeft: '10px', zIndex: 1}}
+                            />
+                        }
+                    </div>
+                    {errors.confirmPassword && <div className="text-danger">{errors.confirmPassword}</div>}
+                </div>
+
+
+                <div className="mb-3">
+                    <label htmlFor="skills" className="form-label" style={{fontWeight: 'bold'}}>Skill level:</label>
                     <div className="d-flex align-items-center">
                         <select
                             id="skills"
                             name="skills"
                             className="form-select"
                             value={skills}
-                            onChange={handleChange(setSkills, 'skills')}
+                            onChange={handleFieldChange('skills', setSkills)}
                         >
                             <option value="">Select Skill Level</option>
                             <option value="beginner">Beginner</option>
                             <option value="intermediate">Intermediate</option>
                             <option value="advanced">Advanced</option>
                         </select>
-                        {isFieldValid('skills') &&
+                        {skills && !errors.skills &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('skills') && errors.skills && <div className="text-danger">{errors.skills}</div>}
+                    {errors.skills && <div className="text-danger">{errors.skills}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="experience" className="form-label" style={{ fontWeight: 'bold' }}>Experience:</label>
+                    <label htmlFor="experience" className="form-label" style={{fontWeight: 'bold'}}>Experience
+                        (years):</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="number"
@@ -382,15 +473,18 @@ const TutorRegistration = () => {
                             name="experience"
                             className="form-control"
                             value={experience}
-                            onChange={handleChange(setExperience, 'experience')}
+                            min="1"
+                            onChange={handleFieldChange('experience', setExperience)}
+                            placeholder="Enter your experience in years"
                         />
-                        {isFieldValid('experience') &&
+                        {experience && !errors.experience &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
                     </div>
-                    {!isFieldValid('experience') && errors.experience &&
+                    {errors.experience &&
                         <div className="text-danger">{errors.experience}</div>}
                 </div>
                 {apiError && <div className="text-danger mb-3">{apiError}</div>}
+                {successMessage && <div className="text-success mb-3">{successMessage}</div>}
                 <div className="text-center">
                     <button
                         type="submit"
@@ -408,7 +502,11 @@ const TutorRegistration = () => {
                         Register
                     </button>
                 </div>
+                <div className="text-center mt-3">
+                    <p>Already registered? <NavLink to="/sign-in">Sign in here</NavLink></p>
+                </div>
             </form>
+
         </div>
     );
 };

@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {createStudent, getStudentById} from "../services/StudentService.js";
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faCheckCircle} from '@fortawesome/free-solid-svg-icons';
+import {faCheckCircle, faEye, faEyeSlash, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
 
 const StudentRegistration = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -18,6 +18,16 @@ const StudentRegistration = () => {
     const [skillLevel, setSkillLevel] = useState('');
     const [errors, setErrors] = useState({});
     const [apiError, setApiError] = useState('');
+    const [passwordConstraints, setPasswordConstraints] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -56,7 +66,10 @@ const StudentRegistration = () => {
                         skillLevel
                     };
                     await createStudent(student);
+                    setSuccessMessage(`Registration successful! Welcome, ${firstName} ${lastName}. Your email is ${email}.`);
+                    setTimeout(() => {
                     navigate("/sign-in");
+                    }, 5000);
                 }
             } catch (error) {
                 console.error(error);
@@ -100,32 +113,14 @@ const StudentRegistration = () => {
         if (!email.trim()) {
             errorsCopy.email = 'Email is required';
             valid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            errorsCopy.email = 'Invalid email format';
+            valid = false;
         }
 
         // Validate password
         if (!password.trim()) {
             errorsCopy.password = 'Password is required';
-            valid = false;
-        } else if (password.length < 8) {
-            errorsCopy.password = 'Password must be at least 8 characters long';
-            valid = false;
-        } else if (!/[A-Z]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one uppercase letter';
-            valid = false;
-        } else if (!/[a-z]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one lowercase letter';
-            valid = false;
-        } else if (!/[0-9]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one number';
-            valid = false;
-        } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-            errorsCopy.password = 'Password must contain at least one special character';
-            valid = false;
-        }
-
-        // Validate confirmPassword
-        if (password !== confirmPassword) {
-            errorsCopy.confirmPassword = 'Passwords do not match';
             valid = false;
         }
 
@@ -133,8 +128,8 @@ const StudentRegistration = () => {
         if (!age.trim()) {
             errorsCopy.age = 'Age is required';
             valid = false;
-        } else if (!/^\d+$/.test(age) || parseInt(age, 10) < 18) {
-            errorsCopy.age = 'Age must be a number and at least 18 years old';
+        } else if (!/^\d+$/.test(age) || parseInt(age, 10) < 16) {
+            errorsCopy.age = 'Age must be a number and at least 16 years old';
             valid = false;
         }
 
@@ -162,7 +157,13 @@ const StudentRegistration = () => {
 
     const handleFieldChange = (field, setter) => (e) => {
         setter(e.target.value);
-        setErrors(prevErrors => ({...prevErrors, [field]: ''}));
+        if (field === 'email') {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)) {
+                setErrors(prevErrors => ({...prevErrors, email: 'Invalid email format'}));
+            } else {
+                setErrors(prevErrors => ({...prevErrors, email: ''}));
+            }
+        }
     };
 
     const handlePhoneChange = (value, countryData, e, formattedValue) => {
@@ -176,6 +177,38 @@ const StudentRegistration = () => {
         }
     };
 
+
+    const handlePasswordChange = (e) => {
+        const newPassword = e.target.value;
+        setPassword(newPassword);
+        validatePassword(newPassword);
+        setErrors(prevErrors => ({...prevErrors, password: '', confirmPassword: ''}));
+    };
+
+    const handleConfirmPasswordChange = (e) => {
+        const newConfirmPassword = e.target.value;
+        setConfirmPassword(newConfirmPassword);
+        if (newConfirmPassword === password) {
+            setErrors(prevErrors => ({...prevErrors, confirmPassword: ''}));
+        } else {
+            setErrors(prevErrors => ({...prevErrors, confirmPassword: 'Passwords do not match'}));
+        }
+    };
+
+    const validatePassword = (password) => {
+        const constraints = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /[0-9]/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+        setPasswordConstraints(constraints);
+        if (Object.values(constraints).every(Boolean) && confirmPassword === password) {
+            setErrors(prevErrors => ({...prevErrors, password: '', confirmPassword: ''}));
+        }
+    };
+
     return (
         <div className="container my-5" style={{ maxWidth: '500px', background: '#e6f2ff' }}>
             <div className="text-center mb-4">
@@ -185,7 +218,7 @@ const StudentRegistration = () => {
             <form className="p-4 rounded shadow-sm" style={{background: 'linear-gradient(#57adeb, rgb(182, 208, 226))'}}
                   onSubmit={handleSignUp}>
                 <div className="mb-3">
-                    <label htmlFor="firstName" className="form-label" style={{ fontWeight: 'bold' }}>First Name:</label>
+                    <label htmlFor="firstName" className="form-label" style={{fontWeight: 'bold'}}>First Name:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="text"
@@ -194,6 +227,7 @@ const StudentRegistration = () => {
                             className="form-control"
                             value={firstName}
                             onChange={handleFieldChange('firstName', setFirstName)}
+                            placeholder="Enter your first name"
                         />
                         {firstName && !errors.firstName &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
@@ -201,7 +235,7 @@ const StudentRegistration = () => {
                     {errors.firstName && <div className="text-danger">{errors.firstName}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="lastName" className="form-label" style={{ fontWeight: 'bold' }}>Last Name:</label>
+                    <label htmlFor="lastName" className="form-label" style={{fontWeight: 'bold'}}>Last Name:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="text"
@@ -210,6 +244,7 @@ const StudentRegistration = () => {
                             className="form-control"
                             value={lastName}
                             onChange={handleFieldChange('lastName', setLastName)}
+                            placeholder="Enter your last name"
                         />
                         {lastName && !errors.lastName &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
@@ -226,6 +261,7 @@ const StudentRegistration = () => {
                             className="form-control"
                             value={email}
                             onChange={handleFieldChange('email', setEmail)}
+                            placeholder="Enter your email"
                         />
                         {email && !errors.email &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
@@ -233,7 +269,7 @@ const StudentRegistration = () => {
                     {errors.email && <div className="text-danger">{errors.email}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="cellNumber" className="form-label" style={{ fontWeight: 'bold' }}>Cell number:</label>
+                    <label htmlFor="cellNumber" className="form-label" style={{fontWeight: 'bold'}}>Cell number:</label>
                     <div className="d-flex align-items-center">
                         <PhoneInput
                             country="za"
@@ -250,7 +286,7 @@ const StudentRegistration = () => {
                     {errors.cellNumber && <div className="text-danger">{errors.cellNumber}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="age" className="form-label" style={{ fontWeight: 'bold' }}>Age:</label>
+                    <label htmlFor="age" className="form-label" style={{fontWeight: 'bold'}}>Age:</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="number"
@@ -258,7 +294,9 @@ const StudentRegistration = () => {
                             name="age"
                             className="form-control"
                             value={age}
+                            min="10"
                             onChange={handleFieldChange('age', setAge)}
+                            placeholder="Enter your age"
                         />
                         {age && !errors.age &&
                             <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
@@ -266,39 +304,124 @@ const StudentRegistration = () => {
                     {errors.age && <div className="text-danger">{errors.age}</div>}
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="password" className="form-label" style={{ fontWeight: 'bold' }}>Password:</label>
-                    <div className="d-flex align-items-center">
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            className="form-control"
-                            value={password}
-                            onChange={handleFieldChange('password', setPassword)}
-                        />
+                    <label htmlFor="password" className="form-label" style={{fontWeight: 'bold'}}>Password:</label>
+                    <div className="d-flex align-items-center position-relative">
+                        <div className="position-relative flex-grow-1">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                name="password"
+                                className="form-control custom-width"
+                                value={password}
+                                onChange={handlePasswordChange}
+                                placeholder="Enter your password"
+                                style={{paddingRight: '40px'}}
+                            />
+                            <FontAwesomeIcon
+                                icon={showPassword ? faEyeSlash : faEye}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    right: '10px',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer',
+                                    zIndex: 1
+                                }}
+                                onClick={() => setShowPassword(!showPassword)}
+                            />
+                        </div>
+
                         {password && !errors.password &&
-                            <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
+                            <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                style={{color: 'green', marginLeft: '10px', zIndex: 1}}
+                            />
+                        }
+                    </div>
+                    <div className="mt-2">
+                        {password && (
+                            <div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.length ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.length ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>Minimum 8 characters</span>
+                                </div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.uppercase ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.uppercase ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one uppercase letter</span>
+                                </div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.lowercase ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.lowercase ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one lowercase letter</span>
+                                </div>
+                                <div style={{marginBottom: '5px'}}>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.number ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.number ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one number</span>
+                                </div>
+                                <div>
+                                    <FontAwesomeIcon
+                                        icon={passwordConstraints.special ? faCheckCircle : faTimesCircle}
+                                        style={{color: passwordConstraints.special ? 'green' : 'red'}}
+                                    />
+                                    <span style={{marginLeft: '10px'}}>At least one special character (!@#$%^&*)</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     {errors.password && <div className="text-danger">{errors.password}</div>}
                 </div>
+
                 <div className="mb-3">
-                    <label htmlFor="confirm-password" className="form-label" style={{ fontWeight: 'bold' }}>Confirm password:</label>
-                    <div className="d-flex align-items-center">
-                        <input
-                            type="password"
-                            id="confirm-password"
-                            name="confirm-password"
-                            className="form-control"
-                            value={confirmPassword}
-                            onChange={handleFieldChange('confirmPassword', setConfirmPassword)}
-                        />
+                    <label htmlFor="confirm-password" className="form-label" style={{fontWeight: 'bold'}}>Confirm
+                        password:</label>
+                    <div className="d-flex align-items-center position-relative">
+                        <div className="position-relative flex-grow-1">
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                id="confirm-password"
+                                name="confirm-password"
+                                className="form-control custom-width"
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                                placeholder="Confirm your password"
+                                style={{paddingRight: '40px'}}
+                            />
+                            <FontAwesomeIcon
+                                icon={showConfirmPassword ? faEyeSlash : faEye}
+                                style={{
+                                    position: 'absolute',
+                                    top: '50%',
+                                    right: '10px',
+                                    transform: 'translateY(-50%)',
+                                    cursor: 'pointer',
+                                    zIndex: 1
+                                }}
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            />
+                        </div>
                         {confirmPassword && !errors.confirmPassword &&
-                            <FontAwesomeIcon icon={faCheckCircle} style={{color: 'green', marginLeft: '10px'}}/>}
+                            <FontAwesomeIcon
+                                icon={faCheckCircle}
+                                style={{color: 'green', marginLeft: '10px', zIndex: 1}}
+                            />
+                        }
                     </div>
                     {errors.confirmPassword && <div className="text-danger">{errors.confirmPassword}</div>}
                 </div>
+
                 <div className="mb-3">
-                    <label htmlFor="skillLevel" className="form-label" style={{ fontWeight: 'bold' }}>Skill level:</label>
+                    <label htmlFor="skillLevel" className="form-label" style={{fontWeight: 'bold'}}>Skill level:</label>
                     <div className="d-flex align-items-center">
                         <select
                             id="skillLevel"
@@ -318,6 +441,7 @@ const StudentRegistration = () => {
                     {errors.skillLevel && <div className="text-danger">{errors.skillLevel}</div>}
                 </div>
                 {apiError && <div className="text-danger mb-3">{apiError}</div>}
+                {successMessage && <div className="text-success mb-3">{successMessage}</div>}
                 <div className="text-center">
                     <button
                         type="submit"
@@ -334,6 +458,9 @@ const StudentRegistration = () => {
                     >
                         Register
                     </button>
+                </div>
+                <div className="text-center mt-3">
+                    <p>Already registered? <NavLink to="/sign-in">Sign in here</NavLink></p>
                 </div>
             </form>
         </div>
