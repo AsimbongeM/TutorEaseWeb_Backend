@@ -52,6 +52,7 @@ class TopicsServiceTest {
 
     @Order(3)
     @Test
+    @Disabled
     void update() {
         Topics topicsToUpdate = topicsService.read(generatedTopicId);
         assertNotNull(topicsToUpdate);

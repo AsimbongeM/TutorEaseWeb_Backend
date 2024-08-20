@@ -12,12 +12,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/scheduleSession")
 public class ScheduleSessionController {
-
+    private final ScheduleSessionService scheduleSessionService;
     @Autowired
-    private ScheduleSessionService scheduleSessionService;
+    public ScheduleSessionController(ScheduleSessionService scheduleSessionService) {
+        this.scheduleSessionService = scheduleSessionService;
+    }
 
     @PostMapping("/create")
     public ScheduleSession create(@RequestBody ScheduleSession scheduleSession) {
+        System.out.println("Creating session with data: " + scheduleSession); // Debug log
         return scheduleSessionService.create(scheduleSession);
     }
 

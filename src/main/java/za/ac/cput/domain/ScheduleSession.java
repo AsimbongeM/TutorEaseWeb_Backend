@@ -16,7 +16,7 @@ public class ScheduleSession {
     private LocalTime startTime;
     private LocalTime endTime;
     @ManyToOne
-    @JoinColumn(name = "topic_id")
+    @JoinColumn(name = "topic_id", referencedColumnName = "id")
     private Topics topic;
 
     protected ScheduleSession() {

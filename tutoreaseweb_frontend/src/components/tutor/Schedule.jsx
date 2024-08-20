@@ -5,12 +5,11 @@ import {
     getAllSessions,
     updateSession
 } from "../../services/ScheduleSessionServices.js";
-import { getAllTopics, getTopicLevels } from "../../services/TopicsServices.js";
+import { getAllTopics } from "../../services/TopicsServices.js";
 
 function Schedule() {
     const [sessions, setSessions] = useState([]);
     const [topics, setTopics] = useState([]);
-    const [topicLevels, setTopicLevels] = useState([]);
     const [newSession, setNewSession] = useState({ date: '', topicId: '', startTime: '', endTime: '' });
     const [editingIndex, setEditingIndex] = useState(null);
     const [editingId, setEditingId] = useState(null);
@@ -28,39 +27,15 @@ function Schedule() {
 
         const fetchTopics = async () => {
             try {
-                const response = await getAllTopics();
-                const topicsData = response.data;
-                if (Array.isArray(topicsData)) {
-                    setTopics(topicsData);
-                } else {
-                    console.error('Expected an array but got:', topicsData);
-                    setTopics([]);
-                }
+                const data = await getAllTopics();
+                setTopics(data); // Ensure this includes topic level
             } catch (error) {
                 console.error('Error fetching topics:', error);
-                setTopics([]);
-            }
-        };
-
-        const fetchTopicLevels = async () => {
-            try {
-                const response = await getTopicLevels();
-                const levelsData = response.data;
-                if (Array.isArray(levelsData)) {
-                    setTopicLevels(levelsData);
-                } else {
-                    console.error('Expected an array but got:', levelsData);
-                    setTopicLevels([]);
-                }
-            } catch (error) {
-                console.error('Error fetching topic levels:', error);
-                setTopicLevels([]);
             }
         };
 
         fetchSessions();
         fetchTopics();
-        fetchTopicLevels();
     }, []);
 
     const handleInputChange = (e) => {
@@ -78,6 +53,9 @@ function Schedule() {
         if (!newSession.date) newErrors.date = 'Date is required';
         if (!newSession.startTime) newErrors.startTime = 'Start time is required';
         if (!newSession.endTime) newErrors.endTime = 'End time is required';
+        if (newSession.startTime && newSession.endTime && newSession.startTime >= newSession.endTime) {
+            newErrors.endTime = 'End time must be after start time';
+        }
         if (!newSession.topicId) newErrors.topicId = 'Topic is required';
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -86,7 +64,12 @@ function Schedule() {
     const handleAddSession = async () => {
         if (!validateFields()) return;
 
-        const sessionData = { ...newSession };
+        const sessionData = {
+            date: newSession.date,
+            topic: { id: newSession.topicId },
+            startTime: newSession.startTime,
+            endTime: newSession.endTime
+        };
 
         if (editingIndex !== null) {
             try {
@@ -137,11 +120,6 @@ function Schedule() {
         }
     };
 
-    // Find the selected topic description and topicLevel
-    const selectedTopic = topics.find(topic => topic.id === newSession.topicId);
-    const selectedTopicDescription = selectedTopic ? selectedTopic.description : 'No topic';
-    const selectedTopicLevel = selectedTopic ? selectedTopic.level : 'No level'; // Changed to 'level'
-
     return (
         <section className="container mt-4">
             <h2 className="mb-4">Schedule</h2>
@@ -156,7 +134,7 @@ function Schedule() {
                     <option value="">Select a Topic</option>
                     {topics.map(topic => (
                         <option key={topic.id} value={topic.id}>
-                            {topic.description} - {topic.level} {/* Changed to 'level' */}
+                            {topic.description} - {topic.level} {/* Display topic level */}
                         </option>
                     ))}
                 </select>
@@ -198,11 +176,10 @@ function Schedule() {
             {sessions.length > 0 && (
                 <div className="list-group">
                     {sessions.map((session, index) => (
-                        <div key={session.id}
-                             className="list-group-item d-flex justify-content-between align-items-center">
+                        <div key={session.id} className="list-group-item mb-3">
                             <div>
                                 <strong>
-                                    {session.topic?.description || 'No topic'} - {session.topic?.level || 'No level'} {/* Changed to 'level' */}
+                                    {session.topic?.description || 'No topic'} - {session.topic?.level || 'No level'} {/* Display topic level */}
                                 </strong>
                                 <br />
                                 <small>{session.date}</small>
