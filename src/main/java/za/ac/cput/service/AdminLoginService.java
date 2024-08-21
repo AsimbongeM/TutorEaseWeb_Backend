@@ -23,11 +23,11 @@ public class AdminLoginService {
 
     /**
      * Verifies admin login credentials.
-     * @param username the username of the admin
+     * @param email the email of the admin
      * @param password the password of the admin
      * @return the Admin if credentials are valid, otherwise null
      */
-    public Admin login(String username, String password) {
-        return adminRepository.findByUsernameAndPassword(username, password);
+    public Admin login(String email, String password) {
+        return adminRepository.findByEmailAndPassword(email, password);
     }
 }

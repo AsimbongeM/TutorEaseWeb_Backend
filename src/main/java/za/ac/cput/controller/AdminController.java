@@ -1,16 +1,18 @@
 package za.ac.cput.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.Admin;
 import za.ac.cput.service.AdminService;
-import jakarta.validation.Valid;
+
+import java.util.List;
+
 /**
  * AdminLoginController.java
  * This is the controller class for handling admin.
  * Date: 19 July 2024
+ * @author Siyanda Mthimkhulu 220142879
  */
 @CrossOrigin(origins = "*")
 @RestController
@@ -26,67 +28,52 @@ public class AdminController {
 
     /**
      * Create a new Admin
-     * return ResponseEntity with created Admin and status
      */
-    @PostMapping
-    public ResponseEntity<Admin> createAdmin(@Valid @RequestBody Admin admin) {
-        Admin createdAdmin = adminService.create(admin);
-        return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
+    @PostMapping("/create")
+    public Admin create(@RequestBody Admin admin) {
+        return adminService.create(admin);
+    }
+    /**
+     * read admin by email as ID
+     */
+    @GetMapping("/read/{email}")
+    public Admin read(@PathVariable String email) {
+        return adminService.read(email);
+    }
+    /**
+     * update admin
+     */
+    @PutMapping("/update/{email}")
+    public Admin update(@PathVariable String email, @RequestBody Admin admin) {
+        return adminService.update(email, admin);
+
     }
 
     /**
-     * Get an Admin by ID
-     * return ResponseEntity with Admin or not found status
+     * Delete an Admin by email
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<Admin> getAdmin(@PathVariable("id") Long adminId) {
-        Admin admin = adminService.read(adminId);
-        if (admin != null) {
-            return new ResponseEntity<>(admin, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @DeleteMapping("/delete/{email}")
+    public void delete(@PathVariable String email) {
+        adminService.delete(email);
     }
 
     /**
-     * Update an existing Admin
-     * ID of the Admin to update as a parameter
-     * return ResponseEntity with updated Admin or not found status
+     * get all admins
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Admin> updateAdmin(@PathVariable("id") Long adminId, @Valid @RequestBody Admin admin) {
-        Admin existingAdmin = adminService.read(adminId);
-        if (admin.getId() == null || !admin.getId().equals(adminId)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Admin updatedAdmin = new Admin.Builder().copy(existingAdmin)
-                .setUsername(admin.getUsername())
-                .setPassword(admin.getPassword())
-                .setFirstName(admin.getFirstName())
-                .setLastName(admin.getLastName())
-                .setEmail(admin.getEmail())
-                .setCellphoneNumber(admin.getCellphoneNumber())
-                .build();
-        updatedAdmin = adminService.update(updatedAdmin);
-        if (updatedAdmin != null) {
-            return new ResponseEntity<>(updatedAdmin, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/getAll")
+    public List<Admin> getAll() {
+        return adminService.getAll();
     }
-
     /**
-     * Delete an Admin by ID
-     * return ResponseEntity with no content status
+     * authenticate admin
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAdmin(@PathVariable("id") Long adminId) {
-        Admin existingAdmin = adminService.read(adminId);
-        if (existingAdmin != null) {
-            adminService.delete(adminId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PostMapping("/authenticate")
+    public ResponseEntity<?> authenticate(@RequestBody Admin admin) {
+        Admin authAdmin = adminService.authenticate(admin.getEmail(), admin.getPassword());
+        if (authAdmin != null) {
+            return ResponseEntity.ok(authAdmin);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(401).body("Invalid email or password");
         }
     }
 }

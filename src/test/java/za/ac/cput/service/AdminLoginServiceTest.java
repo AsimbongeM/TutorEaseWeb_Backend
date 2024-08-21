@@ -29,7 +29,6 @@ class AdminLoginServiceTest {
     void setUp() {
         adminRepository.deleteAll(); // Clean up the database
         admin = new Admin.Builder()
-                .setUsername("admin1")
                 .setPassword("password1")
                 .setFirstName("John")
                 .setLastName("Doe")
@@ -42,9 +41,9 @@ class AdminLoginServiceTest {
     @Test
     @Order(1)
     void testLogin_ValidCredentials() {
-        Admin foundAdmin = adminLoginService.login("admin1", "password1");
+        Admin foundAdmin = adminLoginService.login("fury@x.com", "password1");
         assertNotNull(foundAdmin, "Admin should be found with valid credentials");
-        assertEquals(admin.getUsername(), foundAdmin.getUsername(), "Usernames should match");
+        assertEquals(admin.getEmail(), foundAdmin.getEmail(), "Emails should match");
         assertEquals(admin.getPassword(), foundAdmin.getPassword(), "Passwords should match");
     }
 
@@ -57,8 +56,8 @@ class AdminLoginServiceTest {
 
     @Test
     @Order(3)
-    void testLogin_NonExistentUsername() {
-        Admin foundAdmin = adminLoginService.login("nonExistentUser", "password1");
-        assertNull(foundAdmin, "Admin should not be found with a non-existent username");
+    void testLogin_NonExistentEmail() {
+        Admin foundAdmin = adminLoginService.login("x@x.com", "password1");
+        assertNull(foundAdmin, "Admin should not be found with a non-existent email");
     }
 }
