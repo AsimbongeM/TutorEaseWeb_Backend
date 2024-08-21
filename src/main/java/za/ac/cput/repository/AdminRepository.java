@@ -10,6 +10,6 @@ import za.ac.cput.domain.Admin;
  * Date: 16 July 2024
  */
 @Repository
-public interface AdminRepository extends JpaRepository<Admin, Long> {
-    Admin findByUsernameAndPassword(String username, String password);
+public interface AdminRepository extends JpaRepository<Admin, String> {
+    Admin findByEmailAndPassword(String email, String password);
 }

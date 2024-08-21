@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 /**
- * AdminFactoryTest.java
+ * AdminServiceTest.java
  * This is the admin service test class
  * @author Siyanda Mthimkhulu
  * Date: 16 July 2024
@@ -30,15 +30,14 @@ class AdminServiceTest {
 
     @BeforeEach
     void setUp() {
-        adminRepository.deleteAll(); // Clean up the database
+        // adminRepository.deleteAll(); // Clean up the database
 
         admin = new Admin.Builder()
-                .setUsername("admin1")
                 .setPassword("password1")
                 .setFirstName("Siyanda")
                 .setLastName("Doe")
                 .setEmail("fury@x.com")
-                .setCellphoneNumber("10111")
+                .setCellphoneNumber("0780969828")
                 .build();
 
         adminRepository.save(admin); // Save the admin to the database
@@ -49,30 +48,31 @@ class AdminServiceTest {
     @Order(1)
     void testCreate() {
         Admin newAdmin = new Admin.Builder()
-                .setUsername("admin2")
                 .setPassword("password2")
-                .setFirstName("John2")
-                .setLastName("Doe")
-                .setEmail("john.doe2@example.com")
-                .setCellphoneNumber("0780969828")
+                .setFirstName("Thandolwethu")
+                .setLastName("Khoza")
+                .setEmail("T.Khoza@hotmail.com")
+                .setCellphoneNumber("0731010101")
                 .build();
         Admin createdAdmin = adminService.create(newAdmin);
+        adminRepository.save(admin);
 
         assertNotNull(createdAdmin);
-        assertEquals(newAdmin.getUsername(), createdAdmin.getUsername());
-        assertNotEquals(admin.getId(), createdAdmin.getId()); // Ensure that it's a new admin
+        assertEquals(newAdmin.getFirstName(), createdAdmin.getFirstName());
+        assertNotEquals(admin.getEmail(), createdAdmin.getEmail()); // Ensure that it's a new admin
     }
 
     @Test
     @Order(2)
     void testRead() {
-        Optional<Admin> foundAdminOptional = adminRepository.findById(admin.getId());
+        Optional<Admin> foundAdminOptional = adminRepository.findById(admin.getEmail());
 
         assertTrue(foundAdminOptional.isPresent(), "Admin should be present in the database");
 
         Admin foundAdmin = foundAdminOptional.get();
-        assertEquals(admin.getId(), foundAdmin.getId(), "Admin IDs should match");
-        assertEquals(admin.getUsername(), foundAdmin.getUsername(), "Admin usernames should match");
+        System.out.println(foundAdmin);
+        assertEquals(admin.getEmail(), foundAdmin.getEmail(), "Admin IDs should match");
+        assertEquals(admin.getFirstName(), foundAdmin.getFirstName(), "Admin usernames should match");
         assertEquals(admin.getPassword(), foundAdmin.getPassword(), "Admin passwords should match");
     }
 
@@ -80,28 +80,32 @@ class AdminServiceTest {
     @Order(3)
     void testUpdate() {
         Admin updatedAdmin = new Admin.Builder()
-                .setId(admin.getId())
-                .setUsername("updatedUsername")
+                .setEmail(admin.getEmail())
+                .setFirstName("updatedFirstName")
                 .setPassword(admin.getPassword()) // Preserve the password for simplicity
                 .build();
 
-        Admin result = adminService.update(updatedAdmin);
-
+        Admin result = adminService.update(admin.getEmail(), updatedAdmin); // Expecting a Student return type
         assertNotNull(result);
-        assertEquals(admin.getId(), result.getId());
-        assertEquals("updatedUsername", result.getUsername());
+        System.out.println("Updated Admin: " + result);
+
+        /*verify the update by reading the again*/
+        assertEquals(admin.getEmail(), result.getEmail(), "Admin emails should match");
+        assertEquals("updatedFirstName", result.getFirstName(), "Admin usernames should match");
+        assertEquals(admin.getPassword(), result.getPassword(), "Admin passwords should match");
+
     }
 
     @Test
     @Order(4)
     void testUpdate_NotFound() {
         Admin nonExistingAdmin = new Admin.Builder()
-                .setId(100L) // Assuming ID 100 does not exist in the database
-                .setUsername("nonExistingAdmin")
+                .setEmail("a@v.com") // Assuming ID 100 does not exist in the database
+                .setFirstName("nonExistingAdmin")
                 .setPassword("password")
                 .build();
 
-        Admin updatedAdmin = adminService.update(nonExistingAdmin);
+        Admin updatedAdmin = adminService.update(nonExistingAdmin.getEmail(), nonExistingAdmin);
 
         assertNull(updatedAdmin);
     }
@@ -110,9 +114,9 @@ class AdminServiceTest {
     @Order(5)
     @Disabled
     void testDelete() {
-        adminService.delete(admin.getId());
+        adminService.delete(admin.getEmail());
 
-        Optional<Admin> deletedAdminOptional = adminRepository.findById(admin.getId());
+        Optional<Admin> deletedAdminOptional = adminRepository.findById(admin.getEmail());
         assertFalse(deletedAdminOptional.isPresent());
     }
 }

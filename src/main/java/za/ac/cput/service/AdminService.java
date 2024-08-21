@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Admin;
 import za.ac.cput.repository.AdminRepository;
 
+import java.util.List;
 import java.util.Optional;
 /**
  * AdminService.java
@@ -28,23 +29,38 @@ public class AdminService implements IAdminService {
     }
 
     @Override
-    public Admin read(Long adminId) {
-        Optional<Admin> adminOptional = adminRepository.findById(adminId);
+    public Admin read(String adminEmail) {
+        Optional<Admin> adminOptional = adminRepository.findById(adminEmail);
         return adminOptional.orElse(null);
     }
 
     @Override
-    public Admin update(Admin admin) {
-        if (adminRepository.existsById(admin.getId())) {
-            return adminRepository.save(admin);
+    public Admin update(String email, Admin admin) {
+        Admin existingAdmin= read(email);
+
+        if (existingAdmin!=null) {
+            Admin updatedAdmin=new Admin.Builder()
+                    .copy(existingAdmin)
+                    .setFirstName(admin.getFirstName())
+                    .setLastName(admin.getLastName())
+                    .setPassword(admin.getPassword())
+                    .setCellphoneNumber(admin.getCellphoneNumber())
+                    .build();
+            return adminRepository.save(updatedAdmin);
         }
         return null;
     }
 
     @Override
-    public void delete(Long adminId) {
-        adminRepository.deleteById(adminId);
+    public void delete(String adminEmail) {
+        adminRepository.deleteById(adminEmail);
     }
-
+    @Override
+    public List<Admin> getAll() {
+        return adminRepository.findAll();
+    }
+    public Admin authenticate(String email, String password) {
+        return adminRepository.findByEmailAndPassword(email, password);
+    }
 
 }

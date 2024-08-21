@@ -10,6 +10,7 @@ import za.ac.cput.service.AdminLoginService;
 /**
  * AdminLoginController.java
  * This is the controller class for handling login requests.
+ * @author Siyanda Mthimkhulu 220142879
  * Date: 21 July 2024
  */
 @CrossOrigin(origins = "*")
@@ -32,12 +33,12 @@ public class AdminLoginController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Admin admin) {
-        // Extract username and password from the Admin object
-        String username = admin.getUsername();
+        // Extract Email and password from the Admin object
+        String email = admin.getEmail();
         String password = admin.getPassword();
 
-        // Call the login method with username and password
-        Admin loggedInAdmin = adminLoginService.login(username, password);
+        // Call the login method with email and password
+        Admin loggedInAdmin = adminLoginService.login(email, password);
 
         if (loggedInAdmin != null) {
             return ResponseEntity.ok().body("{\"message\": \"Login successful\"}");

@@ -13,23 +13,18 @@ import java.util.Objects;
 @Entity
 public class Admin {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique = true)
-    private String username;
+    private String email;
     private String password;
     private String firstName;
     private String lastName;
     @Column(unique = true)
-    private String email;
+
     private String cellphoneNumber;
 
     public Admin() {
     }
 
     private Admin(Builder builder) {
-        this.id = builder.id;
-        this.username = builder.username;
         this.password = builder.password;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
@@ -37,13 +32,6 @@ public class Admin {
         this.cellphoneNumber = builder.cellphoneNumber;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
 
     public String getPassword() {
         return password;
@@ -70,9 +58,7 @@ public class Admin {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Admin admin = (Admin) o;
-        return Objects.equals(id, admin.id) &&
-                Objects.equals(username, admin.username) &&
-                Objects.equals(password, admin.password) &&
+        return Objects.equals(password, admin.password) &&
                 Objects.equals(firstName, admin.firstName) &&
                 Objects.equals(lastName, admin.lastName) &&
                 Objects.equals(email, admin.email) &&
@@ -81,15 +67,13 @@ public class Admin {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, firstName, lastName, email, cellphoneNumber);
+        return Objects.hash( password, firstName, lastName, email, cellphoneNumber);
     }
 
     @Override
     public String toString() {
         return "Admin{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                "password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
@@ -98,23 +82,14 @@ public class Admin {
     }
 
     public static class Builder {
-        private Long id;
-        private String username;
+
         private String password;
         private String firstName;
         private String lastName;
         private String email;
         private String cellphoneNumber;
 
-        public Builder setId(Long id) {
-            this.id = id;
-            return this;
-        }
 
-        public Builder setUsername(String username) {
-            this.username = username;
-            return this;
-        }
 
         public Builder setPassword(String password) {
             this.password = password;
@@ -142,8 +117,6 @@ public class Admin {
         }
 
         public Builder copy(Admin admin) {
-            this.id = admin.id;
-            this.username = admin.username;
             this.password = admin.password;
             this.firstName = admin.firstName;
             this.lastName = admin.lastName;
