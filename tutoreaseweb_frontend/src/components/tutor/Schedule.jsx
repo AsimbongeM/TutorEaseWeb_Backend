@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import {
-    createSession,
-    deleteSession,
-    getAllSessions,
-    updateSession
-} from "../../services/ScheduleSessionServices.js";
-import { getAllTopics } from "../../services/TopicsServices.js";
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {createSession, deleteSession, getAllSessions, updateSession} from "../../services/ScheduleSessionServices.js";
+import {getAllTopics} from "../../services/TopicsServices.js";
+import {Button, Form, Modal} from 'react-bootstrap';
 
 function Schedule() {
     const [sessions, setSessions] = useState([]);
@@ -19,7 +14,7 @@ function Schedule() {
     const [modalType, setModalType] = useState('');
     const [selectedSessionId, setSelectedSessionId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [hoveredButtonId, setHoveredButtonId] = useState(null);
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -86,18 +81,10 @@ function Schedule() {
             startTime: newSession.startTime,
             endTime: newSession.endTime
         };
-
         if (editingIndex !== null) {
-            try {
-                const updatedSession =  await updateSession(editingId, sessionData);
-                const updatedSessions = [...sessions];
-                updatedSessions[editingIndex] = updatedSession;
-                setSessions(updatedSessions);
-            } catch (error) {
-                console.error('Error updating session:', error);
-            }
-            setEditingIndex(null);
-            setEditingId(null);
+            // Show confirmation modal for update
+            setModalType('update');
+            setShowModal(true);
         } else {
             try {
                 const savedSession = await createSession(sessionData);
@@ -105,9 +92,9 @@ function Schedule() {
             } catch (error) {
                 console.error('Error creating session:', error);
             }
+            setNewSession({date: '', topicId: '', startTime: '', endTime: ''});
+            setErrors({});
         }
-        setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
-        setErrors({});
     };
 
     const handleEdit = (index) => {
@@ -120,16 +107,37 @@ function Schedule() {
         setEditingIndex(index);
         setEditingId(sessions[index].id);
     };
+
     const handleDeleteConfirmation = (sessionId) => {
         setModalType('delete');
         setSelectedSessionId(sessionId);
         setShowModal(true);
     };
 
-    const handleUpdateConfirmation = () => {
-        setModalType('update');
-        setShowModal(true);
+    const handleUpdate = async () => {
+        const sessionData = {
+            date: newSession.date,
+            topic: {id: newSession.topicId},
+            startTime: newSession.startTime,
+            endTime: newSession.endTime
+        };
+
+        try {
+            const updatedSession = await updateSession(editingId, sessionData);
+            const updatedSessions = [...sessions];
+            updatedSessions[editingIndex] = updatedSession;
+            setSessions(updatedSessions);
+        } catch (error) {
+            console.error('Error updating session:', error);
+        }
+
+        setShowModal(false);
+        setEditingIndex(null);
+        setEditingId(null);
+        setNewSession({date: '', topicId: '', startTime: '', endTime: ''});
+        setErrors({});
     };
+
     const handleDelete = async () => {
         try {
             await deleteSession(selectedSessionId);
@@ -216,8 +224,18 @@ function Schedule() {
                 {errors.endTime && <div className="text-danger">{errors.endTime}</div>}
 
                 <button
-                    className="btn btn-primary"
+                    className="btn"
                     onClick={handleAddSession}
+                    style={{
+                        backgroundColor: '#00274d',
+                        color: 'white',
+                        border: 'none',
+                        transition: 'all 0.3s ease',
+                        transform: hoveredButtonId === 'save' ? 'scale(1.05)' : 'none',
+                        ...(hoveredButtonId === 'save' ? {backgroundColor: '#ffcc00', color: '#00274d'} : {}),
+                    }}
+                    onMouseEnter={() => setHoveredButtonId('save')}
+                    onMouseLeave={() => setHoveredButtonId(null)}
                 >
                     {editingIndex !== null ? 'Update Session' : 'Add Session'}
                 </button>
@@ -240,8 +258,21 @@ function Schedule() {
                             </div>
                             <div>
                                 <button
-                                    className="btn btn-warning btn-sm me-2"
+                                    className="btn btn-sm me-2"
                                     onClick={() => handleEdit(index)}
+                                    style={{
+                                        backgroundColor: '#00274d',
+                                        color: 'white',
+                                        border: 'none',
+                                        transition: 'all 0.3s ease',
+                                        transform: hoveredButtonId === `edit-${session.id}` ? 'scale(1.05)' : 'none',
+                                        ...(hoveredButtonId === `edit-${session.id}` ? {
+                                            backgroundColor: '#ffcc00',
+                                            color: '#00274d'
+                                        } : {}),
+                                    }}
+                                    onMouseEnter={() => setHoveredButtonId(`edit-${session.id}`)}
+                                    onMouseLeave={() => setHoveredButtonId(null)}
                                 >
                                     Edit
                                 </button>
@@ -255,29 +286,31 @@ function Schedule() {
                         </div>
                     ))}
                 </div>
-            )}            <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>{modalType === 'delete' ? 'Confirm Delete' : 'Confirm Update'}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {modalType === 'delete' ? (
-                    <p>Are you sure you want to delete this session?</p>
-                ) : (
-                    <p>Are you sure you want to update this session?</p>
-                )}
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseModal}>
-                    Cancel
-                </Button>
-                <Button
-                    variant={modalType === 'delete' ? 'danger' : 'primary'}
-                    onClick={modalType === 'delete' ? handleDelete : handleUpdateConfirmation}
-                >
-                    {modalType === 'delete' ? 'Delete' : 'Update'}
-                </Button>
-            </Modal.Footer>
-        </Modal>
+            )}
+
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{modalType === 'delete' ? 'Confirm Delete' : 'Confirm Update'}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {modalType === 'delete' ? (
+                        <p>Are you sure you want to delete this session?</p>
+                    ) : (
+                        <p>Are you sure you want to update this session?</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant={modalType === 'delete' ? 'danger' : 'primary'}
+                        onClick={modalType === 'delete' ? handleDelete : handleUpdate}
+                    >
+                        {modalType === 'delete' ? 'Delete' : 'Update'}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </section>
     );
 }
