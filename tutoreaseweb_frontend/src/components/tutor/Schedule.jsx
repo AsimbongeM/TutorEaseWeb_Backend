@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {createSession, deleteSession, getAllSessions, updateSession} from "../../services/ScheduleSessionServices.js";
-import {getAllTopics} from "../../services/TopicsServices.js";
-import {Button, Form, Modal} from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react';
+import { createSession, deleteSession, getSessionsByTutorEmail, updateSession } from "../../services/ScheduleSessionServices.js";
+import { getAllTopics } from "../../services/TopicsServices.js";
+import { Button, Form, Modal } from 'react-bootstrap';
+import { AuthContext } from "../AuthContext.jsx";
 
 function Schedule() {
     const [sessions, setSessions] = useState([]);
@@ -16,11 +17,19 @@ function Schedule() {
     const [searchTerm, setSearchTerm] = useState('');
     const [hoveredButtonId, setHoveredButtonId] = useState(null);
 
+    // Use AuthContext to get the signed-in tutor
+    const { auth } = useContext(AuthContext);
+    const tutorEmail = auth?.email;
+
     useEffect(() => {
+        console.log('Tutor Email:', tutorEmail); // Debugging line to check the email value
+
         const fetchSessions = async () => {
             try {
-                const data = await getAllSessions();
-                setSessions(data);
+                if (tutorEmail) {
+                    const data = await getSessionsByTutorEmail(tutorEmail);
+                    setSessions(Array.isArray(data) ? data : []);
+                }
             } catch (error) {
                 console.error('Error fetching sessions:', error);
             }
@@ -37,7 +46,7 @@ function Schedule() {
 
         fetchSessions();
         fetchTopics();
-    }, []);
+    }, [tutorEmail]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -68,6 +77,7 @@ function Schedule() {
             if (diff > 2) newErrors.endTime = 'Session cannot exceed 2 hours';
         }
         if (!newSession.topicId) newErrors.topicId = 'Topic is required';
+        if (!tutorEmail) newErrors.tutorEmail = 'Tutor email is missing'; // Check for missing email
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -79,24 +89,20 @@ function Schedule() {
             date: newSession.date,
             topic: { id: newSession.topicId },
             startTime: newSession.startTime,
-            endTime: newSession.endTime
+            endTime: newSession.endTime,
+            tutor: { email: tutorEmail } // Associate session with the signed-in tutor
         };
-        if (editingIndex !== null) {
-            // Show confirmation modal for update
-            setModalType('update');
-            setShowModal(true);
-        } else {
-            try {
-                const savedSession = await createSession(sessionData);
-                setSessions([...sessions, savedSession]);
-            } catch (error) {
-                console.error('Error creating session:', error);
-            }
-            setNewSession({date: '', topicId: '', startTime: '', endTime: ''});
-            setErrors({});
-        }
-    };
 
+        try {
+            const savedSession = await createSession(sessionData);
+            setSessions([...sessions, savedSession]);
+        } catch (error) {
+            console.error('Error creating session:', error);
+        }
+
+        setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
+        setErrors({});
+    };
     const handleEdit = (index) => {
         setNewSession({
             date: sessions[index].date,
@@ -117,9 +123,10 @@ function Schedule() {
     const handleUpdate = async () => {
         const sessionData = {
             date: newSession.date,
-            topic: {id: newSession.topicId},
+            topic: { id: newSession.topicId },
             startTime: newSession.startTime,
-            endTime: newSession.endTime
+            endTime: newSession.endTime,
+            tutor: { email: tutorEmail }
         };
 
         try {
@@ -134,7 +141,7 @@ function Schedule() {
         setShowModal(false);
         setEditingIndex(null);
         setEditingId(null);
-        setNewSession({date: '', topicId: '', startTime: '', endTime: ''});
+        setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
         setErrors({});
     };
 
@@ -159,12 +166,13 @@ function Schedule() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredSessions = sessions.filter(session => {
-        return session.topic?.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            session.date.includes(searchTerm) ||
-            session.startTime.includes(searchTerm) ||
-            session.endTime.includes(searchTerm);
-    });
+    const filteredSessions = Array.isArray(sessions) ? sessions.filter(session => {
+        return (session.topic?.description?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
+            (session.date?.includes(searchTerm) || '') ||
+            (session.startTime?.includes(searchTerm) || '') ||
+            (session.endTime?.includes(searchTerm) || '');
+    }) : [];
+
 
     return (
         <section className="container mt-4">
@@ -232,7 +240,7 @@ function Schedule() {
                         border: 'none',
                         transition: 'all 0.3s ease',
                         transform: hoveredButtonId === 'save' ? 'scale(1.05)' : 'none',
-                        ...(hoveredButtonId === 'save' ? {backgroundColor: '#ffcc00', color: '#00274d'} : {}),
+                        ...(hoveredButtonId === 'save' ? { backgroundColor: '#ffcc00', color: '#00274d' } : {}),
                     }}
                     onMouseEnter={() => setHoveredButtonId('save')}
                     onMouseLeave={() => setHoveredButtonId(null)}
@@ -241,74 +249,63 @@ function Schedule() {
                 </button>
             </div>
 
-            {filteredSessions.length > 0 && (
-                <div className="list-group">
+            {filteredSessions.length > 0 ? (
+                <ul className="list-group">
                     {filteredSessions.map((session, index) => (
-                        <div key={session.id} className="list-group-item mb-3">
+                        <li key={session.id} className="list-group-item">
                             <div>
-                                <strong>
-                                    {session.topic?.description || 'No topic'} - {session.topic?.level || 'No level'} {/* Display topic level */}
-                                </strong>
-                                <br />
-                                <small>{session.date}</small>
-                                <br />
-                                <small>Start Time: {session.startTime}</small>
-                                <br />
-                                <small>End Time: {session.endTime}</small>
+                                <strong>Date:</strong> {session.date}<br />
+                                <strong>Start Time:</strong> {session.startTime}<br />
+                                <strong>End Time:</strong> {session.endTime}<br />
+                                <strong>Topic:</strong> {session.topic?.description || 'N/A'}
                             </div>
-                            <div>
+                            <div className="mt-2">
                                 <button
-                                    className="btn btn-sm me-2"
+                                    className="btn btn-link"
                                     onClick={() => handleEdit(index)}
-                                    style={{
-                                        backgroundColor: '#00274d',
-                                        color: 'white',
-                                        border: 'none',
-                                        transition: 'all 0.3s ease',
-                                        transform: hoveredButtonId === `edit-${session.id}` ? 'scale(1.05)' : 'none',
-                                        ...(hoveredButtonId === `edit-${session.id}` ? {
-                                            backgroundColor: '#ffcc00',
-                                            color: '#00274d'
-                                        } : {}),
-                                    }}
-                                    onMouseEnter={() => setHoveredButtonId(`edit-${session.id}`)}
-                                    onMouseLeave={() => setHoveredButtonId(null)}
+                                    style={{ marginRight: '10px' }}
                                 >
                                     Edit
                                 </button>
                                 <button
-                                    className="btn btn-danger btn-sm"
+                                    className="btn btn-link text-danger"
                                     onClick={() => handleDeleteConfirmation(session.id)}
                                 >
                                     Delete
                                 </button>
                             </div>
-                        </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
+            ) : (
+                <p>No sessions found</p>
             )}
 
+            {/* Modal */}
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{modalType === 'delete' ? 'Confirm Delete' : 'Confirm Update'}</Modal.Title>
+                    <Modal.Title>
+                        {modalType === 'delete' ? 'Confirm Deletion' : 'Update Session'}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {modalType === 'delete' ? (
-                        <p>Are you sure you want to delete this session?</p>
-                    ) : (
-                        <p>Are you sure you want to update this session?</p>
-                    )}
+                    {modalType === 'delete'
+                        ? 'Are you sure you want to delete this session?'
+                        : 'Are you sure you want to update this session?'}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Cancel
                     </Button>
-                    <Button
-                        variant={modalType === 'delete' ? 'danger' : 'primary'}
-                        onClick={modalType === 'delete' ? handleDelete : handleUpdate}
-                    >
-                        {modalType === 'delete' ? 'Delete' : 'Update'}
-                    </Button>
+                    {modalType === 'delete' ? (
+                        <Button variant="danger" onClick={handleDelete}>
+                            Delete
+                        </Button>
+                    ) : (
+                        <Button variant="primary" onClick={handleUpdate}>
+                            Update
+                        </Button>
+                    )}
                 </Modal.Footer>
             </Modal>
         </section>

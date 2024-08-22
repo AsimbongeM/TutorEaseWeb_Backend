@@ -2,9 +2,7 @@ package za.ac.cput.factory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import za.ac.cput.domain.ScheduleSession;
-import za.ac.cput.domain.TopicLevel;
-import za.ac.cput.domain.Topics;
+import za.ac.cput.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,10 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ScheduleSessionFactoryTest {
     private static Topics topics;
+    private static Tutor tutor;
 
     @BeforeEach
     void setUp() {
         topics = TopicsFactory.buildTopics(TopicLevel.BEGINNER, "Variables");
+        tutor = TutorFactory.buildTutor("Asimbonge", "Mbende", "asi@gmail.com", 40, "0671234859", "12345", "Java:Advanced", 3, TutorApprovalStatus.APPROVED);
     }
 
     @Test
@@ -27,7 +27,7 @@ class ScheduleSessionFactoryTest {
         LocalTime endTime = LocalTime.of(12, 0);
 
         // Create a ScheduleSession with valid parameters
-        ScheduleSession session = ScheduleSessionFactory.buildScheduleSession(date, startTime, endTime, topics);
+        ScheduleSession session = ScheduleSessionFactory.buildScheduleSession(date, startTime, endTime, topics, tutor);
         System.out.println(session);
 
         // Assert the session is not null and the fields are correctly set
@@ -36,19 +36,20 @@ class ScheduleSessionFactoryTest {
         assertEquals(startTime, session.getStartTime());
         assertEquals(endTime, session.getEndTime());
         assertEquals(topics, session.getTopic());
+        assertEquals(tutor, session.getTutor());
 
         // Test with invalid parameters
         assertThrows(IllegalArgumentException.class, () -> {
-            ScheduleSessionFactory.buildScheduleSession(null, startTime, endTime, topics);
+            ScheduleSessionFactory.buildScheduleSession(null, startTime, endTime, topics, tutor);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            ScheduleSessionFactory.buildScheduleSession(date, null, endTime, topics);
+            ScheduleSessionFactory.buildScheduleSession(date, null, endTime, topics, tutor);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            ScheduleSessionFactory.buildScheduleSession(date, startTime, null, topics);
+            ScheduleSessionFactory.buildScheduleSession(date, startTime, null, topics, tutor);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            ScheduleSessionFactory.buildScheduleSession(date, startTime, endTime, null);
+            ScheduleSessionFactory.buildScheduleSession(date, startTime, endTime, topics,null);
         });
     }
 }

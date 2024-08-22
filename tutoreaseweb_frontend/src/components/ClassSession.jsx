@@ -58,7 +58,31 @@ class ClassSession extends Component {
         this.socket.on('answer', this.handleReceiveAnswer);
         this.socket.on('candidate', this.handleReceiveCandidate);
         this.socket.on('chat message', this.handleReceiveMessage);
+
+        this.createPeerConnection().then(() => {
+            this.createAndSendOffer();
+        });
     }
+    createPeerConnection = async () => {
+        const peerConnection = new RTCPeerConnection(ICE_SERVERS);
+
+        // Set up event listeners for the peer connection
+        peerConnection.onicecandidate = this.handleIceCandidate;
+        peerConnection.ontrack = this.handleTrackEvent;
+
+        // Store the peer connection in the state
+        this.setState({ peerConnection });
+    };
+    createAndSendOffer = async () => {
+        const { peerConnection, sessionId } = this.state;
+
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        // Emit the offer to the signaling server
+        this.socket.emit('offer', { offer, sessionId });
+    };
+
 
     handleReceiveOffer = async (offer) => {
         const peerConnection = new RTCPeerConnection(ICE_SERVERS);

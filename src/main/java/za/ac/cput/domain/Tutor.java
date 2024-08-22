@@ -2,6 +2,7 @@ package za.ac.cput.domain;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -28,7 +29,8 @@ public class Tutor {
 //    private byte[] sarsDocument;
     @Enumerated(EnumType.STRING)
     private TutorApprovalStatus approvalStatus;
-
+    @OneToMany(mappedBy = "tutor")
+    private List<ScheduleSession> scheduleSessions;
     protected Tutor() {
     }
 
@@ -94,6 +96,13 @@ public class Tutor {
 
     public TutorApprovalStatus getApprovalStatus() {
         return approvalStatus;
+    }
+    public List<ScheduleSession> getScheduleSessions() {
+        return scheduleSessions;
+    }
+
+    public void setScheduleSessions(List<ScheduleSession> scheduleSessions) {
+        this.scheduleSessions = scheduleSessions;
     }
 
 

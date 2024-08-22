@@ -18,7 +18,9 @@ public class ScheduleSession {
     @ManyToOne
     @JoinColumn(name = "topic_id", referencedColumnName = "id")
     private Topics topic;
-
+    @ManyToOne
+    @JoinColumn(name = "tutor_email", referencedColumnName = "email")
+    private Tutor tutor;
     protected ScheduleSession() {
     }
 
@@ -29,6 +31,7 @@ public class ScheduleSession {
         this.startTime = builder.startTime;
         this.endTime = builder.endTime;
         this.topic = builder.topic;
+        this.tutor = builder.tutor;
 
     }
     public Long getId() {
@@ -50,18 +53,21 @@ public class ScheduleSession {
     public Topics getTopic() {
         return topic;
     }
+    public Tutor getTutor() {
+        return tutor;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScheduleSession that = (ScheduleSession) o;
-        return Objects.equals(id, that.id) && Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(topic, that.topic);
+        return Objects.equals(id, that.id) && Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(topic, that.topic)&& Objects.equals(tutor, that.tutor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, startTime, endTime, topic);
+        return Objects.hash(id, date, startTime, endTime, topic, tutor);
     }
 
     @Override
@@ -71,7 +77,8 @@ public class ScheduleSession {
                 ", date=" + date +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
-                ", topic='" + topic + '\'' +
+                ", topic='" + topic +
+                ", tutor=" + tutor +
                 '}';
     }
     public static class Builder {
@@ -80,6 +87,8 @@ public class ScheduleSession {
         private LocalTime startTime;
         private LocalTime endTime;
         private Topics topic;
+        private Tutor tutor;
+
 
         public Builder(){
 
@@ -109,6 +118,10 @@ public class ScheduleSession {
             this.topic = topic;
             return this;
         }
+        public Builder setTutor(Tutor tutor) {
+            this.tutor = tutor;
+            return this;
+        }
         public Builder copy(ScheduleSession session) {
 
             this.id = session.id;
@@ -116,6 +129,7 @@ public class ScheduleSession {
             this.startTime = session.startTime;
             this.endTime = session.endTime;
             this.topic = session.topic;
+            this.tutor = session.tutor;
             return this;
         }
         public ScheduleSession build() {
