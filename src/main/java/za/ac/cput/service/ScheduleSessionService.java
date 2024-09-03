@@ -26,10 +26,10 @@ public class ScheduleSessionService implements IScheduleSessionService {
 
     }
 
-    @Override
-    public List<ScheduleSession> getAll() {
-        return scheduleSessionRepository.findAll();
-    }
+//    @Override
+//    public List<ScheduleSession> getAll() {
+//        return scheduleSessionRepository.findAll();
+//    }
 
     @Override
     public List<ScheduleSession> getSessionsByTutorEmail(String tutorEmail) {

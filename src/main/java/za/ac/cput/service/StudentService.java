@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 public class StudentService implements IStudentService{
-    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
 
     @Autowired
     StudentService(StudentRepository studentRepository) {

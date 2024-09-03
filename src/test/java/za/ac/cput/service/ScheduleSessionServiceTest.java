@@ -37,7 +37,6 @@ class ScheduleSessionServiceTest {
     private static Long generatedSessionId2;
 
     private static Topics topic1;
-    private static Topics topic2;
 
     private static Tutor tutor1;
     private static Tutor tutor2;
@@ -50,7 +49,7 @@ class ScheduleSessionServiceTest {
         topicsRepository.deleteAll();
 
         topic1 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.BEGINNER, "Design patterns"));
-        topic2 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.INTERMEDIATE, "Advanced Design patterns"));
+        Topics topic2 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.INTERMEDIATE, "Advanced Design patterns"));
 
 
         tutor1 = tutorRepository.save(new Tutor.Builder()
@@ -155,11 +154,11 @@ class ScheduleSessionServiceTest {
         System.out.println("Successfully deleted session with ID: " + generatedSessionId1);
     }
 
-    @Order(6)
-    @Test
-    void getAll() {
-        List<ScheduleSession> sessions = scheduleSessionService.getAll();
-        assertFalse(sessions.isEmpty());
-        System.out.println("All sessions: " + sessions);
-    }
+//    @Order(6)
+//    @Test
+//    void getAll() {
+//        List<ScheduleSession> sessions = scheduleSessionService.getAll();
+//        assertFalse(sessions.isEmpty());
+//        System.out.println("All sessions: " + sessions);
+//    }
 }

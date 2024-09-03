@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import io from 'socket.io-client';
-// import '../styles/ClassSession.css'
 import 'react-calendar/dist/Calendar.css';
 
 

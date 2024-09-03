@@ -85,8 +85,8 @@ public class ScheduleSessionController {
 //            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 //        }
 //    }
-@GetMapping("/getAll")
-public ResponseEntity<List<ScheduleSession>> getAll(@RequestParam("tutorEmail") String tutorEmail) {
+@GetMapping("/getSessionsByEmail")
+public ResponseEntity<List<ScheduleSession>> getSessionsByTutorEmail(@RequestParam("tutorEmail") String tutorEmail) {
     List<ScheduleSession> sessions = scheduleSessionService.getSessionsByTutorEmail(tutorEmail);
     if (!sessions.isEmpty()) {
         return ResponseEntity.ok(sessions);

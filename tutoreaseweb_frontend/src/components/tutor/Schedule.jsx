@@ -29,6 +29,8 @@ function Schedule() {
                 if (tutorEmail) {
                     const data = await getSessionsByTutorEmail(tutorEmail);
                     setSessions(Array.isArray(data) ? data : []);
+                    console.log('Fetched sessions:', data); // Log fetched data
+                    console.log('Sessions state:', sessions); // Log state after update
                 }
             } catch (error) {
                 console.error('Error fetching sessions:', error);
