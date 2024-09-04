@@ -5,7 +5,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheckCircle, faEye, faEyeSlash, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
-
+import SuccessPopup from "./SuccessPopup.jsx";
 
 const TutorRegistration = () => {
     const [isHovered, setIsHovered] = useState(false);
@@ -30,7 +30,8 @@ const TutorRegistration = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-    const navigate = useNavigate();
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [registeredUser, setRegisteredUser] = useState({});
 
     useEffect(() => {
         document.body.style.backgroundColor = '#e6f2ff';
@@ -70,10 +71,9 @@ const TutorRegistration = () => {
                             approvalStatus: 'PENDING'
                         };
                         await createTutor(tutor);
-                        setSuccessMessage(`Registration successful! Welcome, ${firstName} ${lastName}. Your email is ${email}.`);
-                        setTimeout(() => {
-                        navigate('/sign-in');
-                        }, 5000);
+                        setRegisteredUser({firstName, lastName, email});
+                        // setSuccessMessage(`Registration successful! Welcome, ${firstName} ${lastName}. Your email is ${email}.`);
+                        setIsPopupVisible(true);
                     }
             } catch (error) {
                     console.error(error);
@@ -85,7 +85,9 @@ const TutorRegistration = () => {
         }
     };
 
-
+    const handlePopupClose = () => {
+        setIsPopupVisible(false); // Hide the popup
+    };
     const validateForm = () => {
         const errorsCopy = {};
         let valid = true;
@@ -226,6 +228,14 @@ const TutorRegistration = () => {
 
     return (
         <div className="container my-5" style={{maxWidth: '500px', background: '#e6f2ff'}}>
+            {isPopupVisible && (
+                <SuccessPopup
+                    firstName={registeredUser.firstName}
+                    lastName={registeredUser.lastName}
+                    email={registeredUser.email}
+                    onClose={handlePopupClose}
+                />
+            )}
             <div className="text-center mb-4">
                 <img
                     src="/images/logo.png"
