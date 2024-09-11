@@ -1,19 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from "../AuthContext.jsx";
-import { deleteFile, fetchFiles, updateFile, uploadFile } from "../../services/ResourcesServices.js";
-import { Button, Form, Modal, Spinner, Table } from 'react-bootstrap';
+import { uploadFile, fetchFiles, deleteFile, updateFile } from "../../services/ResourcesServices.js";
+import { Button, Form, Spinner, Modal, Alert, Card, Row, Col } from 'react-bootstrap';
 
 const Resources = () => {
     const { auth } = useContext(AuthContext);
-    const [newResource, setNewResource] = useState(null);
+    const [file, setFile] = useState(null); // For both new uploads and updates
     const [uploadType, setUploadType] = useState('document');
     const [uploadError, setUploadError] = useState('');
-    const [files, setFiles] = useState([]); // Ensure initial state is an array
+    const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [fileToUpdate, setFileToUpdate] = useState(null);
+    const [currentFile, setCurrentFile] = useState(null); // The file currently being edited
     const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState(null);
-    const [fileIdToActOn, setFileIdToActOn] = useState(null);
+    const [modalType, setModalType] = useState(null); // 'delete', 'update'
 
     useEffect(() => {
         if (auth && auth.email) {
@@ -24,20 +23,14 @@ const Resources = () => {
     const fetchFileList = async (email) => {
         try {
             const response = await fetchFiles(email);
-            if (Array.isArray(response.data)) { // Check if response.data is an array
-                setFiles(response.data);
-            } else {
-                console.error("Unexpected response format:", response.data);
-                setFiles([]); // Fallback to empty array
-            }
+            setFiles(response.data);
         } catch (error) {
             console.error("Error fetching files:", error);
-            setFiles([]); // Fallback to empty array in case of error
         }
     };
 
     const handleFileChange = (e) => {
-        setNewResource(e.target.files[0]);
+        setFile(e.target.files[0]);
     };
 
     const handleUpload = async () => {
@@ -48,113 +41,140 @@ const Resources = () => {
 
         try {
             setLoading(true);
-            await uploadFile(newResource, uploadType, auth.email);
+            await uploadFile(file, uploadType, auth.email);
             setUploadError('');
             fetchFileList(auth.email);
         } catch (error) {
             setUploadError('Error uploading file. Please try again.');
         } finally {
             setLoading(false);
+            setFile(null);
+            setModalType(null);
         }
-    };
-
-    const handleDeleteClick = (id) => {
-        setFileIdToActOn(id);
-        setModalType('delete');
-        setShowModal(true);
     };
 
     const handleUpdateClick = (file) => {
-        setFileToUpdate(file);
+        setCurrentFile(file);
+        setFile(null); // Clear previous file selection
         setModalType('update');
-        setShowModal(true);
     };
 
-    const handleConfirm = async () => {
+    const handleUpdate = async () => {
+        if (!auth || !auth.email || !currentFile || !file) {
+            setUploadError('You must select a file and be signed in to update files.');
+            return;
+        }
+
         try {
-            if (modalType === 'delete') {
-                await deleteFile(fileIdToActOn);
-            } else if (modalType === 'update') {
-                if (!fileToUpdate || !newResource) {
-                    console.error('File to update or new resource not provided');
-                    return;
-                }
-                await updateFile(fileToUpdate.id, newResource);
-            }
+            setLoading(true);
+            await updateFile(currentFile.id, file);
+            setUploadError('');
             fetchFileList(auth.email);
         } catch (error) {
-            console.error(`Error during ${modalType} operation:`, error);
+            setUploadError('Error updating file. Please try again.');
         } finally {
-            setFileToUpdate(null);
-            setNewResource(null);
-            setShowModal(false);
             setLoading(false);
+            setFile(null);
+            setCurrentFile(null);
+            setModalType(null);
         }
     };
 
-    const handleClose = () => setShowModal(false);
+    const handleDelete = async () => {
+        if (!auth || !auth.email || !currentFile) {
+            setUploadError('No file selected for deletion.');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await deleteFile(currentFile.id);
+            fetchFileList(auth.email);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+        } finally {
+            setLoading(false);
+            setCurrentFile(null);
+            setModalType(null);
+        }
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+        setModalType(null);
+        setCurrentFile(null);
+        setFile(null);
+    };
 
     return (
-        <div>
-            <h1>Manage Resources</h1>
-            <Form.Group controlId="formFileUpload">
-                <Form.Label>Choose File</Form.Label>
-                <Form.Control type="file" onChange={handleFileChange} />
-            </Form.Group>
-            <Form.Group controlId="formSelectUploadType">
-                <Form.Label>Type</Form.Label>
-                <Form.Control as="select" value={uploadType} onChange={(e) => setUploadType(e.target.value)}>
-                    <option value="document">Document</option>
-                    <option value="recording">Recording</option>
-                </Form.Control>
-            </Form.Group>
-            <Button variant="primary" onClick={handleUpload} disabled={loading}>
-                {loading ? <Spinner animation="border" size="sm" /> : 'Upload'}
-            </Button>
-            {uploadError && <p style={{ color: 'red' }}>{uploadError}</p>}
+        <div className="container mt-4">
+            <h1 className="mb-4">Manage Resources</h1>
 
-            <Table striped bordered hover className="mt-4">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>File Name</th>
-                    <th>File Type</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {Array.isArray(files) && files.map(file => (
-                    <tr key={file.id}>
-                        <td>{file.id}</td>
-                        <td>{file.fileName}</td>
-                        <td>{file.fileType}</td>
-                        <td>
-                            <Button variant="warning" onClick={() => handleUpdateClick(file)}>Update</Button>
-                            <Button variant="danger" onClick={() => handleDeleteClick(file.id)}>Delete</Button>
-                        </td>
-                    </tr>
+            {/* Form for Uploading and Updating */}
+            <div className="mb-4">
+                <Form.Group controlId="formFileUpload" className="mb-3">
+                    <Form.Label>Choose File</Form.Label>
+                    <Form.Control
+                        type="file"
+                        onChange={handleFileChange}
+                        value={file ? file.name : ''} // Display the selected file name
+                    />
+                </Form.Group>
+                <Form.Group controlId="formSelectUploadType" className="mb-3">
+                    <Form.Label>Type</Form.Label>
+                    <Form.Control
+                        as="select"
+                        value={uploadType}
+                        onChange={(e) => setUploadType(e.target.value)}
+                        disabled={modalType === 'update'}
+                    >
+                        <option value="document">Document</option>
+                        <option value="recording">Recording</option>
+                    </Form.Control>
+                </Form.Group>
+                <Button
+                    variant="primary"
+                    onClick={modalType === 'update' ? () => setShowModal(true) : handleUpload}
+                    disabled={loading || !file}
+                    style={{ backgroundColor: '#007bff', borderColor: '#007bff' }}
+                >
+                    {loading ? <Spinner animation="border" size="sm" /> : modalType === 'update' ? 'Update' : 'Upload'}
+                </Button>
+                {uploadError && <Alert variant="danger" className="mt-3">{uploadError}</Alert>}
+            </div>
+
+            {/* Files List */}
+            <Row className="mt-4">
+                {files.map(file => (
+                    <Col key={file.id} sm={12} md={6} lg={4} className="mb-4">
+                        <Card>
+                            <Card.Body>
+                                <Card.Title>{file.fileName}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">{file.fileType}</Card.Subtitle>
+                                <Button
+                                    variant="warning"
+                                    onClick={() => handleUpdateClick(file)}
+                                    className="me-2"
+                                    style={{ backgroundColor: '#ffc107', borderColor: '#ffc107' }}
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    variant="danger"
+                                    onClick={() => {
+                                        setCurrentFile(file);
+                                        setModalType('delete');
+                                        setShowModal(true);
+                                    }}
+                                    style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+                                >
+                                    Delete
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                    </Col>
                 ))}
-                </tbody>
-            </Table>
-
-            {fileToUpdate && modalType === 'update' && (
-                <div className="mt-4">
-                    <h3>Update File</h3>
-                    <Form>
-                        <Form.Group controlId="formFileUpdate">
-                            <Form.Label>Choose New File</Form.Label>
-                            <Form.Control type="file" onChange={(e) => setNewResource(e.target.files[0])} />
-                        </Form.Group>
-                        <Button
-                            variant="primary"
-                            onClick={() => setShowModal(true)}
-                            disabled={loading || !newResource}
-                        >
-                            {loading ? <Spinner animation="border" size="sm" /> : 'Update'}
-                        </Button>
-                    </Form>
-                </div>
-            )}
+            </Row>
 
             {/* Confirmation Modal */}
             <Modal show={showModal} onHide={handleClose}>
@@ -168,7 +188,10 @@ const Resources = () => {
                     <Button variant="secondary" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={handleConfirm}>
+                    <Button
+                        variant="primary"
+                        onClick={modalType === 'delete' ? handleDelete : handleUpdate}
+                    >
                         Confirm
                     </Button>
                 </Modal.Footer>

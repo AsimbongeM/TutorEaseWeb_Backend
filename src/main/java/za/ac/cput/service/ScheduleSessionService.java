@@ -33,7 +33,7 @@ public class ScheduleSessionService implements IScheduleSessionService {
 
     @Override
     public List<ScheduleSession> getSessionsByTutorEmail(String tutorEmail) {
-        return scheduleSessionRepository.findByTutor_Email(tutorEmail);
+        return scheduleSessionRepository.findByTutorEmail(tutorEmail);
     }
     @Override
     public ScheduleSession create(ScheduleSession scheduleSession) {

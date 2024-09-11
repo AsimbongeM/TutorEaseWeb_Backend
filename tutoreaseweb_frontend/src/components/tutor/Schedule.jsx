@@ -5,6 +5,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { AuthContext } from "../AuthContext.jsx";
 
 function Schedule() {
+    const { auth } = useContext(AuthContext);
     const [sessions, setSessions] = useState([]);
     const [topics, setTopics] = useState([]);
     const [newSession, setNewSession] = useState({ date: '', topicId: '', startTime: '', endTime: '' });
@@ -16,39 +17,32 @@ function Schedule() {
     const [selectedSessionId, setSelectedSessionId] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [hoveredButtonId, setHoveredButtonId] = useState(null);
-
-    // Use AuthContext to get the signed-in tutor
-    const { auth } = useContext(AuthContext);
-    const tutorEmail = auth?.email;
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
-        console.log('Tutor Email:', tutorEmail); // Debugging line to check the email value
+        if (auth && auth.email) {
+            fetchSessions(auth.email);
+            fetchTopics();
+        }
+    }, [auth]);
 
-        const fetchSessions = async () => {
-            try {
-                if (tutorEmail) {
-                    const data = await getSessionsByTutorEmail(tutorEmail);
-                    setSessions(Array.isArray(data) ? data : []);
-                    console.log('Fetched sessions:', data); // Log fetched data
-                    console.log('Sessions state:', sessions); // Log state after update
-                }
-            } catch (error) {
-                console.error('Error fetching sessions:', error);
-            }
-        };
+    const fetchSessions = async (email) => {
+        try {
+            const response = await getSessionsByTutorEmail(email);
+            setSessions(response.data);
+        } catch (error) {
+            console.error('Error fetching sessions:', error);
+        }
+    };
 
-        const fetchTopics = async () => {
-            try {
-                const data = await getAllTopics();
-                setTopics(data);
-            } catch (error) {
-                console.error('Error fetching topics:', error);
-            }
-        };
-
-        fetchSessions();
-        fetchTopics();
-    }, [tutorEmail]);
+    const fetchTopics = async () => {
+        try {
+            const data = await getAllTopics();
+            setTopics(data);
+        } catch (error) {
+            console.error('Error fetching topics:', error);
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -62,7 +56,7 @@ function Schedule() {
 
     const validateFields = () => {
         const newErrors = {};
-        const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+        const today = new Date().toISOString().split('T')[0];
         if (newSession.date < today) {
             newErrors.date = 'Date cannot be in the past';
         }
@@ -75,11 +69,10 @@ function Schedule() {
         if (newSession.startTime && newSession.endTime) {
             const start = new Date(`${newSession.date}T${newSession.startTime}`);
             const end = new Date(`${newSession.date}T${newSession.endTime}`);
-            const diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+            const diff = (end - start) / (1000 * 60 * 60);
             if (diff > 2) newErrors.endTime = 'Session cannot exceed 2 hours';
         }
         if (!newSession.topicId) newErrors.topicId = 'Topic is required';
-        if (!tutorEmail) newErrors.tutorEmail = 'Tutor email is missing'; // Check for missing email
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -92,19 +85,22 @@ function Schedule() {
             topic: { id: newSession.topicId },
             startTime: newSession.startTime,
             endTime: newSession.endTime,
-            tutor: { email: tutorEmail } // Associate session with the signed-in tutor
+            tutor: { email: auth.email }
         };
 
         try {
             const savedSession = await createSession(sessionData);
             setSessions([...sessions, savedSession]);
+            setSuccessMessage('Session added successfully!');
         } catch (error) {
             console.error('Error creating session:', error);
         }
 
         setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
         setErrors({});
+        hideSuccessMessage();
     };
+
     const handleEdit = (index) => {
         setNewSession({
             date: sessions[index].date,
@@ -122,13 +118,20 @@ function Schedule() {
         setShowModal(true);
     };
 
+    const handleUpdateModal = () => {
+        setModalType('update');
+        setShowModal(true);
+    };
+
     const handleUpdate = async () => {
+        if (!validateFields()) return;
+
         const sessionData = {
             date: newSession.date,
             topic: { id: newSession.topicId },
             startTime: newSession.startTime,
             endTime: newSession.endTime,
-            tutor: { email: tutorEmail }
+            tutor: { email: auth.email }
         };
 
         try {
@@ -136,6 +139,7 @@ function Schedule() {
             const updatedSessions = [...sessions];
             updatedSessions[editingIndex] = updatedSession;
             setSessions(updatedSessions);
+            setSuccessMessage('Session updated successfully!');
         } catch (error) {
             console.error('Error updating session:', error);
         }
@@ -145,6 +149,7 @@ function Schedule() {
         setEditingId(null);
         setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
         setErrors({});
+        hideSuccessMessage();
     };
 
     const handleDelete = async () => {
@@ -152,16 +157,20 @@ function Schedule() {
             await deleteSession(selectedSessionId);
             const updatedSessions = sessions.filter(session => session.id !== selectedSessionId);
             setSessions(updatedSessions);
+            setSuccessMessage('Session deleted successfully!');
         } catch (error) {
             console.error('Error deleting session:', error);
         }
         setShowModal(false);
         setSelectedSessionId(null);
+        hideSuccessMessage();
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedSessionId(null);
+        setEditingIndex(null);
+        setEditingId(null);
     };
 
     const handleSearchChange = (e) => {
@@ -175,10 +184,21 @@ function Schedule() {
             (session.endTime?.includes(searchTerm) || '');
     }) : [];
 
+    const hideSuccessMessage = () => {
+        setTimeout(() => {
+            setSuccessMessage('');
+        }, 3000);
+    };
 
     return (
         <section className="container mt-4">
             <h2 className="mb-4">Schedule</h2>
+
+            {successMessage && (
+                <div className="alert alert-success" role="alert">
+                    {successMessage}
+                </div>
+            )}
 
             <Form>
                 <Form.Group controlId="formSearch">
@@ -202,7 +222,7 @@ function Schedule() {
                     <option value="">Select a Topic</option>
                     {topics.map(topic => (
                         <option key={topic.id} value={topic.id}>
-                            {topic.description} - {topic.level} {/* Display topic level */}
+                            {topic.description} - {topic.level}
                         </option>
                     ))}
                 </select>
@@ -235,7 +255,7 @@ function Schedule() {
 
                 <button
                     className="btn"
-                    onClick={handleAddSession}
+                    onClick={editingIndex !== null ? handleUpdateModal : handleAddSession}
                     style={{
                         backgroundColor: '#00274d',
                         color: 'white',
@@ -252,42 +272,45 @@ function Schedule() {
             </div>
 
             {filteredSessions.length > 0 ? (
-                <ul className="list-group">
-                    {filteredSessions.map((session, index) => (
-                        <li key={session.id} className="list-group-item">
-                            <div>
+                filteredSessions.map((session, index) => (
+                    <div key={session.id} className="card mb-3">
+                        <div className="card-body">
+                            <h5 className="card-title">{session.topic?.description} - {session.topic?.level}</h5>
+                            <p className="card-text">
                                 <strong>Date:</strong> {session.date}<br />
                                 <strong>Start Time:</strong> {session.startTime}<br />
-                                <strong>End Time:</strong> {session.endTime}<br />
-                                <strong>Topic:</strong> {session.topic?.description || 'N/A'}
-                            </div>
-                            <div className="mt-2">
-                                <button
-                                    className="btn btn-link"
+                                <strong>End Time:</strong> {session.endTime}
+                            </p>
+                            <div className="d-flex">
+                                <Button
+                                    variant="primary"
                                     onClick={() => handleEdit(index)}
-                                    style={{ marginRight: '10px' }}
+                                    className="me-2"
                                 >
-                                    Edit
-                                </button>
-                                <button
-                                    className="btn btn-link text-danger"
+                                    <span className="d-flex align-items-center">
+                                         Edit
+                                    </span>
+                                </Button>
+                                <Button
+                                    variant="danger"
                                     onClick={() => handleDeleteConfirmation(session.id)}
                                 >
-                                    Delete
-                                </button>
+                                    <span className="d-flex align-items-center">
+                                       Delete
+                                    </span>
+                                </Button>
                             </div>
-                        </li>
-                    ))}
-                </ul>
+                        </div>
+                    </div>
+                ))
             ) : (
-                <p>No sessions found</p>
+                <p>No sessions found.</p>
             )}
 
-            {/* Modal */}
-            <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal show={showModal} onHide={handleCloseModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {modalType === 'delete' ? 'Confirm Deletion' : 'Update Session'}
+                        {modalType === 'delete' ? 'Confirm Deletion' : 'Confirm Update'}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

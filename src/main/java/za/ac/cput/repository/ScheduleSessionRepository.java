@@ -8,5 +8,5 @@ import java.util.List;
 public interface ScheduleSessionRepository extends JpaRepository<ScheduleSession, Long> {
 
 
-    List<ScheduleSession> findByTutor_Email(String tutorEmail);
+    List<ScheduleSession> findByTutorEmail(String tutorEmail);
 }

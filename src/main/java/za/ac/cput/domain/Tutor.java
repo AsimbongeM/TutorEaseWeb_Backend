@@ -2,8 +2,8 @@ package za.ac.cput.domain;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Tutor {
@@ -30,7 +30,12 @@ public class Tutor {
     @Enumerated(EnumType.STRING)
     private TutorApprovalStatus approvalStatus;
     @OneToMany(mappedBy = "tutor")
-    private List<ScheduleSession> scheduleSessions;
+    private Set<ScheduleSession> scheduleSessions;
+    @OneToMany(mappedBy = "tutor")
+    private Set<Resources> resources;
+
+    @OneToMany(mappedBy = "tutor")
+    private Set<Announcement> announcements;
     protected Tutor() {
     }
 
@@ -47,6 +52,9 @@ public class Tutor {
 //        this.idDocument = builder.idDocument;
 //        this.sarsDocument = builder.sarsDocument;
         this.approvalStatus = builder.approvalStatus != null ? builder.approvalStatus : TutorApprovalStatus.PENDING;
+        this.scheduleSessions = builder.scheduleSessions;
+        this.resources = builder.resources;
+        this.announcements = builder.announcements;
     }
 
 
@@ -97,26 +105,30 @@ public class Tutor {
     public TutorApprovalStatus getApprovalStatus() {
         return approvalStatus;
     }
-    public List<ScheduleSession> getScheduleSessions() {
+
+    public Set<ScheduleSession> getScheduleSessions() {
         return scheduleSessions;
     }
 
-    public void setScheduleSessions(List<ScheduleSession> scheduleSessions) {
-        this.scheduleSessions = scheduleSessions;
+    public Set<Resources> getResources() {
+        return resources;
     }
 
+    public Set<Announcement> getAnnouncements() {
+        return announcements;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus;
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resources, tutor.resources) && Objects.equals(announcements, tutor.announcements);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus);
+        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resources, announcements);
     }
 
     @Override
@@ -134,6 +146,9 @@ public class Tutor {
 //                ", idDocument=" + Arrays.toString(idDocument) +
 //                ", sarsDocument=" + Arrays.toString(sarsDocument) +
                 ", approvalStatus=" + approvalStatus +
+                ", scheduleSessions=" + scheduleSessions +
+                ", resources=" + resources +
+                ", announcements=" + announcements +
                 '}';
     }
 
@@ -150,7 +165,9 @@ public class Tutor {
 //        private byte[] idDocument;
 //        private byte[] sarsDocument;
         private TutorApprovalStatus approvalStatus;
-
+        private Set<ScheduleSession> scheduleSessions;
+        private Set<Resources> resources;
+        private Set<Announcement> announcements;
 
         public Builder setFirstName(String firstName) {
             this.firstName = firstName;
@@ -192,6 +209,7 @@ public class Tutor {
             return this;
         }
 
+
 //        public Builder setProfilePicture(byte[] profilePicture) {
 //            this.profilePicture = profilePicture;
 //            return this;
@@ -211,6 +229,20 @@ public class Tutor {
             return this;
         }
 
+        public Builder setScheduleSessions(Set<ScheduleSession> scheduleSessions) {
+            this.scheduleSessions = scheduleSessions;
+            return this;
+        }
+
+        public Builder setResources(Set<Resources> resources) {
+            this.resources = resources;
+            return this;
+        }
+
+        public Builder setAnnouncements(Set<Announcement> announcements) { // Builder method for announcements
+            this.announcements = announcements;
+            return this;
+        }
         public Builder copy(Tutor tutor) {
             this.firstName = tutor.firstName;
             this.lastName = tutor.lastName;
@@ -224,6 +256,9 @@ public class Tutor {
 //            this.idDocument = tutor.idDocument;
 //            this.sarsDocument = tutor.sarsDocument;
             this.approvalStatus = tutor.approvalStatus;
+            this.scheduleSessions = tutor.scheduleSessions;
+            this.resources = tutor.resources;
+            this.announcements = tutor.announcements;
             return this;
 
         }

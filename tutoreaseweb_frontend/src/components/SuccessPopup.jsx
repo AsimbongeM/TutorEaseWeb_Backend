@@ -38,8 +38,8 @@ const styles = {
     },
     content: {
         backgroundColor: '#fff',
-        padding: '30px', // More padding for a better look
-        borderRadius: '8px', // Slightly larger border radius
+        padding: '30px',
+        borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Added shadow for depth
         textAlign: 'center',
         maxWidth: '400px',
@@ -58,7 +58,7 @@ const styles = {
         margin: '10px 0'
     },
     button: {
-        backgroundColor: '#00274d', // Updated color for better contrast
+        backgroundColor: '#00274d',
         color: '#fff',
         border: 'none',
         padding: '12px 24px',
