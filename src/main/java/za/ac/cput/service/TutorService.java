@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public class TutorService implements ITutorService {
-    private TutorRepository tutorRepository;
+    private final TutorRepository tutorRepository;
 
     @Autowired
     TutorService(TutorRepository tutorRepository) {

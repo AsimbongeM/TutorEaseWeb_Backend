@@ -103,7 +103,6 @@ function SignIn() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [isSignInButtonHovered, setIsSignInButtonHovered] = useState(false);
     const [isForgotPasswordLinkHovered, setIsForgotPasswordLinkHovered] = useState(false);
-    const [isJoinUsLinkHovered, setIsJoinUsLinkHovered] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const {setAuth} = useContext(AuthContext);

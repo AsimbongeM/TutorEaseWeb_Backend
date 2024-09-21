@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IScheduleSessionService extends IService<ScheduleSession, Long> {
 
-    List<ScheduleSession> getAll();
+//    List<ScheduleSession> getAll();
     List<ScheduleSession> getSessionsByTutorEmail(String tutorEmail);
 
     ScheduleSession update(Long id,ScheduleSession scheduleSession);

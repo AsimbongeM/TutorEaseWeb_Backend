@@ -19,7 +19,7 @@ public class ScheduleSession {
     @JoinColumn(name = "topic_id", referencedColumnName = "id")
     private Topics topic;
     @ManyToOne
-    @JoinColumn(name = "tutor_email", referencedColumnName = "email")
+    @JoinColumn(name = "tutor_email", nullable = false)
     private Tutor tutor;
     protected ScheduleSession() {
     }
