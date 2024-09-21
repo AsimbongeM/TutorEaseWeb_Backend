@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const FILE_API_URL = 'http://localhost:8080/tutoreaseweb/resources';
+const FILE_API_URL = 'http://localhost:8080/tutoreaseweb/resource';
 
 export const uploadFile = async (file, type, tutorEmail) => {
     const formData = new FormData();
