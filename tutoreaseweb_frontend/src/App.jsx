@@ -8,9 +8,10 @@ import TutorProfile from "./components/TutorProfile.jsx";
 import TutorRegistration from "./components/TutorRegistration.jsx";
 import StudentRegistration from "./components/StudentRegistration.jsx";
 import ForgotPassword from "./components/ForgotPassword.jsx";
+
 // import TutorDashboard from "./components/TutorDashboard.jsx";
 import Sidebar from "./components/Sidebar.jsx";
-import Resources from "./components/tutor/Resources.jsx";
+import Resource from "./components/tutor/Resource.jsx";
 import Announcements from "./components/tutor/Announcements.jsx";
 import Schedule from "./components/tutor/Schedule.jsx";
 import Calendar from "./components/tutor/Calendar.jsx";
@@ -42,7 +43,7 @@ function App() {
                     <Route path="/tutor-registration" element={<TutorRegistration />} />
                     <Route path="/student-registration" element={<StudentRegistration />} />
                     <Route path="/content" element={<Content />} />
-                    <Route path="/resources" element={<Resources />} />
+                    <Route path="/resource" element={<Resource />} />
                     <Route path="/announcements" element={<Announcements />} />
                     <Route path="/schedule" element={<Schedule />} />
                     <Route path="/calendar" element={<Calendar />} />
