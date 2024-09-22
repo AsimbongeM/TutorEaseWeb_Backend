@@ -32,7 +32,8 @@ public class Tutor {
     private Set<ScheduleSession> scheduleSessions;
     @OneToMany(mappedBy = "tutor")
     private Set<Resource> resource;
-
+    @OneToMany(mappedBy = "tutor")
+    private Set<BookSession> bookSessions;
     @OneToMany(mappedBy = "tutor")
     private Set<Announcement> announcements;
     protected Tutor() {
@@ -54,6 +55,8 @@ public class Tutor {
         this.scheduleSessions = builder.scheduleSessions;
         this.resource = builder.resource;
         this.announcements = builder.announcements;
+        this.bookSessions = builder.bookSessions;
+
     }
 
 
@@ -117,36 +120,38 @@ public class Tutor {
         return announcements;
     }
 
+    public Set<BookSession> getBookSessions() {
+        return bookSessions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resource, tutor.resource) && Objects.equals(announcements, tutor.announcements);
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resource, tutor.resource) && Objects.equals(bookSessions, tutor.bookSessions) && Objects.equals(announcements, tutor.announcements);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resource, announcements);
+        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resource, bookSessions, announcements);
     }
 
     @Override
     public String toString() {
         return "Tutor{" +
+                "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
                 ", age=" + age +
                 ", cellNumber='" + cellNumber + '\'' +
                 ", password='" + password + '\'' +
                 ", skills='" + skills + '\'' +
                 ", experience=" + experience +
-//                ", profilePicture=" + Arrays.toString(profilePicture) +
-//                ", idDocument=" + Arrays.toString(idDocument) +
-//                ", sarsDocument=" + Arrays.toString(sarsDocument) +
                 ", approvalStatus=" + approvalStatus +
                 ", scheduleSessions=" + scheduleSessions +
                 ", resource=" + resource +
+                ", bookSessions=" + bookSessions +
                 ", announcements=" + announcements +
                 '}';
     }
@@ -167,6 +172,7 @@ public class Tutor {
         private Set<ScheduleSession> scheduleSessions;
         private Set<Resource> resource;
         private Set<Announcement> announcements;
+        private Set<BookSession> bookSessions;
 
         public Builder setFirstName(String firstName) {
             this.firstName = firstName;
@@ -238,6 +244,11 @@ public class Tutor {
             return this;
         }
 
+        public Builder setBookSessions(Set<BookSession> bookSessions) {
+            this.bookSessions = bookSessions;
+            return this;
+        }
+
         public Builder setAnnouncements(Set<Announcement> announcements) { // Builder method for announcements
             this.announcements = announcements;
             return this;
@@ -258,6 +269,7 @@ public class Tutor {
             this.scheduleSessions = tutor.scheduleSessions;
             this.resource = tutor.resource;
             this.announcements = tutor.announcements;
+            this.bookSessions = tutor.bookSessions;
             return this;
 
         }

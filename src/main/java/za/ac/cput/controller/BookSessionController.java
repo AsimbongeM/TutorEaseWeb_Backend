@@ -32,8 +32,6 @@ public class BookSessionController {
             return ResponseEntity.notFound().build();
         }
         BookSession updatedBookSession = new BookSession.Builder().copy(existingBooksession)
-                .setscheduleSession(bookSession.getScheduleSession())
-                .setTopic(bookSession.getTopic())
                 .setStudent(bookSession.getStudent())
                 .setTutor(bookSession.getTutor())
                 .build();
