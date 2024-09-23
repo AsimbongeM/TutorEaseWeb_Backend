@@ -3,17 +3,18 @@ package za.ac.cput.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import za.ac.cput.domain.Resource;
+import za.ac.cput.domain.Resources;
 import za.ac.cput.domain.Tutor;
-import za.ac.cput.repository.ResourceRepository;
+import za.ac.cput.repository.ResourcesRepository;
 import za.ac.cput.repository.TutorRepository;
+
 import java.util.List;
 
 @Service
-public class ResourceService {
+public class ResourcesService {
 
     @Autowired
-    private ResourceRepository resourceRepository;
+    private ResourcesRepository resourceRepository;
 
     @Autowired
     private TutorRepository tutorRepository;
@@ -22,7 +23,7 @@ public class ResourceService {
         Tutor tutor = tutorRepository.findById(tutorEmail)
                 .orElseThrow(() -> new Exception("Tutor not found"));
 
-        Resource resource = new Resource.Builder()
+        Resources resource = new Resources.Builder()
                 .setFileName(file.getOriginalFilename()) // Set file name
                 .setFileType(file.getContentType()) // Set file type
                 .setDocument(type.equals("document") ? file.getBytes() : null)
@@ -33,7 +34,7 @@ public class ResourceService {
         resourceRepository.save(resource);
     }
 
-    public List<Resource> findByTutorEmail(String tutorEmail) {
+    public List<Resources> findByTutorEmail(String tutorEmail) {
         return resourceRepository.findByTutorEmail(tutorEmail);
     }
 
@@ -42,10 +43,10 @@ public class ResourceService {
     }
 
     public void updateFile(Long id, MultipartFile file) throws Exception {
-        Resource existingResource = resourceRepository.findById(id)
+        Resources existingResource = resourceRepository.findById(id)
                 .orElseThrow(() -> new Exception("File not found"));
 
-        Resource updatedResource = new Resource.Builder()
+        Resources updatedResource = new Resources.Builder()
                 .copy(existingResource)
                 .setFileName(file.getOriginalFilename()) // Update file name
                 .setFileType(file.getContentType()) // Update file type
