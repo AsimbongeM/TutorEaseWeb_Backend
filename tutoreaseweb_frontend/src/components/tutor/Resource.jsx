@@ -117,7 +117,7 @@ const Resource = () => {
                     <Form.Control
                         type="file"
                         onChange={handleFileChange}
-                        value={file ? file.name : ''} // Display the selected file name
+                        // value={file ? file.name : ''} // Display the selected file name
                     />
                 </Form.Group>
                 <Form.Group controlId="formSelectUploadType" className="mb-3">
