@@ -1,10 +1,11 @@
 package za.ac.cput.domain;
+
 import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Entity
-public class Resource {
+public class Resources {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,11 +26,10 @@ public class Resource {
     private Tutor tutor;
 
     // Default constructor
-
-    public Resource() {
+    public Resources() {
     }
 
-    private Resource(Builder builder) {
+    private Resources(Builder builder) {
         this.id = builder.id;
         this.fileName = builder.fileName;
         this.fileType = builder.fileType;
@@ -91,7 +91,7 @@ public class Resource {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Resource resources = (Resource) o;
+        Resources resources = (Resources) o;
         return Objects.equals(id, resources.id) &&
                 Objects.equals(fileName, resources.fileName) &&
                 Objects.equals(fileType, resources.fileType) &&
@@ -155,19 +155,18 @@ public class Resource {
             return this;
         }
 
-        public Builder copy(Resource resource) {
-            this.id = resource.id;
-            this.fileName = resource.fileName;
-            this.fileType = resource.fileType;
-            this.document = resource.document;
-            this.recordings = resource.recordings;
-            this.tutor = resource.tutor;
+        public Builder copy(Resources resources) {
+            this.id = resources.id;
+            this.fileName = resources.fileName;
+            this.fileType = resources.fileType;
+            this.document = resources.document;
+            this.recordings = resources.recordings;
+            this.tutor = resources.tutor;
             return this;
         }
 
-        public Resource build() {
-            return new Resource(this);
+        public Resources build() {
+            return new Resources(this);
         }
     }
 }
-

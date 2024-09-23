@@ -1,18 +1,18 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from "../AuthContext.jsx";
-import { uploadFile, fetchFiles, deleteFile, updateFile } from "../../services/ResourceServices.js";
+import { uploadFile, fetchFiles, deleteFile, updateFile } from "../../services/ResourcesServices.js";
 import { Button, Form, Spinner, Modal, Alert, Card, Row, Col } from 'react-bootstrap';
 
-const Resource = () => {
+const Resources = () => {
     const { auth } = useContext(AuthContext);
-    const [file, setFile] = useState(null); // For both new uploads and updates
+    const [file, setFile] = useState(null); 
     const [uploadType, setUploadType] = useState('document');
     const [uploadError, setUploadError] = useState('');
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [currentFile, setCurrentFile] = useState(null); // The file currently being edited
+    const [currentFile, setCurrentFile] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [modalType, setModalType] = useState(null); // 'delete', 'update'
+    const [modalType, setModalType] = useState(null);
 
     useEffect(() => {
         if (auth && auth.email) {
@@ -117,7 +117,6 @@ const Resource = () => {
                     <Form.Control
                         type="file"
                         onChange={handleFileChange}
-                        value={file ? file.name : ''} // Display the selected file name
                     />
                 </Form.Group>
                 <Form.Group controlId="formSelectUploadType" className="mb-3">
@@ -200,4 +199,4 @@ const Resource = () => {
     );
 };
 
-export default Resource;
+export default Resources;
