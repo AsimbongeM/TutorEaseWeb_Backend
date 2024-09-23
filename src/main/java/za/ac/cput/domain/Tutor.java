@@ -1,6 +1,7 @@
 package za.ac.cput.domain;
 
 import jakarta.persistence.*;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,10 +32,11 @@ public class Tutor {
     @OneToMany(mappedBy = "tutor")
     private Set<ScheduleSession> scheduleSessions;
     @OneToMany(mappedBy = "tutor")
-    private Set<Resource> resource;
+    private Set<Resources> resources;
     @OneToMany(mappedBy = "tutor")
     private Set<BookSession> bookSessions;
     @OneToMany(mappedBy = "tutor")
+
     private Set<Announcement> announcements;
     protected Tutor() {
     }
@@ -53,7 +55,7 @@ public class Tutor {
 //        this.sarsDocument = builder.sarsDocument;
         this.approvalStatus = builder.approvalStatus != null ? builder.approvalStatus : TutorApprovalStatus.PENDING;
         this.scheduleSessions = builder.scheduleSessions;
-        this.resource = builder.resource;
+        this.resources = builder.resources;
         this.announcements = builder.announcements;
         this.bookSessions = builder.bookSessions;
 
@@ -112,8 +114,8 @@ public class Tutor {
         return scheduleSessions;
     }
 
-    public Set<Resource> getResource() {
-        return resource;
+    public Set<Resources> getResources() {
+        return resources;
     }
 
     public Set<Announcement> getAnnouncements() {
@@ -129,12 +131,16 @@ public class Tutor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resource, tutor.resource) && Objects.equals(bookSessions, tutor.bookSessions) && Objects.equals(announcements, tutor.announcements);
+
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resources, tutor.resources) && Objects.equals(bookSessions, tutor.bookSessions) && Objects.equals(announcements, tutor.announcements);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resource, bookSessions, announcements);
+
+        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resources, bookSessions, announcements);
+
     }
 
     @Override
@@ -150,8 +156,9 @@ public class Tutor {
                 ", experience=" + experience +
                 ", approvalStatus=" + approvalStatus +
                 ", scheduleSessions=" + scheduleSessions +
-                ", resource=" + resource +
+                ", resources=" + resources +
                 ", bookSessions=" + bookSessions +
+
                 ", announcements=" + announcements +
                 '}';
     }
@@ -170,7 +177,7 @@ public class Tutor {
 //        private byte[] sarsDocument;
         private TutorApprovalStatus approvalStatus;
         private Set<ScheduleSession> scheduleSessions;
-        private Set<Resource> resource;
+        private Set<Resources> resources;
         private Set<Announcement> announcements;
         private Set<BookSession> bookSessions;
 
@@ -239,8 +246,8 @@ public class Tutor {
             return this;
         }
 
-        public Builder setResource(Set<Resource> resource) {
-            this.resource = resource;
+        public Builder setResources(Set<Resources> resources) {
+            this.resources = resources;
             return this;
         }
 
@@ -267,7 +274,7 @@ public class Tutor {
 //            this.sarsDocument = tutor.sarsDocument;
             this.approvalStatus = tutor.approvalStatus;
             this.scheduleSessions = tutor.scheduleSessions;
-            this.resource = tutor.resource;
+            this.resources = tutor.resources;
             this.announcements = tutor.announcements;
             this.bookSessions = tutor.bookSessions;
             return this;

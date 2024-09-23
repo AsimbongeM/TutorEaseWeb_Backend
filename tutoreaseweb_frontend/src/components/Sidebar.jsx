@@ -126,13 +126,13 @@ function Sidebar() {
                         Content
                     </Link>
                     <Link
-                        to='/resource'
-                        style={{ ...styles.link, ...getActiveLinkStyle('/resource') }}
+                        to='/resources'
+                        style={{ ...styles.link, ...getActiveLinkStyle('/resources') }}
                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
                     >
                         <i className='bi bi-grid me-2'></i>
-                        Resource
+                        Resources
                     </Link>
                     <Link
                         to='/announcements'
