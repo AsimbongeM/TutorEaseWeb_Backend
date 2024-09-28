@@ -115,7 +115,7 @@ function SignIn() {
             if (tutorResponse.status === 200 && tutorResponse.data) {
                 setAuth({...tutorResponse.data, role: 'tutor'});
                 setError('');
-                return navigate('/TutorDashboard'); // Navigate to the tutor dashboard
+                return navigate('/content'); // Navigate to the tutor dashboard
             }
         } catch (error) {
             console.log("Not a tutor. Checking student credentials...");
@@ -127,7 +127,7 @@ function SignIn() {
             if (studentResponse.status === 200 && studentResponse.data) {
                 setAuth({...studentResponse.data, role: 'student'});
                 setError('');
-                return navigate('/StudentDashboard'); // Navigate to the student dashboard
+                return navigate('/content'); // Navigate to the student dashboard
             } else {
                 setError('Invalid email or password');
             }
