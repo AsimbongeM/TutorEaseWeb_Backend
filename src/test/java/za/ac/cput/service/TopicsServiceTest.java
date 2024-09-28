@@ -16,14 +16,15 @@ class TopicsServiceTest {
     @Autowired
     private TopicsService topicsService;
     static Topics topics1;
-    static Topics topics2;
+    static Topics topics2,topics3;
     private static Long generatedTopicId;
     private static Long generatedTopicId2;
 
     @BeforeEach
     void setUp() {
         topics1 = TopicsFactory.buildTopics(TopicLevel.BEGINNER, "Variables");
-        topics2 = TopicsFactory.buildTopics(TopicLevel.INTERMEDIATE, "Stacks");
+        topics2 = TopicsFactory.buildTopics(TopicLevel.INTERMEDIATE, "Introduction to Java GUI Framework");
+        topics3 = TopicsFactory.buildTopics(TopicLevel.ADVANCED, "Builder Pattern");
     }
 
     @Order(1)
@@ -36,6 +37,9 @@ class TopicsServiceTest {
         Topics savedTopics2 = topicsService.create(topics2);
         assertNotNull(savedTopics2);
         generatedTopicId2 = savedTopics2.getId();
+        Topics savedTopics3 = topicsService.create(topics3);
+        assertNotNull(savedTopics3);
+        generatedTopicId2 = savedTopics3.getId();
     }
 
     @Order(2)

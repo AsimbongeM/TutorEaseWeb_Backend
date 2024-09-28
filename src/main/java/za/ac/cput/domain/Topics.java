@@ -25,7 +25,7 @@ public class Topics {
     @Column(name = "Topic_Description")
     private String description;
 
-    @OneToMany(mappedBy = "topics", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ScheduleSession> bookings;
 
     protected Topics() {
