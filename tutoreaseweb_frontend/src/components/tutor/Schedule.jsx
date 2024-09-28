@@ -192,7 +192,7 @@ function Schedule() {
 
     return (
         <section className="container mt-4">
-            <h2 className="mb-4">Schedule</h2>
+            <h2 className="mb-4 text-primary " style={{ fontWeight: 'bold', fontSize: '2rem' }}>Schedule</h2>
 
             {successMessage && (
                 <div className="alert alert-success" role="alert">
@@ -304,7 +304,7 @@ function Schedule() {
                     </div>
                 ))
             ) : (
-                <p>No sessions found.</p>
+                <p className="text-danger">No sessions found.</p>
             )}
 
             <Modal show={showModal} onHide={handleCloseModal} centered>
