@@ -1,11 +1,12 @@
 package za.ac.cput.factory;
-import za.ac.cput.domain.Resource;
+
+import za.ac.cput.domain.Resources;
 import za.ac.cput.domain.Tutor;
 
-public class ResourceFactory {
+public class ResourcesFactory {
 
-    public static Resource createResources(Long id, byte[] document, byte[] recordings, Tutor tutor) {
-        return new Resource.Builder()
+    public static Resources createResources(Long id, byte[] document, byte[] recordings, Tutor tutor) {
+        return new Resources.Builder()
                 .setId(id)
                 .setDocument(document)
                 .setRecordings(recordings)

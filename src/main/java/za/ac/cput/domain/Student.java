@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Student.java
@@ -29,6 +30,8 @@ public class Student {
     private String password;
     private String skillLevel;
 
+    @OneToMany(mappedBy = "student")
+    private Set<BookSession> bookSession;
 
     protected Student() {
 
@@ -43,6 +46,7 @@ public class Student {
 //        this.profilePicture = builder.profilePicture;
         this.password = builder.password;
         this.skillLevel = builder.skillLevel;
+        this.bookSession = builder.bookSession;
     }
 
 
@@ -78,31 +82,37 @@ public class Student {
         return skillLevel;
     }
 
+    public Set<BookSession> getbookSession() {
+        return bookSession;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return age == student.age && Objects.equals(email, student.email) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(cellNumber, student.cellNumber) && Objects.equals(password, student.password) && Objects.equals(skillLevel, student.skillLevel);
+        return age == student.age && Objects.equals(email, student.email) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(cellNumber, student.cellNumber) && Objects.equals(password, student.password) && Objects.equals(skillLevel, student.skillLevel) && Objects.equals(bookSession, student.bookSession);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skillLevel);
+        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skillLevel, bookSession);
     }
 
     @Override
     public String toString() {
         return "Student{" +
+                "email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
-                ", email='" + email + '\'' +
                 ", cellNumber='" + cellNumber + '\'' +
                 ", password='" + password + '\'' +
                 ", skillLevel='" + skillLevel + '\'' +
+                ", bookSession=" + bookSession +
                 '}';
     }
+
     public static class Builder{
         private String firstName;
         private String lastName;
@@ -112,6 +122,7 @@ public class Student {
 //        private byte[] profilePicture;
         private String password;
         private String skillLevel;
+        private Set<BookSession> bookSession;
 
         public Builder() {
         }
@@ -155,6 +166,11 @@ public class Student {
             return this;
         }
 
+        public Builder setBookSession(Set<BookSession> bookSession) {
+            this.bookSession = bookSession;
+            return this;
+        }
+
         public Builder copy(Student student) {
             this.firstName = student.firstName;
             this.lastName = student.lastName;
@@ -164,6 +180,7 @@ public class Student {
 //            this.profilePicture = student.profilePicture;
             this.password = student.password;
             this.skillLevel = student.skillLevel;
+            this.bookSession = student.bookSession;
             return this;
         }
 

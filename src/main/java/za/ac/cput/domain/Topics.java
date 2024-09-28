@@ -2,6 +2,7 @@ package za.ac.cput.domain;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +24,9 @@ public class Topics {
 
     @Column(name = "Topic_Description")
     private String description;
+
+    @OneToMany(mappedBy = "topics", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<ScheduleSession> bookings;
 
     protected Topics() {
     }
