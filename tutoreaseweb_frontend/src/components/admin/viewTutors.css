@@ -1,0 +1,60 @@
+/* ViewTutors.css */
+
+/* Container for the tutor list */
+.view-tutors {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+/* Container for the card elements */
+.tutor-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+/* Individual tutor card style */
+.tutor-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Card image styling */
+.tutor-image {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* Card heading styling */
+.tutor-card h2 {
+    font-size: 1.5rem;
+    margin: 10px 0;
+}
+
+/* Text styling inside card */
+.tutor-card p {
+    font-size: 1rem;
+    margin: 5px 0;
+    color: #333;
+}
+
+/* Add hover effect to the card */
+.tutor-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon styling */
+.tutor-card .icon {
+    margin-right: 8px;
+    color: #007bff;
+}

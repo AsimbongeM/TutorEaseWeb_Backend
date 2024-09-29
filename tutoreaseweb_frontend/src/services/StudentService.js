@@ -16,3 +16,5 @@ export const updateStudent = (email, student) =>
 
 export const studentSignIn = (email, password) =>
     axios.post(`${REST_API_BASE_URL}/authenticate`, { email, password });
+export const getAllStudents = () =>
+    axios.get(`${REST_API_BASE_URL}/getAll`);

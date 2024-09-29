@@ -29,11 +29,11 @@ class AdminLoginServiceTest {
     void setUp() {
         adminRepository.deleteAll(); // Clean up the database
         admin = new Admin.Builder()
-                .setPassword("password1")
-                .setFirstName("John")
-                .setLastName("Doe")
-                .setEmail("john.doe@example.com")
-                .setCellphoneNumber("1234567890")
+                .setPassword("Password@123")
+                .setFirstName("Asimbonge")
+                .setLastName("Mbende")
+                .setEmail("asim@gmail.com")
+                .setCellphoneNumber("0633065703")
                 .build();
         adminRepository.save(admin); // Save the admin to the database
     }
@@ -41,7 +41,7 @@ class AdminLoginServiceTest {
     @Test
     @Order(1)
     void testLogin_ValidCredentials() {
-        Admin foundAdmin = adminLoginService.login("fury@x.com", "password1");
+        Admin foundAdmin = adminLoginService.login("asim@gmail.com", "Password@123");
         assertNotNull(foundAdmin, "Admin should be found with valid credentials");
         assertEquals(admin.getEmail(), foundAdmin.getEmail(), "Emails should match");
         assertEquals(admin.getPassword(), foundAdmin.getPassword(), "Passwords should match");

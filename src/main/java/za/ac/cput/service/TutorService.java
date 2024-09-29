@@ -40,6 +40,7 @@ public class TutorService implements ITutorService {
                     .setCellNumber(tutor.getCellNumber())
                     .setSkills(tutor.getSkills())
                     .setExperience(tutor.getExperience())
+                    .setApprovalStatus(tutor.getApprovalStatus())
                     .build();
             return tutorRepository.save(updatedTutor);
         }

@@ -1,0 +1,51 @@
+.view-students {
+    margin-left: 250px; /* Adjust margin to accommodate sidebar */
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #00274d;
+}
+
+.student-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.student-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: calc(33.333% - 20px); /* 3 cards per row, adjust for gaps */
+    text-align: center;
+}
+
+.student-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.student-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #00274d;
+}
+
+.student-card p {
+    margin: 5px 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.student-card svg {
+    vertical-align: middle;
+    margin-right: 8px;
+}

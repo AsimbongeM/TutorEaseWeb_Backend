@@ -16,12 +16,6 @@ export const updateTutor = (email, tutor) =>
 
 export const tutorSignIn = (email, password) =>
     axios.post(`${REST_API_BASE_URL}/authenticate`, { email, password });
-export const getAllTutors = async () => {
-    try {
-        const response = await axios.get(`${REST_API_BASE_URL}/getAll`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching all sessions:', error);
-        throw error;
-    }
-};
+// function to fetch all tutors
+export const getAllTutors = () =>
+    axios.get(`${REST_API_BASE_URL}/getAll`);

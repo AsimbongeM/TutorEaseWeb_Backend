@@ -1,0 +1,60 @@
+/*!* Container to center the sign-in box in the viewport *!*/
+/*.signInContainer {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    height: 100vh; !* Full viewport height *!*/
+/*    background-color: #f4f4f4; !* Light background color *!*/
+/*    padding: 20px; !* Padding around the container *!*/
+/*}*/
+
+/*!* Styling for the sign-in box *!*/
+/*.signInBox {*/
+/*    background: #ffffff; !* White background for the box *!*/
+/*    border-radius: 8px; !* Rounded corners *!*/
+/*    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); !* Light shadow for depth *!*/
+/*    padding: 20px; !* Padding inside the box *!*/
+/*    max-width: 400px; !* Maximum width of the box *!*/
+/*    width: 100%; !* Full width up to the max-width *!*/
+/*    text-align: center; !* Center text inside the box *!*/
+/*}*/
+
+/*!* Heading style inside the sign-in box *!*/
+/*.signInHeading {*/
+/*    font-size: 24px; !* Large font size for the heading *!*/
+/*    margin-bottom: 20px; !* Space below the heading *!*/
+/*}*/
+
+/*!* Input field styling *!*/
+/*.signInInput {*/
+/*    width: 100%; !* Full width of the box *!*/
+/*    padding: 10px; !* Padding inside the input field *!*/
+/*    margin: 10px 0; !* Margin above and below the input field *!*/
+/*    border: 1px solid #ddd; !* Light gray border *!*/
+/*    border-radius: 4px; !* Slightly rounded corners *!*/
+/*}*/
+
+/*!* Button styling *!*/
+/*.signInButton {*/
+/*    width: 100%; !* Full width of the box *!*/
+/*    background: #00274d; !* Dark blue background *!*/
+/*    color: #fff; !* White text color *!*/
+/*    border: none; !* No border *!*/
+/*    padding: 10px; !* Padding inside the button *!*/
+/*    font-size: 16px; !* Font size for the button text *!*/
+/*    border-radius: 4px; !* Slightly rounded corners *!*/
+/*    cursor: pointer; !* Pointer cursor on hover *!*/
+/*    transition: background-color 0.3s; !* Smooth background color transition *!*/
+/*}*/
+
+/*!* Button hover state styling *!*/
+/*.signInButton:hover {*/
+/*    background: #001f3f; !* Slightly darker blue on hover *!*/
+/*}*/
+
+/*!* Error message styling *!*/
+/*.errorMessage {*/
+/*    color: #ff0000; !* Red text color for error messages *!*/
+/*    margin-bottom: 10px; !* Space below the error message *!*/
+/*}*/

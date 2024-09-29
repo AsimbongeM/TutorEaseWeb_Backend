@@ -16,19 +16,31 @@ import Schedule from "./components/tutor/Schedule.jsx";
 import Calendar from "./components/tutor/Calendar.jsx";
 import Content from "./components/tutor/Content.jsx";
 import BookSession from "./components/BookSession.jsx";
+// import AdminSignIn from "./components/admin/adminSignin.jsx";
+import AdminDashboard from "./components/admin/AdminDashboard.jsx";
+import AdminLayout from "./components/admin/AdminLayout.jsx";
+import ViewTutors from "./components/admin/viewTutors.jsx";
+import TutorApplications from "./components/admin/TutorApplications.jsx";
+import ViewStudents from "./components/admin/viewStudents.jsx";
+import {AuthContext} from "./components/AuthContext.jsx";
+import {useContext} from "react";
+import AdminSidebar from "./components/adminSidebar.jsx";
 
 function App() {
     const location = useLocation();
+    const { auth } = useContext(AuthContext);
     // Define routes where Sidebar should not be visible
     const noSidebarRoutes = ['/', '/home', '/sign-in', '/forgot-password', '/student-registration', '/tutor-registration'];
 
     // Determine if Sidebar should be visible
     const shouldShowSidebar = !noSidebarRoutes.includes(location.pathname);
-
+    // Determine which Sidebar to show
+    const isAdmin = auth?.role === 'admin';
+    const SidebarComponent = isAdmin ? AdminSidebar : Sidebar;
     return (
         <div>
-            {shouldShowSidebar && <Sidebar />}
-            <div style={{ marginLeft: shouldShowSidebar ? '250px' : '0', paddingTop: shouldShowSidebar ? '80px' : '20px' }}>
+            {shouldShowSidebar && <SidebarComponent />}
+            <div style={{ marginLeft: shouldShowSidebar ? (isAdmin ?  '250px': '250px'): '0', paddingTop: shouldShowSidebar ? '80px' : '20px' }}>
                 <Routes>
                     <Route exact path="/" element={<Home />} />
                     <Route path="/home" element={<Home />} />
@@ -47,6 +59,16 @@ function App() {
                     <Route path="/schedule" element={<Schedule />} />
                     <Route path="/calendar" element={<Calendar />} />
                     <Route path="/book-session" element={<BookSession />} />
+                    {/*<Route path="/admin-login" element={<AdminSignIn />} />*/}
+                    <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                    {/* Admin routes wrapped in AdminLayout */}
+                    <Route path="/admin" element={<AdminLayout />}>
+                        <Route index element={<AdminDashboard />} />
+                        <Route path="view-tutors" element={<ViewTutors />} />
+                        <Route path="tutor-applications" element={<TutorApplications />} />
+                        <Route path="view-students" element={<ViewStudents />} />
+                        <Route path="manage-applications" element={<TutorApplications />} />
+                    </Route>
                 </Routes>
             </div>
         </div>
