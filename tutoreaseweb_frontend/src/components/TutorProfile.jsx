@@ -75,7 +75,6 @@ const TutorProfile = () => {
 
     return (
         <div className="container">
-            {/*<NavBar />*/}
             <div className="d-flex flex-column align-items-center mt-5">
                 <div className="text-center">
                     <img src="/images/logo.png" alt="Profile Picture" className="rounded-circle mb-3"
@@ -168,6 +167,20 @@ const TutorProfile = () => {
                             onChange={(e) => setTutor({...tutor, experience: e.target.value})}
                         />
                     </div>
+
+                    {/* Tutor Approval Status */}
+                    <div className="mb-3">
+                        <label htmlFor="approvalStatus" className="form-label">Approval Status:</label>
+                        <input
+                            type="text"
+                            id="approvalStatus"
+                            name="approvalStatus"
+                            value={tutor.approvalStatus}
+                            disabled
+                            className="form-control"
+                        />
+                    </div>
+
                     <div className="d-flex justify-content-between">
                         {isEditable ? (
                             <>
