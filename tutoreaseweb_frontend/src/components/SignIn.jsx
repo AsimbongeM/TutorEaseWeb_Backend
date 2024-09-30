@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthContext.jsx';
-import { tutorSignIn, studentSignIn, signInAdmin } from '../services/AuthServices.js'; // Consolidated imports
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import {signInAdmin} from "../services/AdminServices.js";
+import {tutorSignIn} from "../services/TutorServices.js";
+import {studentSignIn} from "../services/StudentService.js";
 
 const styles = {
     container: {
