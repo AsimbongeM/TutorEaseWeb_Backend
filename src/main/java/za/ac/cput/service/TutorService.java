@@ -10,15 +10,27 @@ import java.util.List;
 @Service
 public class TutorService implements ITutorService {
     private final TutorRepository tutorRepository;
+    private final NotificationService notificationService;
 
     @Autowired
-    TutorService(TutorRepository tutorRepository) {
+    TutorService(TutorRepository tutorRepository, NotificationService notificationService) {
         this.tutorRepository = tutorRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
     public Tutor create(Tutor tutor) {
-        return tutorRepository.save(tutor);
+
+        Tutor savedTutor = tutorRepository.save(tutor);
+        // Create a notification message
+        String notificationMessage = String.format("Attention %s %s has registered and needs approval.",
+                savedTutor.getFirstName(),
+                savedTutor.getLastName());
+        // Create a new Notification
+        notificationService.createNotification(notificationMessage); // Call the method to create a notification
+
+        // Return the saved tutor
+        return savedTutor;
     }
 
     @Override
@@ -59,4 +71,5 @@ public class TutorService implements ITutorService {
     public Tutor authenticate(String email, String password) {
         return tutorRepository.findByEmailAndPassword(email, password);
     }
+
 }

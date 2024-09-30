@@ -25,6 +25,7 @@ import ViewStudents from "./components/admin/viewStudents.jsx";
 import {AuthContext} from "./components/AuthContext.jsx";
 import {useContext} from "react";
 import AdminSidebar from "./components/adminSidebar.jsx";
+import AdminNotifications from './components/admin/AdminNotifications.jsx';
 
 function App() {
     const location = useLocation();
@@ -68,6 +69,7 @@ function App() {
                         <Route path="tutor-applications" element={<TutorApplications />} />
                         <Route path="view-students" element={<ViewStudents />} />
                         <Route path="manage-applications" element={<TutorApplications />} />
+                        <Route path="admin-notifications" element={<AdminNotifications />} />
                     </Route>
                 </Routes>
             </div>

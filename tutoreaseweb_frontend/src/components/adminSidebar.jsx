@@ -16,8 +16,8 @@ const styles = {
         textAlign: 'center',
         padding: '15px 10px',
         position: 'fixed',
-        width: 'calc(100% - 250px)', // Adjust width considering sidebar
-        left: '250px', // Adjusted for sidebar width
+        width: 'calc(100% - 250px)', 
+        left: '250px', 
         top: 0,
         zIndex: 1000,
         fontSize: '24px',
@@ -36,7 +36,7 @@ const styles = {
         justifyContent: 'space-between',
         color: '#ffffff',
         zIndex: 999,
-        overflowY: 'auto', // Scroll if sidebar content overflows
+        overflowY: 'auto', 
     },
     sidebarHeading: {
         display: 'flex',
@@ -157,6 +157,15 @@ function AdminSidebar() {
                     >
                         <i className='bi bi-graph-up me-2'></i>
                         All Tutors
+                    </Link>
+                    <Link
+                        to='/admin/admin-notifications'
+                        style={{ ...styles.link, ...getActiveLinkStyle('/admin/admin-notifications') }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
+                    >
+                        <i className='bi bi-bell me-2'></i>
+                        Admin Notifications
                     </Link>
                 </div>
                 <div>
