@@ -14,7 +14,7 @@ public class Voucher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code; // Unique code for the voucher
+    private String code; // Code for the voucher
     private LocalDateTime createdAt; // Date when the voucher was created
     private LocalDateTime expiryDate; // Date when the voucher expires
     private boolean isRedeemed; // Flag to indicate if the voucher has been redeemed
@@ -84,9 +84,9 @@ public class Voucher {
 
     public static class Builder {
         private Long id;
-        private String code; // Unique code for the voucher
+        private String code;
         private LocalDateTime createdAt;
-        private LocalDateTime expiryDate; // Date when the voucher expires
+        private LocalDateTime expiryDate;
         private boolean isRedeemed = false; // Default value
         private LocalDateTime redeemedAt;
 
@@ -126,7 +126,7 @@ public class Voucher {
         }
 
         public Voucher build() {
-            // Automatically set the creation time during voucher creation
+            // Automatically set the creation time during voucher building
             this.createdAt = LocalDateTime.now();
             return new Voucher(this);
         }
