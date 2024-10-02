@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getAllStudents } from '../../services/StudentService.js'; // Import your service function
-import './viewStudents.css'; // Import the CSS file for styling
+import { getAllStudents } from '../../../services/StudentService.js'; // Import your service function
+import '../styles/viewStudents.css'; // Import the CSS file for styling
 import { FaUserAlt, FaPhoneAlt, FaCalendarAlt } from 'react-icons/fa'; // Import React Icons
 
 const ViewStudents = () => {

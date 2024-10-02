@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {NavLink, useNavigate} from 'react-router-dom';
-import {createTutor, getTutorById} from '../services/TutorServices.js';
+import {createTutor, getTutorById} from '../../services/TutorServices.js';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faCheckCircle, faEye, faEyeSlash, faTimesCircle} from '@fortawesome/free-solid-svg-icons';
-import SuccessPopup from "./SuccessPopup.jsx";
+import SuccessPopup from "../SuccessPopup.jsx";
 
 const TutorRegistration = () => {
     const [isHovered, setIsHovered] = useState(false);

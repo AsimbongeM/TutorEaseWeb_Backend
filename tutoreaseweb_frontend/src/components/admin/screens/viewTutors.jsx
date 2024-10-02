@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getAllTutors } from '../../services/TutorServices.js'; // Import the new service function
-import './viewTutors.css';
+import { getAllTutors } from '../../../services/TutorServices.js'; // Import the new service function
+import '../styles/viewTutors.css';
 
 const ViewTutors = () => {
     const [tutors, setTutors] = useState([]);

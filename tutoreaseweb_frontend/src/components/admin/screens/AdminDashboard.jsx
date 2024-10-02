@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import './AdminDashboard.css';
-import { getAllStudents } from '../../services/StudentService'; 
-import { getAllTutors } from '../../services/TutorServices';
-import AdminNotifications from './AdminNotifications';
+import '../styles/AdminDashboard.css';
+import { getAllStudents } from '../../../services/StudentService.js';
+import { getAllTutors } from '../../../services/TutorServices.js';
+import AdminNotifications from './AdminNotifications.jsx';
 
 const AdminDashboard = () => {
     const [tutorCount, setTutorCount] = useState(0);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getAllNotifications, markAsRead } from '../../services/NotificationService';
-import './AdminNotifications.css';
+import { getAllNotifications, markAsRead } from '../../../services/NotificationService.js';
+import '../styles/AdminNotifications.css';
 
 const AdminNotifications = () => {
     const [notifications, setNotifications] = useState([]);

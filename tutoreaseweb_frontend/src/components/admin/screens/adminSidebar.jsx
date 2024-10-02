@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from "./AuthContext.jsx";
-import { getAdminById } from '../services/AdminServices.js';
-import { getUnreadNotifications } from '../services/NotificationService.js';
-import { getAllTutors } from '../services/TutorServices.js'; // Import the function to fetch all tutors
+import { AuthContext } from "../../AuthContext.jsx";
+import { getAdminById } from '../../../services/AdminServices.js';
+import { getUnreadNotifications } from '../../../services/NotificationService.js';
+import { getAllTutors } from '../../../services/TutorServices.js'; // Import the function to fetch all tutors
 
 const styles = {
     reset: {

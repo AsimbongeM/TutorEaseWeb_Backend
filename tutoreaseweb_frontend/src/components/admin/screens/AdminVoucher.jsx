@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import './AdminVoucher.css';
+import '../styles/AdminVoucher.css';
 import {
     createVoucher,
     deleteVoucher,
     getAllVouchers,
-} from '../../services/VoucherServices'; // Import the voucher services
+} from '../../../services/VoucherServices.js'; // Import the voucher services
 
 const AdminVoucher = () => {
     const [vouchers, setVouchers] = useState([]);

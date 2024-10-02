@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Card, InputGroup, Form, Modal } from 'react-bootstrap';
-import {createBookSession, getAllBookSessions, getBookSession} from '../services/BookSessionServices';
-import { AuthContext } from "./AuthContext";
-import { getAllTutors } from "../services/TutorServices.js";
+import {createBookSession, getAllBookSessions, getBookSession} from '../../services/BookSessionServices.js';
+import { AuthContext } from "../AuthContext.jsx";
+import { getAllTutors } from "../../services/TutorServices.js";
 
 const BookSession = () => {
     const [loading, setLoading] = useState(true);

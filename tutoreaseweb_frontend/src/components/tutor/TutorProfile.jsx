@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import 'font-awesome/css/font-awesome.min.css';
-import {AuthContext} from "./AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
-import {deleteStudentById, getStudentById, updateStudent} from "../services/StudentService.js";
+import NavBar from "../../navigation/NavBar.jsx";
+import {deleteTutorById, getTutorById, updateTutor} from "../../services/TutorServices.js";
+import {AuthContext} from "../AuthContext.jsx";
 
-const StudentProfile = () => {
-    const [student, setStudent] = useState(null);
+const TutorProfile = () => {
+    const [tutor, setTutor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditable, setIsEditable] = useState(false);
     const [isSaveHovered, setIsSaveHovered] = useState(false);
@@ -25,13 +25,13 @@ const StudentProfile = () => {
 
     useEffect(() => {
         if (auth && auth.email) {
-            getStudentById(auth.email)
+            getTutorById(auth.email)
                 .then((response) => {
-                    setStudent(response.data);
+                    setTutor(response.data);
                     setLoading(false);
                 })
                 .catch((error) => {
-                    console.error("Error retrieving student data:", error);
+                    console.error("Error retrieving tutor data:", error);
                     setLoading(false);
                 });
         } else {
@@ -44,24 +44,24 @@ const StudentProfile = () => {
     };
 
     const handleSave = () => {
-        updateStudent(auth.email, student)
+        updateTutor(auth.email, tutor)
             .then((response) => {
-                setStudent(response.data);
+                setTutor(response.data);
                 setIsEditable(false);
             })
             .catch((error) => {
-                console.error("Error updating student data:", error);
+                console.error("Error updating tutor data:", error);
             });
     };
 
     const handleDelete = () => {
-        deleteStudentById(auth.email)
+        deleteTutorById(auth.email)
             .then(() => {
                 setAuth(null);
                 navigate('/');
             })
             .catch((error) => {
-                console.error("Error deleting student:", error);
+                console.error("Error deleting tutor:", error);
             });
     };
 
@@ -69,13 +69,12 @@ const StudentProfile = () => {
         return <div className="text-center">Loading...</div>;
     }
 
-    if (!student) {
-        return <div className="text-center">No student data available.</div>;
+    if (!tutor) {
+        return <div className="text-center">No tutor data available.</div>;
     }
 
     return (
         <div className="container">
-            {/*<NavBar />*/}
             <div className="d-flex flex-column align-items-center mt-5">
                 <div className="text-center">
                     <img src="/images/logo.png" alt="Profile Picture" className="rounded-circle mb-3"
@@ -88,10 +87,10 @@ const StudentProfile = () => {
                             type="text"
                             id="firstName"
                             name="firstName"
-                            value={student.firstName}
+                            value={tutor.firstName}
                             disabled={!isEditable}
                             className="form-control"
-                            onChange={(e) => setStudent({...student, firstName: e.target.value})}
+                            onChange={(e) => setTutor({...tutor, firstName: e.target.value})}
                         />
                     </div>
                     <div className="mb-3">
@@ -100,10 +99,10 @@ const StudentProfile = () => {
                             type="text"
                             id="lastName"
                             name="lastName"
-                            value={student.lastName}
+                            value={tutor.lastName}
                             disabled={!isEditable}
                             className="form-control"
-                            onChange={(e) => setStudent({...student, lastName: e.target.value})}
+                            onChange={(e) => setTutor({...tutor, lastName: e.target.value})}
                         />
                     </div>
                     <div className="mb-3">
@@ -112,10 +111,10 @@ const StudentProfile = () => {
                             type="number"
                             id="age"
                             name="age"
-                            value={student.age}
+                            value={tutor.age}
                             disabled={!isEditable}
                             className="form-control"
-                            onChange={(e) => setStudent({...student, age: e.target.value})}
+                            onChange={(e) => setTutor({...tutor, age: e.target.value})}
                         />
                     </div>
                     <div className="mb-3">
@@ -124,7 +123,7 @@ const StudentProfile = () => {
                             type="email"
                             id="email"
                             name="email"
-                            value={student.email}
+                            value={tutor.email}
                             disabled
                             className="form-control"
                         />
@@ -135,10 +134,10 @@ const StudentProfile = () => {
                             type="tel"
                             id="cellNumber"
                             name="cellNumber"
-                            value={student.cellNumber}
+                            value={tutor.cellNumber}
                             disabled={!isEditable}
                             className="form-control"
-                            onChange={(e) => setStudent({...student, cellNumber: e.target.value})}
+                            onChange={(e) => setTutor({...tutor, cellNumber: e.target.value})}
                         />
                     </div>
                     <div className="mb-3">
@@ -146,16 +145,42 @@ const StudentProfile = () => {
                         <select
                             id="skills"
                             name="skills"
-                            value={student.skills}
+                            value={tutor.skills}
                             disabled={!isEditable}
                             className="form-select"
-                            onChange={(e) => setStudent({...student, skills: e.target.value})}
+                            onChange={(e) => setTutor({...tutor, skills: e.target.value})}
                         >
                             <option value="beginner">Beginner</option>
                             <option value="intermediate">Intermediate</option>
                             <option value="advanced">Advanced</option>
                         </select>
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="experience" className="form-label">Experience:</label>
+                        <input
+                            type="number"
+                            id="experience"
+                            name="experience"
+                            value={tutor.experience}
+                            disabled={!isEditable}
+                            className="form-control"
+                            onChange={(e) => setTutor({...tutor, experience: e.target.value})}
+                        />
+                    </div>
+
+                    {/* Tutor Approval Status */}
+                    <div className="mb-3">
+                        <label htmlFor="approvalStatus" className="form-label">Approval Status:</label>
+                        <input
+                            type="text"
+                            id="approvalStatus"
+                            name="approvalStatus"
+                            value={tutor.approvalStatus}
+                            disabled
+                            className="form-control"
+                        />
+                    </div>
+
                     <div className="d-flex justify-content-between">
                         {isEditable ? (
                             <>
@@ -219,4 +244,4 @@ const StudentProfile = () => {
     );
 };
 
-export default StudentProfile;
+export default TutorProfile;

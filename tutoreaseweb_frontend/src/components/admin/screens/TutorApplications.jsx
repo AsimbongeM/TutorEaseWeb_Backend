@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getAllTutors, updateTutor, deleteTutorById } from '../../services/TutorServices.js'; // Import the deleteTutorById function
-import './TutorApplications.css'; // Import the CSS file for styling
+import { getAllTutors, updateTutor, deleteTutorById } from '../../../services/TutorServices.js'; // Import the deleteTutorById function
+import '../styles/TutorApplications.css'; // Import the CSS file for styling
 
 const TutorApplications = () => {
     const [tutors, setTutors] = useState([]);
