@@ -11,14 +11,12 @@ const AdminNotifications = () => {
             setLoading(true);
             try {
                 const response = await getAllNotifications();
-                console.log('Fetched notifications:', response.data);
+               
                 // Map the notifications and set isRead based on is_read
                 const notificationsData = response.data.map(notification => ({
                     ...notification,
                     isRead: notification.is_read === 0 // Set isRead to true if is_read is 0 (unread)
                 }));
-                console.log('Mapped notifications with isRead:', notificationsData);
-                
                 // Sort notifications by createdAt in descending order (newest first)
                 notificationsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 
@@ -44,7 +42,6 @@ const AdminNotifications = () => {
                         ? { ...notification, isRead: false, is_read: 1 } // Update both isRead and is_read
                         : notification
                 );
-                console.log('Updated notifications after marking as read:', updatedNotifications);
                 return updatedNotifications;
             });
         } catch (error) {

@@ -33,6 +33,9 @@ export const getAllNotifications = () => {
 export const markAsRead = (id) => {
     return axios.put(`${BASE_URL}/mark-as-read/${id}`);
 };
+export const getUnreadNotifications = (id) => {
+    return axios.get(`${BASE_URL}/unread`);
+};
 
 // Delete a notification
 export const deleteNotification = async (notificationId) => {

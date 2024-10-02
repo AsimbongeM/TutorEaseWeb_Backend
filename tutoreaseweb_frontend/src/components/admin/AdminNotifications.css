@@ -31,11 +31,11 @@
     background-color: #f1f1f1;
 }
 
-.admin-notifications .unread {
+.admin-notifications .read {
     border-left: 4px solid #007bff; /* Blue bar for unread notifications */
 }
 
-.admin-notifications .read {
+.admin-notifications .unread {
     opacity: 0.6; /* Slightly faded for read notifications */
 }
 

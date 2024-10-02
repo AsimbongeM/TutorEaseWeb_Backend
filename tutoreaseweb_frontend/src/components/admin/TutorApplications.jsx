@@ -63,9 +63,6 @@ const TutorApplications = () => {
 
     const handleDelete = async (email) => {
         try {
-            // Log the email of the tutor being deleted
-            console.log('Deleting tutor with email:', email);
-
             // Delete tutor from backend
             await deleteTutorById(email);
 
