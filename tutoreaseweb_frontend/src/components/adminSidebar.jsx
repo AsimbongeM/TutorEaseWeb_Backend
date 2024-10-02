@@ -127,11 +127,12 @@ function AdminSidebar() {
         const fetchUnreadNotifications = async () => {
             try {
                 const notifications = await getUnreadNotifications(); 
-                setUnreadNotificationsCount(notifications.length);
+                setUnreadNotificationsCount(notifications.data.length); 
             } catch (error) {
                 console.error("Error fetching unread notifications:", error);
             }
         };
+        
 
         const fetchPendingApplicationsCount = async () => {
             try {
@@ -152,8 +153,8 @@ function AdminSidebar() {
     }, [auth.email, auth.role]);
 
     const getActiveLinkStyle = (path) => location.pathname === path ? styles.linkActive : {};
-
     return (
+        
         <div style={styles.reset}>
             <header style={styles.header}>
                 <h1>TutorEase</h1>
@@ -188,15 +189,15 @@ function AdminSidebar() {
                         )}
                     </Link>
                     <Link
-    to='/admin/manage-vouchers' // Add a new route for managing vouchers
-    style={{ ...styles.link, ...getActiveLinkStyle('/admin/manage-vouchers') }}
-    aria-label="Manage Vouchers"
-    onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
-    onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
->
-    <i className='bi bi-card-checklist me-2'></i>
-    Manage Vouchers
-</Link>
+                        to='/admin/manage-vouchers' 
+                        style={{ ...styles.link, ...getActiveLinkStyle('/admin/manage-vouchers') }}
+                        aria-label="Manage Vouchers"
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
+                    >
+                        <i className='bi bi-card-checklist me-2'></i>
+                         Manage Vouchers
+                    </Link>
 
                     <Link
                         to='/admin/view-students'
@@ -226,7 +227,8 @@ function AdminSidebar() {
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
                     >
                         <i className='bi bi-bell me-2'></i>
-                        {unreadNotificationsCount > 0 && <span className="notification-badge">{unreadNotificationsCount}</span>} Notifications 
+                        Notifications
+                        {unreadNotificationsCount > 0 && (<span style={styles.notificationBadge}>{unreadNotificationsCount}</span>)} 
                     </Link>
                     {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} {/* Display error message if any */}
                 </div>
