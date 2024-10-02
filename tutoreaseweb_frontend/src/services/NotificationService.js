@@ -13,18 +13,6 @@ export const createNotification = async (message) => {
     }
 };
 
-// Fetch all notifications
-// export const getAllNotifications = async () => {
-//     try {
-//         const response = await axios.get(`${BASE_URL}/all`);
-//         const resData = response.data;
-//         return resData;
-//     } catch (error) {
-//         console.error('Error fetching notifications:', error);
-//         throw error;
-//     }
-// };
-
 
 export const getAllNotifications = () => {
     return axios.get(`${BASE_URL}/all`);

@@ -189,7 +189,7 @@ function AdminSidebar() {
                         )}
                     </Link>
                     <Link
-                        to='/admin/manage-vouchers' // Add a new route for managing vouchers
+                        to='/admin/manage-vouchers' 
                         style={{ ...styles.link, ...getActiveLinkStyle('/admin/manage-vouchers') }}
                         aria-label="Manage Vouchers"
                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}

@@ -1,0 +1,78 @@
+/* AdminVoucher.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Light gray background */
+    margin: 0;
+    padding: 20px;
+}
+
+h2 {
+    color: #333; /* Darker gray for headings */
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #666; /* Medium gray for subheadings */
+    margin-top: 20px;
+}
+
+form {
+    margin-bottom: 20px; /* Space below the form */
+}
+
+button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* White text */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.error-message {
+    color: red; /* Red for errors */
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid red; /* Red border */
+    background-color: #ffe6e6; /* Light red background */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.success-message {
+    color: green; /* Green for success messages */
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid green; /* Green border */
+    background-color: #e6ffe6; /* Light green background */
+    border-radius: 5px; /* Rounded corners */
+}
+
+ul {
+    list-style-type: none; /* Remove default bullets */
+    padding: 0; /* Remove padding */
+}
+
+li {
+    background-color: #fff; /* White background for vouchers */
+    margin: 10px 0; /* Space between voucher items */
+    padding: 10px; /* Padding inside voucher item */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    display: flex; /* Flexbox layout */
+    justify-content: space-between; /* Space between text and button */
+    align-items: center; /* Center items vertically */
+}
+
+li button {
+    background-color: #dc3545; /* Bootstrap danger color */
+}
+
+li button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}

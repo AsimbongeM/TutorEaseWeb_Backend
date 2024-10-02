@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './AdminVoucher.css';
 import {
     createVoucher,
     deleteVoucher,
@@ -36,7 +37,7 @@ const AdminVoucher = () => {
         const generatedCode = generateVoucherCode(); // Generate the voucher code
         try {
             const newVoucher = await createVoucher(generatedCode); // Pass the generated code to the service
-            setVouchers((prev) => [...prev, newVoucher]); // Add new voucher to the state
+            setVouchers((prev) => [...prev, newVoucher]); 
             setSuccessMessage(`Voucher created successfully with code: ${generatedCode}`);
         } catch (error) {
             console.error('Error creating voucher:', error);
@@ -47,9 +48,9 @@ const AdminVoucher = () => {
     // Handle deleting a voucher
     const handleDeleteVoucher = async (id) => {
         try {
-            const isDeleted = await deleteVoucher(id); // Call delete API
+            const isDeleted = await deleteVoucher(id);
             if (isDeleted) {
-                setVouchers((prev) => prev.filter((voucher) => voucher.id !== id)); // Remove voucher from state
+                setVouchers((prev) => prev.filter((voucher) => voucher.id !== id)); 
                 setSuccessMessage('Voucher deleted successfully!');
             }
         } catch (error) {
@@ -73,7 +74,7 @@ const AdminVoucher = () => {
             <ul>
                 {vouchers.map((voucher) => (
                     <li key={voucher.id}>
-                        {voucher.code} - Created At: {new Date(voucher.createdAt).toLocaleString()} - Expires on: {new Date(voucher.expirationDate).toLocaleString()}
+                        {voucher.code} - Created At: {new Date(voucher.createdAt).toLocaleString()} - Expires 30 days after creattion/redemption!
                         <button onClick={() => handleDeleteVoucher(voucher.id)}>Delete</button>
                     </li>
                 ))}
