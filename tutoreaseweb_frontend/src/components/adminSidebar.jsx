@@ -2,9 +2,10 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from "./AuthContext.jsx";
 import { getAdminById } from '../services/AdminServices.js';
+import { getUnreadNotifications } from '../services/NotificationService.js';
+import { getAllTutors } from '../services/TutorServices.js'; // Import the function to fetch all tutors
 
 const styles = {
-    // Styles for Admin Sidebar
     reset: {
         margin: 0,
         padding: 0,
@@ -16,8 +17,8 @@ const styles = {
         textAlign: 'center',
         padding: '15px 10px',
         position: 'fixed',
-        width: 'calc(100% - 250px)', // Adjust width considering sidebar
-        left: '250px', // Adjusted for sidebar width
+        width: 'calc(100% - 250px)', 
+        left: '250px', 
         top: 0,
         zIndex: 1000,
         fontSize: '24px',
@@ -36,7 +37,7 @@ const styles = {
         justifyContent: 'space-between',
         color: '#ffffff',
         zIndex: 999,
-        overflowY: 'auto', // Scroll if sidebar content overflows
+        overflowY: 'auto',
     },
     sidebarHeading: {
         display: 'flex',
@@ -65,31 +66,47 @@ const styles = {
         color: '#00274d',
         fontWeight: 'bold',
     },
+    notificationBadge: {
+        backgroundColor: 'red',
+        color: 'white',
+        borderRadius: '50%',
+        padding: '0.2em 0.5em',
+        marginLeft: '0.5em',
+        fontSize: '0.8em',
+        verticalAlign: 'middle',
+        display: 'inline-block',
+    },
+    errorMessage: {
+        color: 'red',
+        margin: '10px 0',
+    },
     signOutButton: {
-        width: '60%',
-        background: '#00274d',
+        backgroundColor: '#dc3545', // Bootstrap danger color
         color: '#fff',
         border: 'none',
-        fontWeight: 'bold',
-        padding: '10px',
-        textAlign: 'left',
-        cursor: 'pointer',
+        padding: '10px 15px',
+        borderRadius: '4px',
         fontSize: '16px',
-        borderRadius: '50px',
+        cursor: 'pointer',
+        transition: 'background-color 0.3s, transform 0.2s',
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
-        transition: 'background-color 0.3s',
+        justifyContent: 'center',
     },
     signOutButtonHover: {
-        background: '#ffcc00',
-        color: '#00274d',
-        transform: 'scale(1.05)',
+        backgroundColor: '#c82333', // Darker shade of danger color
+        transform: 'scale(1.05)', // Slightly enlarge on hover
     },
 };
 
 function AdminSidebar() {
     const { auth } = useContext(AuthContext);
     const [adminData, setAdminData] = useState(null);
+    const [unreadNotificationsCount, setUnreadNotificationsCount] = useState(0);
+    const [pendingApplicationsCount, setPendingApplicationsCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
     const [isSignOutButtonHovered, setIsSignOutButtonHovered] = useState(false);
@@ -101,11 +118,36 @@ function AdminSidebar() {
                 setAdminData(response.data);
             } catch (error) {
                 console.error("Error fetching admin data:", error);
+                setErrorMessage("Failed to load admin data. Please try again.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        const fetchUnreadNotifications = async () => {
+            try {
+                const notifications = await getUnreadNotifications(); 
+                setUnreadNotificationsCount(notifications.length);
+            } catch (error) {
+                console.error("Error fetching unread notifications:", error);
+            }
+        };
+
+        const fetchPendingApplicationsCount = async () => {
+            try {
+                const tutorsResponse = await getAllTutors(); 
+                const tutors = tutorsResponse.data || [];  
+                const pendingCount = tutors.filter(tutor => tutor.approvalStatus === 'PENDING').length; 
+                setPendingApplicationsCount(pendingCount);
+            } catch (error) {
+                console.error("Error fetching tutors:", error);
             }
         };
 
         if (auth.role === 'admin' && auth.email) {
+            fetchUnreadNotifications();
             fetchAdminData();
+            fetchPendingApplicationsCount();
         }
     }, [auth.email, auth.role]);
 
@@ -125,24 +167,41 @@ function AdminSidebar() {
                     <Link
                         to='/admin-dashboard'
                         style={{ ...styles.link, ...getActiveLinkStyle('/admin-dashboard') }}
+                        aria-label="Admin Dashboard"
                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
                     >
                         <i className='bi bi-person me-2'></i>
-                        {adminData ? `Welcome: ${adminData.firstName}` : 'Loading...'}
+                        {isLoading ? 'Loading...' : `Welcome: ${adminData ? adminData.firstName : 'N/A'}`}
                     </Link>
                     <Link
                         to='/admin/manage-applications'
                         style={{ ...styles.link, ...getActiveLinkStyle('/admin/manage-applications') }}
+                        aria-label="Manage Tutor Applications"
                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
                     >
                         <i className='bi bi-tools me-2'></i>
                         Manage Tutor Applications
+                        {pendingApplicationsCount > 0 && (
+                            <span style={styles.notificationBadge}>{pendingApplicationsCount}</span>
+                        )}
                     </Link>
+                    <Link
+    to='/admin/manage-vouchers' // Add a new route for managing vouchers
+    style={{ ...styles.link, ...getActiveLinkStyle('/admin/manage-vouchers') }}
+    aria-label="Manage Vouchers"
+    onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
+    onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
+>
+    <i className='bi bi-card-checklist me-2'></i>
+    Manage Vouchers
+</Link>
+
                     <Link
                         to='/admin/view-students'
                         style={{ ...styles.link, ...getActiveLinkStyle('/admin/view-students') }}
+                        aria-label="View All Students"
                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
                     >
@@ -152,12 +211,24 @@ function AdminSidebar() {
                     <Link
                         to='/admin/view-tutors'
                         style={{ ...styles.link, ...getActiveLinkStyle('/admin/view-tutors') }}
+                        aria-label="View All Tutors"
                         onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
                         onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
                     >
                         <i className='bi bi-graph-up me-2'></i>
                         All Tutors
                     </Link>
+                    <Link
+                        to='/admin/admin-notifications'
+                        style={{ ...styles.link, ...getActiveLinkStyle('/admin/admin-notifications') }}
+                        aria-label="Admin Notifications"
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}
+                    >
+                        <i className='bi bi-bell me-2'></i>
+                        {unreadNotificationsCount > 0 && <span className="notification-badge">{unreadNotificationsCount}</span>} Notifications 
+                    </Link>
+                    {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>} {/* Display error message if any */}
                 </div>
                 <div>
                     <hr className='text-secondary' />
@@ -165,7 +236,11 @@ function AdminSidebar() {
                         style={isSignOutButtonHovered ? { ...styles.signOutButton, ...styles.signOutButtonHover } : styles.signOutButton}
                         onMouseOver={() => setIsSignOutButtonHovered(true)}
                         onMouseOut={() => setIsSignOutButtonHovered(false)}
-                        onClick={() => navigate('/sign-in')}
+                        onClick={() => {
+                            // Implement sign out logic here
+                            navigate('/sign-in');
+                        }}
+                        aria-label="Sign Out"
                     >
                         <i className='bi bi-box-arrow-right me-2'></i>
                         Sign Out

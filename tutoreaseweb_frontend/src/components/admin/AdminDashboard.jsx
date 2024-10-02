@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './AdminDashboard.css';
 import { getAllStudents } from '../../services/StudentService'; 
 import { getAllTutors } from '../../services/TutorServices';
+import AdminNotifications from './AdminNotifications';
 
 const AdminDashboard = () => {
     const [tutorCount, setTutorCount] = useState(0);
@@ -62,6 +63,10 @@ const AdminDashboard = () => {
                     <h3>Pending Applications</h3>
                     <p>{pendingApplicationsCount}</p>
                 </div>
+            </div>
+            <div className="notifications-card">
+                
+                <AdminNotifications />
             </div>
         </div>
     );
