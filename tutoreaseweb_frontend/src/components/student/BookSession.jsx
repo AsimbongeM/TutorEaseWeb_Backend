@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, InputGroup, Form, Modal } from 'react-bootstrap';
+import React, {useState, useContext, useEffect} from 'react';
+import {Button, Card, InputGroup, Form, Modal} from 'react-bootstrap';
 import {createBookSession, getAllBookSessions, getBookSession} from '../../services/BookSessionServices.js';
-import { AuthContext } from "../AuthContext.jsx";
-import { getAllTutors } from "../../services/TutorServices.js";
+import {AuthContext} from "../AuthContext.jsx";
+import {getAllTutors, getApprovedTutors} from "../../services/TutorServices.js";
 
 const BookSession = () => {
     const [loading, setLoading] = useState(true);
@@ -11,7 +11,7 @@ const BookSession = () => {
     const [showModal, setShowModal] = useState(false);
     const [studentSkillLevel, setStudentSkillLevel] = useState('Beginner'); // Example: student's skill level
     const [searchTerm, setSearchTerm] = useState('');
-    const { auth } = useContext(AuthContext); // Access auth context
+    const {auth} = useContext(AuthContext); // Access auth context
 
     useEffect(() => {
         if (auth && auth.email) {
@@ -23,12 +23,15 @@ const BookSession = () => {
                     // console.log('Sessions:', sessions);
 
                     // Fetch all tutors
-                    const tutorsData = await getAllTutors().then((response) => {
-                        selectedTutor(response.data)});
-                    console.log('Tutors:', tutorsData);
+                    const tutorsData = await getApprovedTutors().then((response) => {
+                        console.log('Tutors:', response.data);
+                        setTutors(response.data)
+                    });
+
+                    // console.log('Tutors:', tutorsData);
 
                     // You can merge or filter the sessions and tutors data here if needed
-                    setTutors(tutorsData); // Assuming `tutorsData` is what you want to display
+                    // setTutors(tutorsData); // Assuming `tutorsData` is what you want to display
                 } catch (error) {
                     console.error('Error fetching data:', error);
                 }
@@ -67,14 +70,13 @@ const BookSession = () => {
     };
 
     const filteredTutors = tutors.filter(tutor =>
-        tutor.skillLevel === studentSkillLevel &&
-        tutor.approvalStatus.toLowerCase() === 'approved' &&
-        (
             tutor.firstName.toLowerCase().includes(searchTerm) ||
             tutor.lastName.toLowerCase().includes(searchTerm) ||
-            tutor.experience.toLowerCase().includes(searchTerm)
-        )
+            tutor.experience?.toLowerCase().includes(searchTerm) ||
+            tutor.skills.toLowerCase().includes(searchTerm)
+        // Use optional chaining for fields that may be missing
     );
+
 
     return (
         <div className="container mt-5">
@@ -88,13 +90,13 @@ const BookSession = () => {
 
             <div className="row mb-4">
                 {filteredTutors.map(tutor => (
-                    <div className="col-md-4" key={tutor.id}>
+                    <div className="col-md-4" key={tutor.email}>
                         <Card className="mb-4">
                             <Card.Body>
                                 <Card.Title>{tutor.firstName} {tutor.lastName}</Card.Title>
                                 <Card.Text>
-                                    <strong>Experience:</strong> {tutor.experience}<br />
-                                    <strong>Skill Level:</strong> {tutor.skillLevel}
+                                    <strong>Experience:</strong> {tutor.experience}<br/>
+                                    <strong>Skill Level:</strong> {tutor.skills}<br/>
                                 </Card.Text>
                                 <Button
                                     variant="primary"
@@ -113,9 +115,9 @@ const BookSession = () => {
                     <Modal.Title>Confirm Booking</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to book this tutor?<br />
-                    <strong>Name:</strong> {selectedTutor?.firstName} {selectedTutor?.lastName}<br />
-                    <strong>Experience:</strong> {selectedTutor?.experience}<br />
+                    Are you sure you want to book this tutor?<br/>
+                    <strong>Name:</strong> {selectedTutor?.firstName} {selectedTutor?.lastName}<br/>
+                    <strong>Experience:</strong> {selectedTutor?.experience}<br/>
                     <strong>Skill Level:</strong> {selectedTutor?.skillLevel}
                 </Modal.Body>
                 <Modal.Footer>
