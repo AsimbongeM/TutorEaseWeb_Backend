@@ -3,6 +3,7 @@ package za.ac.cput.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Tutor;
+import za.ac.cput.domain.TutorApprovalStatus;
 import za.ac.cput.repository.TutorRepository;
 
 import java.util.List;
@@ -63,7 +64,10 @@ public class TutorService implements ITutorService {
     public void delete(String tutorEmail) {
         tutorRepository.deleteById(tutorEmail);
     }
-
+    // Method to get all approved tutors
+    public List<Tutor> getApprovedTutors() {
+        return tutorRepository.findByApprovalStatus(TutorApprovalStatus.APPROVED);
+    }
     @Override
     public List<Tutor> getAll() {
         return tutorRepository.findAll();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { getAllTutors } from "../services/TutorServices.js";
+import { getAllTutors,getApprovedTutors } from "../services/TutorServices.js";
 
 const styles = {
     App: {
@@ -140,7 +140,7 @@ function Home() {
     useEffect(() => {
         const fetchTutors = async () => {
             try {
-                const response = await getAllTutors();
+                const response = await getApprovedTutors();
                 setTutors(response.data);
             } catch (error) {
                 console.error('Error fetching tutors:', error);

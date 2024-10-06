@@ -19,3 +19,7 @@ export const tutorSignIn = (email, password) =>
 // function to fetch all tutors
 export const getAllTutors = () =>
     axios.get(`${REST_API_BASE_URL}/getAll`);
+
+// Function to fetch all approved tutors
+export const getApprovedTutors = () =>
+    axios.get(`${REST_API_BASE_URL}/approved-tutors`);

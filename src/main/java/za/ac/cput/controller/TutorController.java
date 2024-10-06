@@ -41,6 +41,11 @@ public class TutorController {
         return tutorService.getAll();
     }
 
+    @GetMapping("/approved-tutors")
+    public ResponseEntity<List<Tutor>> getApprovedTutors() {
+        List<Tutor> approvedTutors = tutorService.getApprovedTutors();
+        return ResponseEntity.ok(approvedTutors);
+    }
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody Tutor tutor) {
         Tutor authenticatedTutor = tutorService.authenticate(tutor.getEmail(), tutor.getPassword());
