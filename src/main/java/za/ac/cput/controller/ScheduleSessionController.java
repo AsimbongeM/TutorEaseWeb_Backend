@@ -51,12 +51,6 @@ public class ScheduleSessionController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ScheduleSession> update(@PathVariable Long id, @RequestBody ScheduleSession scheduleSession) {
-        if (scheduleSession.getTutor() != null) {
-            Optional<Tutor> tutorOpt = Optional.ofNullable(tutorService.read(scheduleSession.getTutor().getEmail()));
-            if (tutorOpt.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-            }
-        }
 
         ScheduleSession updatedSession = scheduleSessionService.update(id, scheduleSession);
         if (updatedSession != null) {
@@ -85,7 +79,7 @@ public class ScheduleSessionController {
 //            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 //        }
 //    }
-@GetMapping
+@GetMapping("/getByEmail")
 public ResponseEntity<List<ScheduleSession>> getSessionsByTutorEmail(@RequestParam("tutorEmail") String tutorEmail) {
     List<ScheduleSession> sessions = scheduleSessionService.getSessionsByTutorEmail(tutorEmail);
     return ResponseEntity.ok(sessions);

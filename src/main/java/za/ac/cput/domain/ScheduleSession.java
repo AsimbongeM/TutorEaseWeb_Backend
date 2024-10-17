@@ -13,6 +13,7 @@ public class ScheduleSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate date;
+    private boolean isBooked ;
     private LocalTime startTime;
     private LocalTime endTime;
     @ManyToOne
@@ -27,17 +28,19 @@ public class ScheduleSession {
     public ScheduleSession(Builder builder) {
 
         this.id = builder.id;
+        this.isBooked = builder.isBooked;
         this.date = builder.date;
         this.startTime = builder.startTime;
         this.endTime = builder.endTime;
         this.topic = builder.topic;
         this.tutor = builder.tutor;
 
+
     }
     public Long getId() {
         return id;
     }
-
+    public boolean getIsBooked() {return isBooked;}
     public LocalDate getDate() {
         return date;
     }
@@ -62,18 +65,19 @@ public class ScheduleSession {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ScheduleSession that = (ScheduleSession) o;
-        return Objects.equals(id, that.id) && Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(topic, that.topic)&& Objects.equals(tutor, that.tutor);
+        return Objects.equals(id, that.id) && Objects.equals(isBooked, that.isBooked)&& Objects.equals(date, that.date) && Objects.equals(startTime, that.startTime) && Objects.equals(endTime, that.endTime) && Objects.equals(topic, that.topic)&& Objects.equals(tutor, that.tutor);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, date, startTime, endTime, topic, tutor);
+        return Objects.hash(id,isBooked, date, startTime, endTime, topic, tutor);
     }
 
     @Override
     public String toString() {
         return "ScheduleSession{" +
                 "id=" + id +
+                ", isBooked=" + isBooked +
                 ", date=" + date +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
@@ -83,6 +87,7 @@ public class ScheduleSession {
     }
     public static class Builder {
         private Long id;
+        private boolean isBooked;
         private LocalDate date;
         private LocalTime startTime;
         private LocalTime endTime;
@@ -96,6 +101,10 @@ public class ScheduleSession {
 
         public Builder setId(Long id) {
             this.id = id;
+            return this;
+        }
+        public Builder setIsBooked(boolean isBooked) {
+            this.isBooked = isBooked;
             return this;
         }
 
@@ -125,6 +134,7 @@ public class ScheduleSession {
         public Builder copy(ScheduleSession session) {
 
             this.id = session.id;
+            this.isBooked = session.isBooked;
             this.date = session.date;
             this.startTime = session.startTime;
             this.endTime = session.endTime;

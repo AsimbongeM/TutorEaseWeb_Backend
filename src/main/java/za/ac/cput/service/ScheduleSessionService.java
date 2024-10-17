@@ -47,6 +47,7 @@ public class ScheduleSessionService implements IScheduleSessionService {
                 .orElseThrow(() -> new IllegalArgumentException("Tutor not found with email: " + scheduleSession.getTutor().getEmail()));
         ScheduleSession session = new ScheduleSession.Builder()
                 .setDate(scheduleSession.getDate())
+                .setIsBooked(scheduleSession.getIsBooked())
                 .setStartTime(scheduleSession.getStartTime())
                 .setEndTime(scheduleSession.getEndTime())
                 .setTopic(topic)
@@ -79,6 +80,7 @@ public class ScheduleSessionService implements IScheduleSessionService {
         ScheduleSession updatedSession = new ScheduleSession.Builder()
                 .setId(id)
                 .setDate(scheduleSession.getDate())
+                .setIsBooked(scheduleSession.getIsBooked())
                 .setStartTime(scheduleSession.getStartTime())
                 .setEndTime(scheduleSession.getEndTime())
                 .setTopic(topic)

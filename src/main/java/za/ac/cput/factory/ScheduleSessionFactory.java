@@ -17,6 +17,7 @@ public class ScheduleSessionFactory {
 
         return new ScheduleSession.Builder()
                 .setDate(date)
+                .setIsBooked(false)
                 .setStartTime(startTime)
                 .setEndTime(endTime)
                 .setTopic(topic)

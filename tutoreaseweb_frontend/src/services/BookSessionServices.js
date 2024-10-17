@@ -1,10 +1,11 @@
 import axios from 'axios';
 
-const REST_API_BASE_URL = "http://localhost:8080/booksession";
+const REST_API_BASE_URL = "http://localhost:8080/tutoreaseweb/booksession";
 
 // Create a new booking session
 export const createBookSession = async (sessionData) => {
     try {
+        console.log("data being sent: " + JSON.stringify(sessionData, null, 2))
         const response = await axios.post(`${REST_API_BASE_URL}/create`, sessionData, {
             headers: {
                 'Content-Type': 'application/json',
