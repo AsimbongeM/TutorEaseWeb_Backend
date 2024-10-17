@@ -24,7 +24,7 @@ export const createSession = async (session) => {
 
 // Get sessions for a specific tutor
 export const getSessionsByTutorEmail = async (tutorEmail) => {
-    return await axios.get(REST_API_BASE_URL, {params: {tutorEmail}});
+    return await axios.get(`${REST_API_BASE_URL}/getByEmail`, {params: {tutorEmail}});
 
 };
 

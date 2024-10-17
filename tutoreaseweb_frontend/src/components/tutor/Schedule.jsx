@@ -222,7 +222,7 @@ function Schedule() {
                     <option value="">Select a Topic</option>
                     {topics.map(topic => (
                         <option key={topic.id} value={topic.id}>
-                            {topic.description} - {topic.level}
+                            {topic.topicName} - {topic.topicLevel}
                         </option>
                     ))}
                 </select>
