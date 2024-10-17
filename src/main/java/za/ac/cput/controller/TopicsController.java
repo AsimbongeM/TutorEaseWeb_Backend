@@ -16,6 +16,11 @@ public class TopicsController {
     @Autowired
     private TopicsService topicsService;
 
+
+    @PostMapping("/create")
+    public Topics create(@RequestBody Topics topic) {
+        return topicsService.create(topic);
+    }
     @GetMapping("/getAll")
     public List<Topics> getAllTopics() {
         return topicsService.getAll();

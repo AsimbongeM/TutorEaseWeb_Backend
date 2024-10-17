@@ -12,3 +12,12 @@ export const getAllTopics = async () => {
         throw error;
     }
 };
+export const createTopic = async (topicData) => {
+    try {
+        const response = await axios.post(`${TOPICS_API_URL}/create`, topicData);
+        return response.data; // The created topic
+    } catch (error) {
+        console.error('Error creating topic:', error.response ? error.response.data : error.message);
+        throw error;
+    }
+};
