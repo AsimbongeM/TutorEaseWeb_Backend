@@ -34,7 +34,7 @@ public class AnnouncementsController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/getAnnouncementsByTutorEmail")
     public ResponseEntity<List<Announcement>> getAnnouncements(@RequestParam String tutorEmail) {
         try {
             List<Announcement> announcements = announcementService.findByTutorEmail(tutorEmail);

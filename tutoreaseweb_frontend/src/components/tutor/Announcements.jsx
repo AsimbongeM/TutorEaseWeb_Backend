@@ -44,7 +44,6 @@ function Announcements() {
         setLoading(true);
         try {
             if (editingIndex !== null) {
-                // Update existing announcement
                 const announcementId = announcements[editingIndex].id;
                 await updateAnnouncement(announcementId, newAnnouncement);
                 const updatedAnnouncements = [...announcements];
@@ -52,7 +51,6 @@ function Announcements() {
                 setAnnouncements(updatedAnnouncements);
                 setEditingIndex(null);
             } else {
-                // Add new announcement
                 await postAnnouncement(newAnnouncement, auth.email);
                 await fetchAnnouncementList(auth.email);
             }
