@@ -48,8 +48,8 @@ class ScheduleSessionServiceTest {
         scheduleSessionRepository.deleteAll();
         topicsRepository.deleteAll();
 
-        topic1 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.BEGINNER, "Design patterns"));
-        Topics topic2 = topicsRepository.save(TopicsFactory.buildTopics(TopicLevel.INTERMEDIATE, "Advanced Design patterns"));
+        topic1 = topicsRepository.save(TopicsFactory.buildTopics("Begginner",TopicLevel.BEGINNER, "Design patterns"));
+        Topics topic2 = topicsRepository.save(TopicsFactory.buildTopics("Advanced",TopicLevel.INTERMEDIATE, "Advanced Design patterns"));
 
 
         tutor1 = tutorRepository.save(new Tutor.Builder()

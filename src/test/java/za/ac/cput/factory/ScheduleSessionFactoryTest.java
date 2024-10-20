@@ -15,7 +15,7 @@ class ScheduleSessionFactoryTest {
 
     @BeforeEach
     void setUp() {
-        topics = TopicsFactory.buildTopics(TopicLevel.BEGINNER, "Variables");
+        topics = TopicsFactory.buildTopics("Advnced",TopicLevel.BEGINNER, "Variables");
         tutor = TutorFactory.buildTutor("Asimbonge", "Mbende", "asi@gmail.com", 40, "0671234859", "12345", "Java:Advanced", 3, TutorApprovalStatus.APPROVED);
     }
 

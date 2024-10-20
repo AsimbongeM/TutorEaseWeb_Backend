@@ -37,9 +37,9 @@ public class ScheduleSessionService implements IScheduleSessionService {
     }
     @Override
     public ScheduleSession create(ScheduleSession scheduleSession) {
-        if (scheduleSession.getTopic() == null || scheduleSession.getTutor() == null) {
-            throw new IllegalArgumentException("Topic and Tutor must not be null");
-        }
+//        if (scheduleSession.getTopic() == null || scheduleSession.getTutor() == null) {
+//            throw new IllegalArgumentException("Topic and Tutor must not be null");
+//        }
 
         Topics topic = topicsRepository.findById(scheduleSession.getTopic().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Topic not found with id: " + scheduleSession.getTopic().getId()));

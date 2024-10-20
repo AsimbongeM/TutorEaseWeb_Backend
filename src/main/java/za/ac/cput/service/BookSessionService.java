@@ -2,23 +2,40 @@ package za.ac.cput.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import za.ac.cput.domain.BookSession;
-import za.ac.cput.repository.BookSessionRepository;
+import za.ac.cput.domain.*;
+import za.ac.cput.repository.*;
 
 import java.util.List;
 
 @Service
 public class BookSessionService implements IBookSessionService {
 
-    private BookSessionRepository bookSessionRepository;
+    private final TutorRepository tutorRepository;
+
+    private final StudentRepository studentRepository;
+    private final BookSessionRepository bookSessionRepository;
+
     @Autowired
-    BookSessionService(BookSessionRepository bookSessionRepository) {
+    BookSessionService(BookSessionRepository bookSessionRepository,
+                       StudentRepository studentRepository, TutorRepository tutorRepository) {
+
+        this.tutorRepository = tutorRepository;
+        this.studentRepository = studentRepository;
         this.bookSessionRepository = bookSessionRepository;
     }
 
     @Override
     public BookSession create(BookSession bookSession) {
-        return bookSessionRepository.save(bookSession);
+        // Fetch the related entities
+        Tutor tutor = tutorRepository.findById(bookSession.getTutor().getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Tutor not found with email: " + bookSession.getTutor().getEmail()));
+        Student student = studentRepository.findById(bookSession.getStudent().getEmail()).orElseThrow(() -> new IllegalArgumentException("Student not found with email: " + bookSession.getStudent().getEmail()));
+
+        BookSession createBookSession = new BookSession.Builder()
+                .setTutor(tutor)
+                .setStudent(student)
+                .build();
+        return bookSessionRepository.save(createBookSession);
     }
 
     @Override
@@ -36,8 +53,9 @@ public class BookSessionService implements IBookSessionService {
 
     @Override
     public void delete(Long bookSessionId) {
-            bookSessionRepository.deleteById(bookSessionId);
+        bookSessionRepository.deleteById(bookSessionId);
     }
+
     @Override
     public List<BookSession> getAll() {
         return List.of();

@@ -17,6 +17,16 @@ export const createBookSession = async (sessionData) => {
         throw error;
     }
 };
+export const createABookSession = async (sessionData) => {
+    try {
+        const response = await axios.post(`${REST_API_BASE_URL}/create`, sessionData);
+        return response.data; // or handle response as needed
+    } catch (error) {
+        console.error("Error creating booking session:", error);
+        throw error; // Rethrow or handle the error appropriately
+    }
+};
+
 
 // Update an existing booking session by ID
 export const updateBookSession = async (sessionId, sessionData) => {
