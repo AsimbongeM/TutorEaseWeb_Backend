@@ -143,21 +143,7 @@ function Sidebar() {
               <i className="bi bi-grid me-2"></i>
               Resources
             </Link>
-            <Link
-              to="/announcements"
-              style={{
-                ...styles.link,
-                ...getActiveLinkStyle("/announcements"),
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  styles.linkHover.backgroundColor)
-              }
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-            >
-              <i className="bi bi-megaphone me-2"></i>
-              Announcements
-            </Link>
+
 
             {/* Conditionally render the Schedule or Book Session link */}
             {auth.role === "tutor" && (
@@ -173,6 +159,22 @@ function Sidebar() {
                 <i className="bi bi-calendar me-2"></i>
                 Schedule
               </Link>
+                ,
+                  <Link
+                      to="/announcements"
+                      style={{
+                          ...styles.link,
+                          ...getActiveLinkStyle("/announcements"),
+                      }}
+                      onMouseOver={(e) =>
+                          (e.currentTarget.style.backgroundColor =
+                              styles.linkHover.backgroundColor)
+                      }
+                      onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                  >
+                      <i className="bi bi-megaphone me-2"></i>
+                      Announcements
+                  </Link>
             )}
             {auth.role === "tutor" && (
               <Link
@@ -208,6 +210,25 @@ function Sidebar() {
                 <i className="bi bi-calendar-check me-2"></i>
                 Book Session
               </Link>
+            ,
+                // Student Announcements:
+
+                <Link
+                to="/student/announcements"
+                style={{
+                ...styles.link,
+                ...getActiveLinkStyle("/student/announcements"),
+            }}
+              onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                      styles.linkHover.backgroundColor)
+              }
+              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+          >
+              <i className="bi bi-megaphone me-2"></i>
+              Announcements
+          </Link>
+
             )}
 
             <Link

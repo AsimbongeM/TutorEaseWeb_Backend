@@ -43,7 +43,6 @@ public class AnnouncementsController {
         }
     }
 
-
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateAnnouncement(@PathVariable Long id,
                                                      @RequestBody Announcement request) {
@@ -64,4 +63,15 @@ public class AnnouncementsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting announcement: " + e.getMessage());
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Announcement>> getAllAnnouncements() {
+        try {
+            List<Announcement> announcements = announcementService.findAll();  // Assuming a method `findAll` exists in the service
+            return ResponseEntity.ok(announcements);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

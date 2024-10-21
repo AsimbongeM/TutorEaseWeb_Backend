@@ -29,3 +29,8 @@ export const updateAnnouncement = async (id, announcementText) => {
 export const deleteAnnouncement = async (id) => {
     await axios.delete(`${ANNOUNCEMENTS_API_URL}/delete/${id}`);
 };
+
+export const fetchAllAnnouncements = () =>{
+   return axios.get(`${ANNOUNCEMENTS_API_URL}/all`);
+
+};

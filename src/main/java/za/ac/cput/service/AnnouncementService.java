@@ -28,6 +28,7 @@ public class AnnouncementService {
                 .build();
 
         announcementRepository.save(announcement);
+
     }
 
     public List<Announcement> findByTutorEmail(String tutorEmail) {
@@ -44,6 +45,10 @@ public class AnnouncementService {
                 .build();
 
         announcementRepository.save(updatedAnnouncement);
+    }
+
+    public List<Announcement> findAll() {
+        return announcementRepository.findAll();
     }
 
     public void deleteAnnouncement(Long id) {
