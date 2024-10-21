@@ -52,6 +52,8 @@ public class ScheduleSessionController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ScheduleSession> update(@PathVariable Long id, @RequestBody ScheduleSession scheduleSession) {
 
+        System.out.println("Updating session with data: " + scheduleSession);
+
         ScheduleSession updatedSession = scheduleSessionService.update(id, scheduleSession);
         if (updatedSession != null) {
             return ResponseEntity.ok(updatedSession);
