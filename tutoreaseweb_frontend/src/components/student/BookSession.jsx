@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Button, Card, InputGroup, Form, Modal } from 'react-bootstrap';
-import { createBookSession, getAllBookSessions } from '../../services/BookSessionServices.js';
-import { getSessionsByTutorEmail, updateSession } from "../../services/ScheduleSessionServices.js";
-import { AuthContext } from "../AuthContext.jsx";
-import { getApprovedTutors } from "../../services/TutorServices.js";
+import React, {useContext, useEffect, useState} from 'react';
+import {Button, Card, Form, InputGroup, Modal} from 'react-bootstrap';
+import {createBookSession} from '../../services/BookSessionServices.js';
+import {getSessionsByTutorEmail} from "../../services/ScheduleSessionServices.js";
+import {AuthContext} from "../AuthContext.jsx";
+import {getApprovedTutors} from "../../services/TutorServices.js";
 
 const BookSession = () => {
     const [loading, setLoading] = useState(true);
@@ -153,35 +153,61 @@ const BookSession = () => {
             </div>
 
             {/* Modal for session details */}
-            <Modal show={showSessionsModal} onHide={() => setShowSessionsModal(false)}>
+            <Modal show={showSessionsModal} onHide={() => setShowSessionsModal(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>{selectedTutor?.firstName} {selectedTutor?.lastName}'s Sessions</Modal.Title>
+                    <Modal.Title>
+                        {selectedTutor?.firstName} {selectedTutor?.lastName}'s Sessions
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {sessions.length > 0 ? (
-                        <ul>
+                        <ul style={{listStyleType: 'none', padding: '0', margin: '0'}}>
                             {sessions.map(session => (
-                                <li key={session.id}>
-                                    <strong>Session ID:</strong> {session.id}<br />
-                                    <strong>Date:</strong> {session.date}<br />
-                                    <strong>Duration:</strong> {session.duration} hours<br />
-                                    <Button
-                                        variant="primary"
-                                        onClick={() => confirmBooking(session)} // Pass the session to confirmBooking
-                                    >
-                                        Book Session
-                                    </Button>
+                                <li
+                                    key={session.id}
+                                    style={{
+                                        marginBottom: '15px',
+                                        padding: '20px',
+                                        border: '1px solid #dee2e6',
+                                        borderRadius: '8px',
+                                        backgroundColor: '#ffffff',
+                                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                                    }}
+                                >
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}>
+                                        <div style={{flex: '1'}}>
+                                            <strong>Session ID:</strong> {session.id} <br/>
+                                            <strong>Date:</strong> {session.date} <br/>
+                                            <strong>Start Time:</strong> {session.startTime} hours <br/>
+                                            <strong>End Time:</strong> {session.endTime} hours
+                                        </div>
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => confirmBooking(session)}
+                                            style={{marginLeft: '15px', padding: '10px 20px'}}
+                                        >
+                                            <i className="fas fa-calendar-plus"></i> Book Session
+                                        </Button>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
                     ) : (
-                        <p>No sessions for this tutor.</p>
+                        <p style={{textAlign: 'center', color: '#6c757d', padding: '20px'}}>No sessions available for
+                            this tutor.</p>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowSessionsModal(false)}>Close</Button>
+                    <Button variant="secondary" onClick={() => setShowSessionsModal(false)}>
+                        Close
+                    </Button>
                 </Modal.Footer>
             </Modal>
+
 
             {/* Modal for confirming booking */}
             <Modal show={showBookingModal} onHide={() => setShowBookingModal(false)}>

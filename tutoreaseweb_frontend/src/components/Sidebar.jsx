@@ -97,171 +97,155 @@ function Sidebar() {
     const getActiveLinkStyle = (path) => location.pathname === path ? styles.linkActive : {};
 
     return (
-      <div style={styles.reset}>
-        <header style={styles.header}>
-          <h1>TutorEase</h1>
-        </header>
-        <div style={styles.sidebar}>
-          <div>
-            <div style={styles.sidebarHeading}>
-              <i className="bi bi-speedometer me-2"></i>
-              Dashboard
+        <div style={styles.reset}>
+            <header style={styles.header}>
+                <h1>TutorEase</h1>
+            </header>
+            <div style={styles.sidebar}>
+                <div>
+                    <div style={styles.sidebarHeading}>
+                        <i className="bi bi-speedometer me-2"></i>
+                        Dashboard
+                    </div>
+                    <Link
+                        to={profileLink}
+                        style={{ ...styles.link, ...getActiveLinkStyle(profileLink) }}
+                        onMouseOver={(e) =>
+                            (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                        }
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                    >
+                        <i className="bi bi-person me-2"></i>
+                        {profileText}
+                    </Link>
+                    <Link
+                        to="/content"
+                        style={{ ...styles.link, ...getActiveLinkStyle("/content") }}
+                        onMouseOver={(e) =>
+                            (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                        }
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                    >
+                        <i className="bi bi-table me-2"></i>
+                        Content
+                    </Link>
+                    <Link
+                        to="/resources"
+                        style={{ ...styles.link, ...getActiveLinkStyle("/resources") }}
+                        onMouseOver={(e) =>
+                            (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                        }
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                    >
+                        <i className="bi bi-grid me-2"></i>
+                        Resources
+                    </Link>
+
+                    {/* Book Session link available only for students */}
+                    {auth.role === "student" && (
+                        <Link
+                            to="/book-session"
+                            style={{
+                                ...styles.link,
+                                ...getActiveLinkStyle("/book-session"),
+                            }}
+                            onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                            }
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                        >
+                            <i className="bi bi-calendar-check me-2"></i>
+                            Book Session
+                        </Link>
+                    )}
+
+                    {/* Schedule link available only for tutors */}
+                    {auth.role === "tutor" && (
+                        <Link
+                            to="/schedule"
+                            style={{ ...styles.link, ...getActiveLinkStyle("/schedule") }}
+                            onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                            }
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                        >
+                            <i className="bi bi-calendar me-2"></i>
+                            Schedule
+                        </Link>
+                    )}
+
+                    {/* Announcements links */}
+                    {auth.role === "student" && (
+                        <Link
+                            to="/student/announcements"
+                            style={{ ...styles.link, ...getActiveLinkStyle("/student/announcements") }}
+                            onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                            }
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                        >
+                            <i className="bi bi-megaphone me-2"></i>
+                            Announcements
+                        </Link>
+                    )}
+                    {auth.role === "tutor" && (
+                        <Link
+                            to="/announcements"
+                            style={{ ...styles.link, ...getActiveLinkStyle("/announcements") }}
+                            onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                            }
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                        >
+                            <i className="bi bi-megaphone me-2"></i>
+                            Announcements
+                        </Link>
+                    )}
+
+                    {auth.role === "tutor" && (
+                        <Link
+                            to="/create-topic"
+                            style={{ ...styles.link, ...getActiveLinkStyle("/create-topic") }}
+                            onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                            }
+                            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                        >
+                            <i className="bi bi-plus-circle me-2"></i>
+                            Create Topic
+                        </Link>
+                    )}
+
+                    <Link
+                        to="/calendar"
+                        style={{ ...styles.link, ...getActiveLinkStyle("/calendar") }}
+                        onMouseOver={(e) =>
+                            (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
+                        }
+                        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
+                    >
+                        <i className="bi bi-calendar me-2"></i>
+                        Calendar
+                    </Link>
+                </div>
+                <div>
+                    <hr className="text-secondary" />
+                    <button
+                        style={
+                            isSignOutButtonHovered
+                                ? { ...styles.signOutButton, ...styles.signOutButtonHover }
+                                : styles.signOutButton
+                        }
+                        onMouseOver={() => setIsSignOutButtonHovered(true)}
+                        onMouseOut={() => setIsSignOutButtonHovered(false)}
+                        onClick={() => navigate("/home")}
+                    >
+                        <i className="bi bi-box-arrow-right me-2"></i>
+                        Sign Out
+                    </button>
+                </div>
             </div>
-            <Link
-              to={profileLink}
-              style={{ ...styles.link, ...getActiveLinkStyle(profileLink) }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  styles.linkHover.backgroundColor)
-              }
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-            >
-              <i className="bi bi-person me-2"></i>
-              {profileText}
-            </Link>
-            <Link
-              to="/content"
-              style={{ ...styles.link, ...getActiveLinkStyle("/content") }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  styles.linkHover.backgroundColor)
-              }
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-            >
-              <i className="bi bi-table me-2"></i>
-              Content
-            </Link>
-            <Link
-              to="/resources"
-              style={{ ...styles.link, ...getActiveLinkStyle("/resources") }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  styles.linkHover.backgroundColor)
-              }
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-            >
-              <i className="bi bi-grid me-2"></i>
-              Resources
-            </Link>
-
-
-            {/* Conditionally render the Schedule or Book Session link */}
-            {auth.role === "tutor" && (
-              <Link
-                to="/schedule"
-                style={{ ...styles.link, ...getActiveLinkStyle("/schedule") }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                    styles.linkHover.backgroundColor)
-                }
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-              >
-                <i className="bi bi-calendar me-2"></i>
-                Schedule
-              </Link>
-                ,
-                  <Link
-                      to="/announcements"
-                      style={{
-                          ...styles.link,
-                          ...getActiveLinkStyle("/announcements"),
-                      }}
-                      onMouseOver={(e) =>
-                          (e.currentTarget.style.backgroundColor =
-                              styles.linkHover.backgroundColor)
-                      }
-                      onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-                  >
-                      <i className="bi bi-megaphone me-2"></i>
-                      Announcements
-                  </Link>
-            )}
-            {auth.role === "tutor" && (
-              <Link
-                to="/create-topic"
-                style={{
-                  ...styles.link,
-                  ...getActiveLinkStyle("/create-topic"),
-                }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                    styles.linkHover.backgroundColor)
-                }
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-              >
-                <i className="bi bi-plus-circle me-2"></i>
-                Create Topic
-              </Link>
-            )}
-
-            {auth.role === "student" && (
-              <Link
-                to="/book-session"
-                style={{
-                  ...styles.link,
-                  ...getActiveLinkStyle("/book-session"),
-                }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                    styles.linkHover.backgroundColor)
-                }
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-              >
-                <i className="bi bi-calendar-check me-2"></i>
-                Book Session
-              </Link>
-            ,
-                // Student Announcements:
-
-                <Link
-                to="/student/announcements"
-                style={{
-                ...styles.link,
-                ...getActiveLinkStyle("/student/announcements"),
-            }}
-              onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                      styles.linkHover.backgroundColor)
-              }
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-          >
-              <i className="bi bi-megaphone me-2"></i>
-              Announcements
-          </Link>
-
-            )}
-
-            <Link
-              to="/calendar"
-              style={{ ...styles.link, ...getActiveLinkStyle("/calendar") }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  styles.linkHover.backgroundColor)
-              }
-              onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "")}
-            >
-              <i className="bi bi-calendar me-2"></i>
-              Calendar
-            </Link>
-          </div>
-          <div>
-            <hr className="text-secondary" />
-            <button
-              style={
-                isSignOutButtonHovered
-                  ? { ...styles.signOutButton, ...styles.signOutButtonHover }
-                  : styles.signOutButton
-              }
-              onMouseOver={() => setIsSignOutButtonHovered(true)}
-              onMouseOut={() => setIsSignOutButtonHovered(false)}
-              onClick={() => navigate("/home")}
-            >
-              <i className="bi bi-box-arrow-right me-2"></i>
-              Sign Out
-            </button>
-          </div>
         </div>
-      </div>
     );
 }
 
