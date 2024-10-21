@@ -26,8 +26,9 @@ import {AuthContext} from "./components/AuthContext.jsx";
 import {useContext} from "react";
 import AdminSidebar from "./components/admin/screens/adminSidebar.jsx";
 import AdminNotifications from './components/admin/screens/AdminNotifications.jsx';
-import AdminVoucher from './components/admin/screens/AdminVoucher.jsx';
-// import CreateTopic from './components/tutor/Topic.jsx';
+import AdminVoucher from './components/admin/screens/AdminVoucher.js;
+import CreateTopic from './components/tutor/Topic.jsx';
+
 
 
 function App() {
@@ -61,8 +62,9 @@ function App() {
                     <Route path="/resources" element={<Resources />} />
                     <Route path="/announcements" element={<Announcements />} />
                     <Route path="/schedule" element={<Schedule />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    {/*<Route path="/create-topic" element = {<CreateTopic />} />*/}
+                    <Route path="/calendar" element={<Calendar />} 
+                    {<Route path="/create-topic" element = {<CreateTopic />} />}
+
                     <Route path="/book-session" element={<BookSession />} />
                     {/*<Route path="/admin-login" element={<AdminSignIn />} />*/}
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />

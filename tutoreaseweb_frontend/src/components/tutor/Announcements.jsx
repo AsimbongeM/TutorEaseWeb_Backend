@@ -8,6 +8,7 @@ import {
     postAnnouncement,
     updateAnnouncement
 } from "../../services/AnnouncementsServices.js";
+import {fetchFiles} from "../../services/ResourcesServices.js";
 
 function Announcements() {
     const { auth } = useContext(AuthContext);
@@ -44,15 +45,13 @@ function Announcements() {
         setLoading(true);
         try {
             if (editingIndex !== null) {
-                // Update existing announcement
                 const announcementId = announcements[editingIndex].id;
                 await updateAnnouncement(announcementId, newAnnouncement);
                 const updatedAnnouncements = [...announcements];
-                updatedAnnouncements[editingIndex].announcement = newAnnouncement;
+                updatedAnnouncements[editingIndex].text = newAnnouncement;
                 setAnnouncements(updatedAnnouncements);
                 setEditingIndex(null);
             } else {
-                // Add new announcement
                 await postAnnouncement(newAnnouncement, auth.email);
                 await fetchAnnouncementList(auth.email);
             }
@@ -65,7 +64,7 @@ function Announcements() {
     };
 
     const handleEdit = (index) => {
-        setNewAnnouncement(announcements[index].announcement);
+        setNewAnnouncement(announcements[index].text);
         setEditingIndex(index);
     };
 
@@ -114,9 +113,11 @@ function Announcements() {
             )}
             {announcements.length > 0 && (
                 <div className="list-group">
-                    {announcements.map((announcement, index) => (
-                        <div key={announcement.id} className="list-group-item d-flex justify-content-between align-items-center">
-                            <div>{announcement.announcement}</div>
+                    {announcements.map((text, index) => (
+                        <div key={text.id} className="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {text.text || 'No content available'}
+                            </div>
                             {auth.role === 'tutor' && (
                                 <div>
                                     <Button
