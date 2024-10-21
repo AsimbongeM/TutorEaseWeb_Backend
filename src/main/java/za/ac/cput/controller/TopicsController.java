@@ -1,6 +1,7 @@
 package za.ac.cput.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.TopicLevel;
 import za.ac.cput.domain.Topics;
@@ -25,6 +26,23 @@ public class TopicsController {
     public List<Topics> getAllTopics() {
         return topicsService.getAll();
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Topics> update(@RequestBody Topics topic) {
+        Topics updatedTopic = topicsService.update(topic);
+        if (updatedTopic != null) {
+            return ResponseEntity.ok(updatedTopic);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        topicsService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     @GetMapping("/topic_level")
     public List<TopicLevel> getTopicLevels() {

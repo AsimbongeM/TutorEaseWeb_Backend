@@ -28,10 +28,14 @@ public class TopicsService implements ITopicsService{
     @Override
     public Topics update(Topics topics) {
         if (topicsRepository.existsById(topics.getId())) {
-            return topicsRepository.save(topics);
+            Topics updatedTopic = new Topics.Builder()
+                    .copy(topics)
+                    .build();
+            return topicsRepository.save(updatedTopic);
         }
-        return null;
+        return null; // Or throw an exception if preferred
     }
+
 
     public void delete(Long topicsId) {
         topicsRepository.deleteById(topicsId);

@@ -27,6 +27,7 @@ import {useContext} from "react";
 import AdminSidebar from "./components/admin/screens/adminSidebar.jsx";
 import AdminNotifications from './components/admin/screens/AdminNotifications.jsx';
 import AdminVoucher from './components/admin/screens/AdminVoucher.jsx';
+import CreateTopic from "./components/tutor/CreateTopic.jsx";
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
                     <Route path="/schedule" element={<Schedule />} />
                     <Route path="/calendar" element={<Calendar/>}/>
                     <Route path="/book-session" element={<BookSession />} />
+                    <Route path="/create-topic" element={<CreateTopic/>}/>
                     {/*<Route path="/admin-login" element={<AdminSignIn />} />*/}
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />
                     {/* Admin routes wrapped in AdminLayout */}
