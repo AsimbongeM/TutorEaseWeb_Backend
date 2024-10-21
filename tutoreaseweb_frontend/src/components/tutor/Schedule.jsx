@@ -1,8 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { createSession, deleteSession, getSessionsByTutorEmail, updateSession } from "../../services/ScheduleSessionServices.js";
-import { getAllTopics } from "../../services/TopicsServices.js";
-import { Button, Form, Modal } from 'react-bootstrap';
-import { AuthContext } from "../AuthContext.jsx";
+import React, {useContext, useEffect, useState} from 'react';
+import {
+    createSession,
+    deleteSession,
+    getSessionsByTutorEmail,
+    updateSession
+} from "../../services/ScheduleSessionServices.js";
+import {getAllTopics} from "../../services/TopicsServices.js";
+import {Button, Form, Modal} from 'react-bootstrap';
+import {AuthContext} from "../AuthContext.jsx";
 
 function Schedule() {
     const { auth } = useContext(AuthContext);
@@ -18,6 +23,8 @@ function Schedule() {
     const [searchTerm, setSearchTerm] = useState('');
     const [hoveredButtonId, setHoveredButtonId] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const sessionsPerPage = 3;
 
     useEffect(() => {
         if (auth && auth.email) {
@@ -57,22 +64,26 @@ function Schedule() {
     const validateFields = () => {
         const newErrors = {};
         const today = new Date().toISOString().split('T')[0];
-        if (newSession.date < today) {
-            newErrors.date = 'Date cannot be in the past';
-        }
+
         if (!newSession.date) newErrors.date = 'Date is required';
+        else if (newSession.date < today) newErrors.date = 'Date cannot be in the past';
+
         if (!newSession.startTime) newErrors.startTime = 'Start time is required';
         if (!newSession.endTime) newErrors.endTime = 'End time is required';
+
         if (newSession.startTime && newSession.endTime && newSession.startTime >= newSession.endTime) {
             newErrors.endTime = 'End time must be after start time';
         }
+
         if (newSession.startTime && newSession.endTime) {
             const start = new Date(`${newSession.date}T${newSession.startTime}`);
             const end = new Date(`${newSession.date}T${newSession.endTime}`);
             const diff = (end - start) / (1000 * 60 * 60);
             if (diff > 2) newErrors.endTime = 'Session cannot exceed 2 hours';
         }
+
         if (!newSession.topicId) newErrors.topicId = 'Topic is required';
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -90,27 +101,33 @@ function Schedule() {
 
         try {
             const savedSession = await createSession(sessionData);
-            setSessions([...sessions, savedSession]);
+            setSessions(prev => [...prev, savedSession]);
             setSuccessMessage('Session added successfully!');
+            hideSuccessMessage();
         } catch (error) {
             console.error('Error creating session:', error);
         }
 
-        setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
-        setErrors({});
-        hideSuccessMessage();
+        resetNewSession();
+        setEditingIndex(null); // Reset editing index after adding a session
     };
 
-    const handleEdit = (index) => {
-        setNewSession({
-            date: sessions[index].date,
-            topicId: sessions[index].topic?.id || '',
-            startTime: sessions[index].startTime || '',
-            endTime: sessions[index].endTime || ''
-        });
-        setEditingIndex(index);
-        setEditingId(sessions[index].id);
+    const handleEdit = (sessionId) => {
+        const sessionToEdit = sessions.find(session => session.id === sessionId);
+
+        if (sessionToEdit) {
+            setNewSession({
+                date: sessionToEdit.date,
+                topicId: sessionToEdit.topic?.id || '',
+                startTime: sessionToEdit.startTime || '',
+                endTime: sessionToEdit.endTime || ''
+            });
+            // Set editingIndex to the index of the session being edited
+            setEditingIndex(sessions.findIndex(session => session.id === sessionId));
+            setEditingId(sessionToEdit.id); // Ensure the editingId is set
+        }
     };
+
 
     const handleDeleteConfirmation = (sessionId) => {
         setModalType('delete');
@@ -123,6 +140,7 @@ function Schedule() {
         setShowModal(true);
     };
 
+// In your handleUpdate function, reset the editing state after the update
     const handleUpdate = async () => {
         if (!validateFields()) return;
 
@@ -136,37 +154,41 @@ function Schedule() {
 
         try {
             const updatedSession = await updateSession(editingId, sessionData);
-            const updatedSessions = [...sessions];
-            updatedSessions[editingIndex] = updatedSession;
-            setSessions(updatedSessions);
+            setSessions(prev => {
+                const updatedSessions = [...prev];
+                updatedSessions[editingIndex] = updatedSession; // Update the session in the list
+                return updatedSessions;
+            });
             setSuccessMessage('Session updated successfully!');
+            hideSuccessMessage();
+            resetNewSession();
+            setEditingIndex(null); // Reset editing index after update
         } catch (error) {
             console.error('Error updating session:', error);
         }
 
-        setShowModal(false);
-        setEditingIndex(null);
-        setEditingId(null);
-        setNewSession({ date: '', topicId: '', startTime: '', endTime: '' });
-        setErrors({});
-        hideSuccessMessage();
+        closeModal();
     };
 
     const handleDelete = async () => {
         try {
+            // Delete the session by ID
             await deleteSession(selectedSessionId);
-            const updatedSessions = sessions.filter(session => session.id !== selectedSessionId);
-            setSessions(updatedSessions);
+
+            // Update the session state, filtering out the deleted session by ID
+            setSessions(prev => prev.filter(session => session.id !== selectedSessionId));
+
+            // Show success message
             setSuccessMessage('Session deleted successfully!');
+            hideSuccessMessage();
         } catch (error) {
             console.error('Error deleting session:', error);
         }
-        setShowModal(false);
-        setSelectedSessionId(null);
-        hideSuccessMessage();
+        closeModal(); // Close the modal after the session is deleted
     };
 
-    const handleCloseModal = () => {
+
+    const closeModal = () => {
         setShowModal(false);
         setSelectedSessionId(null);
         setEditingIndex(null);
@@ -177,12 +199,28 @@ function Schedule() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredSessions = Array.isArray(sessions) ? sessions.filter(session => {
+    const indexOfLastSession = currentPage * sessionsPerPage;
+    const indexOfFirstSession = indexOfLastSession - sessionsPerPage;
+    const filteredSessions = sessions.filter(session => {
         return (session.topic?.description?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
             (session.date?.includes(searchTerm) || '') ||
             (session.startTime?.includes(searchTerm) || '') ||
             (session.endTime?.includes(searchTerm) || '');
-    }) : [];
+    });
+    const currentSessions = filteredSessions.slice(indexOfFirstSession, indexOfLastSession);
+    const totalPages = Math.ceil(filteredSessions.length / sessionsPerPage);
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(prev => prev + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(prev => prev - 1);
+        }
+    };
 
     const hideSuccessMessage = () => {
         setTimeout(() => {
@@ -190,9 +228,14 @@ function Schedule() {
         }, 3000);
     };
 
+    const resetNewSession = () => {
+        setNewSession({date: '', topicId: '', startTime: '', endTime: ''});
+        setErrors({});
+    };
+
     return (
         <section className="container mt-4">
-            <h2 className="mb-4 text-primary " style={{ fontWeight: 'bold', fontSize: '2rem' }}>Schedule</h2>
+            <h2 className="mb-4 text-primary" style={{fontWeight: 'bold', fontSize: '2rem'}}>Schedule</h2>
 
             {successMessage && (
                 <div className="alert alert-success" role="alert">
@@ -236,6 +279,7 @@ function Schedule() {
                     className="form-control mb-2"
                 />
                 {errors.date && <div className="text-danger">{errors.date}</div>}
+
                 <input
                     type="time"
                     name="startTime"
@@ -244,6 +288,7 @@ function Schedule() {
                     className="form-control mb-2"
                 />
                 {errors.startTime && <div className="text-danger">{errors.startTime}</div>}
+
                 <input
                     type="time"
                     name="endTime"
@@ -270,45 +315,60 @@ function Schedule() {
                     {editingIndex !== null ? 'Update Session' : 'Add Session'}
                 </button>
             </div>
-
-            {filteredSessions.length > 0 ? (
-                filteredSessions.map((session, index) => (
-                    <div key={session.id} className="card mb-3">
-                        <div className="card-body">
-                            <h5 className="card-title">    {session.topic?.topicName} - {session.topic?.topicLevel}
-                                {session.topic?.topicDescription ? ` (${session.topic.topicDescription})` : ''}</h5>
-                            <p className="card-text">
-                                <strong>Date:</strong> {session.date}<br />
-                                <strong>Start Time:</strong> {session.startTime}<br />
-                                <strong>End Time:</strong> {session.endTime}
-                            </p>
-                            <div className="d-flex">
-                                <Button
-                                    variant="primary"
-                                    onClick={() => handleEdit(index)}
-                                    className="me-2"
-                                >
-                                    <span className="d-flex align-items-center">
-                                         Edit
-                                    </span>
-                                </Button>
-                                <Button
-                                    variant="danger"
-                                    onClick={() => handleDeleteConfirmation(session.id)}
-                                >
-                                    <span className="d-flex align-items-center">
-                                       Delete
-                                    </span>
-                                </Button>
+            {currentSessions.length > 0 ? (
+                <div className="row g-3"> {/* 'g-3' for spacing between cards */}
+                    {currentSessions.map((session, index) => (
+                        <div key={session.id} className="col-md-4 d-flex"> {/* 'd-flex' to make columns flexible */}
+                            <div className="card h-100"
+                                 style={{width: '18rem'}}> {/* 'h-100' ensures cards are the same height */}
+                                <div
+                                    className="card-body d-flex flex-column"> {/* 'd-flex flex-column' to align content inside */}
+                                    <h5 className="card-title">
+                                        {session.topic?.topicName} - {session.topic?.topicLevel}
+                                        {session.topic?.topicDescription ? ` (${session.topic.topicDescription})` : ''}
+                                    </h5>
+                                    <p className="card-text">
+                                        <strong>Date:</strong> {session.date}<br/>
+                                        <strong>Start Time:</strong> {session.startTime}<br/>
+                                        <strong>End Time:</strong> {session.endTime}
+                                    </p>
+                                    <div className="mt-auto d-flex">
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => handleEdit(session.id)}
+                                            className="me-3"
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => handleDeleteConfirmation(session.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))
+                    ))}
+                </div>
             ) : (
                 <p className="text-danger">No sessions found.</p>
             )}
 
-            <Modal show={showModal} onHide={handleCloseModal} centered>
+
+            {/* Pagination Controls */}
+            <div className="d-flex justify-content-between align-items-center">
+                <Button variant="secondary" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                    Previous
+                </Button>
+                <span>Page {currentPage} of {totalPages}</span>
+                <Button variant="success" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                    Next
+                </Button>
+            </div>
+
+            <Modal show={showModal} onHide={closeModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         {modalType === 'delete' ? 'Confirm Deletion' : 'Confirm Update'}
@@ -320,7 +380,7 @@ function Schedule() {
                         : 'Are you sure you want to update this session?'}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
+                    <Button variant="secondary" onClick={closeModal}>
                         Cancel
                     </Button>
                     {modalType === 'delete' ? (
