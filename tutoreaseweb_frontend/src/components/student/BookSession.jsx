@@ -84,14 +84,21 @@ const BookSession = () => {
 
             // Mark the session as booked by updating its isBooked flag
             const updateResponse = await updateSession(session.id, { ...session, isBooked: true });
-            console.log('Session update response',updateResponse);
-            console.log(`Session data;id to booked.`,session.id );
+            console.log('Session update response', updateResponse);
+            console.log(`Session data; id to booked.`, session.id);
+
+            // Automatically hide the success message after 3 seconds
+            setTimeout(() => {
+                setMessage(null);
+            }, 3000);
+
         } catch (error) {
             console.error('Error creating booking or updating session:', error);
             // Set error message
             setMessage({ text: 'Error creating booking. Please try again.', type: 'danger' });
         }
     };
+
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value.toLowerCase());
