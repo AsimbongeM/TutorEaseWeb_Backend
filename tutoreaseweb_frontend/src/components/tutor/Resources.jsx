@@ -5,7 +5,7 @@ import { Button, Form, Spinner, Modal, Alert, Card, Row, Col } from 'react-boots
 
 const Resources = () => {
     const { auth } = useContext(AuthContext);
-    const [file, setFile] = useState(null); 
+    const [file, setFile] = useState(null);
     const [uploadType, setUploadType] = useState('document');
     const [uploadError, setUploadError] = useState('');
     const [files, setFiles] = useState([]);
@@ -16,13 +16,20 @@ const Resources = () => {
 
     useEffect(() => {
         if (auth && auth.email) {
-            fetchFileList(auth.email);
+            fetchFileList(auth.email, auth.role);
         }
     }, [auth]);
 
-    const fetchFileList = async (email) => {
+    const fetchFileList = async (email, role) => {
         try {
-            const response = await fetchFiles(email);
+            let response;
+            if (role === 'tutor') {
+                // Fetch files uploaded by the tutor
+                response = await fetchFiles(email);
+            } else if (role === 'student') {
+                // Fetch files uploaded by the student's tutor
+                response = await fetchFiles(auth.tutorId); // Assuming tutorId is part of the student's auth info
+            }
             setFiles(response.data);
         } catch (error) {
             console.error("Error fetching files:", error);
@@ -41,9 +48,9 @@ const Resources = () => {
 
         try {
             setLoading(true);
-            await uploadFile(file, uploadType, auth.email);
+            await uploadFile(file, uploadType, auth.email); // Upload the file with tutor's email
             setUploadError('');
-            fetchFileList(auth.email);
+            fetchFileList(auth.email, auth.role);
         } catch (error) {
             setUploadError('Error uploading file. Please try again.');
         } finally {
@@ -69,7 +76,7 @@ const Resources = () => {
             setLoading(true);
             await updateFile(currentFile.id, file);
             setUploadError('');
-            fetchFileList(auth.email);
+            fetchFileList(auth.email, auth.role);
         } catch (error) {
             setUploadError('Error updating file. Please try again.');
         } finally {
@@ -89,7 +96,7 @@ const Resources = () => {
         try {
             setLoading(true);
             await deleteFile(currentFile.id);
-            fetchFileList(auth.email);
+            fetchFileList(auth.email, auth.role);
         } catch (error) {
             console.error('Error deleting file:', error);
         } finally {
@@ -111,36 +118,39 @@ const Resources = () => {
             <h1 className="mb-4">Manage Resources</h1>
 
             {/* Form for Uploading and Updating */}
-            <div className="mb-4">
-                <Form.Group controlId="formFileUpload" className="mb-3">
-                    <Form.Label>Choose File</Form.Label>
-                    <Form.Control
-                        type="file"
-                        onChange={handleFileChange}
-                    />
-                </Form.Group>
-                <Form.Group controlId="formSelectUploadType" className="mb-3">
-                    <Form.Label>Type</Form.Label>
-                    <Form.Control
-                        as="select"
-                        value={uploadType}
-                        onChange={(e) => setUploadType(e.target.value)}
-                        disabled={modalType === 'update'}
+            {auth && auth.role === 'tutor' ? (
+                <div className="mb-4">
+                    <Form.Group controlId="formFileUpload" className="mb-3">
+                        <Form.Label>Choose File</Form.Label>
+                        <Form.Control
+                            type="file"
+                            onChange={handleFileChange}
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formSelectUploadType" className="mb-3">
+                        <Form.Label>Type</Form.Label>
+                        <Form.Control
+                            as="select"
+                            value={uploadType}
+                            onChange={(e) => setUploadType(e.target.value)}
+                            disabled={modalType === 'update'}
+                        >
+                            <option value="document">Document</option>
+                            <option value="recording">Recording</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Button
+                        variant="primary"
+                        onClick={modalType === 'update' ? () => setShowModal(true) : handleUpload}
+                        disabled={loading || !file}
+                        style={{ backgroundColor: '#007bff', borderColor: '#007bff' }}
                     >
-                        <option value="document">Document</option>
-                        <option value="recording">Recording</option>
-                    </Form.Control>
-                </Form.Group>
-                <Button
-                    variant="primary"
-                    onClick={modalType === 'update' ? () => setShowModal(true) : handleUpload}
-                    disabled={loading || !file}
-                    style={{ backgroundColor: '#007bff', borderColor: '#007bff' }}
-                >
-                    {loading ? <Spinner animation="border" size="sm" /> : modalType === 'update' ? 'Update' : 'Upload'}
-                </Button>
-                {uploadError && <Alert variant="danger" className="mt-3">{uploadError}</Alert>}
-            </div>
+                        {loading ? <Spinner animation="border" size="sm" /> : modalType === 'update' ? 'Update' : 'Upload'}
+                    </Button>
+                    {uploadError && <Alert variant="danger" className="mt-3">{uploadError}</Alert>}
+                </div>
+            ) : null}
+
 
             {/* Files List */}
             <Row className="mt-4">
@@ -149,26 +159,31 @@ const Resources = () => {
                         <Card>
                             <Card.Body>
                                 <Card.Title>{file.fileName}</Card.Title>
+                                <Card.Subtitle>{file.description}</Card.Subtitle>
                                 <Card.Subtitle className="mb-2 text-muted">{file.fileType}</Card.Subtitle>
-                                <Button
-                                    variant="warning"
-                                    onClick={() => handleUpdateClick(file)}
-                                    className="me-2"
-                                    style={{ backgroundColor: '#ffc107', borderColor: '#ffc107' }}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    variant="danger"
-                                    onClick={() => {
-                                        setCurrentFile(file);
-                                        setModalType('delete');
-                                        setShowModal(true);
-                                    }}
-                                    style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
-                                >
-                                    Delete
-                                </Button>
+                                {auth && auth.role === 'tutor' && (
+                                    <>
+                                        <Button
+                                            variant="warning"
+                                            onClick={() => handleUpdateClick(file)}
+                                            className="me-2"
+                                            style={{ backgroundColor: '#ffc107', borderColor: '#ffc107' }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => {
+                                                setCurrentFile(file);
+                                                setModalType('delete');
+                                                setShowModal(true);
+                                            }}
+                                            style={{ backgroundColor: '#dc3545', borderColor: '#dc3545' }}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </>
+                                )}
                             </Card.Body>
                         </Card>
                     </Col>
@@ -199,4 +214,6 @@ const Resources = () => {
     );
 };
 
-export default Resources;
+export default Resources
+
+

@@ -37,6 +37,9 @@ public class ResourcesService {
     public List<Resources> findByTutorEmail(String tutorEmail) {
         return resourceRepository.findByTutorEmail(tutorEmail);
     }
+    public List<Resources> getAll(){
+       return resourceRepository.findAll();
+    }
 
     public void deleteFile(Long id) {
         resourceRepository.deleteById(id);
