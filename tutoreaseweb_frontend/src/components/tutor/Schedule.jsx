@@ -275,7 +275,8 @@ function Schedule() {
                 filteredSessions.map((session, index) => (
                     <div key={session.id} className="card mb-3">
                         <div className="card-body">
-                            <h5 className="card-title">{session.topic?.description} - {session.topic?.level}</h5>
+                            <h5 className="card-title">    {session.topic?.topicName} - {session.topic?.topicLevel}
+                                {session.topic?.topicDescription ? ` (${session.topic.topicDescription})` : ''}</h5>
                             <p className="card-text">
                                 <strong>Date:</strong> {session.date}<br />
                                 <strong>Start Time:</strong> {session.startTime}<br />
