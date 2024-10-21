@@ -2,19 +2,13 @@ import React, {useState, useEffect, useContext} from 'react';
 import {fetchAllAnnouncements} from "../../services/AnnouncementsServices.js";
 import { AuthContext } from "../AuthContext.jsx";
 
-// Ensure this service fetches all announcements
-
 function StudentAnnouncements() {
     const { auth } = useContext(AuthContext);
     const [announcements, setAnnouncements] = useState([]);
 
-    // Move the fetchAnnouncements function above the useEffect hook
     const fetchAnnouncements = async (email) => {
         try {
-            console.log("Before fetch announcements:");
-
             const response = await fetchAllAnnouncements(email);
-            console.log("announcements:", response);
             setAnnouncements(response.data);
         } catch (error) {
             console.error("Error fetching announcements:", error);
@@ -29,19 +23,23 @@ function StudentAnnouncements() {
 
     return (
         <section className="container mt-4">
-            <h2 className="mb-4">Available Announcements</h2>
+            <h2 className="mb-4 text-primary text-center" style={{ fontWeight: 'bold', fontSize: '2rem' }}>
+                Tutor Announcements
+            </h2>
             {announcements.length > 0 ? (
                 <div className="list-group">
                     {announcements.map((text) => (
-                        <div key={text.id} className="list-group-item">
-                            <div>
+                        <div key={text.id} className="list-group-item" style={{ backgroundColor: '#f8f9fa', borderColor: '#00274d' }}>
+                            <div style={{ color: 'black' }}>
                                 {text.text || 'No content available'}
                             </div>
                         </div>
                     ))}
                 </div>
             ) : (
-                <p>No announcements available at the moment.</p>
+                <p className="text-secondary text-center" style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
+                    No announcements available at the moment.
+                </p>
             )}
         </section>
     );
