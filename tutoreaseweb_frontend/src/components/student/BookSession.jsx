@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Form, InputGroup, Modal} from 'react-bootstrap';
 import {createBookSession} from '../../services/BookSessionServices.js';
-import {getSessionsByTutorEmail} from "../../services/ScheduleSessionServices.js";
+import {getSessionsByTutorEmail, updateSession} from "../../services/ScheduleSessionServices.js";
 import {AuthContext} from "../AuthContext.jsx";
 import {getApprovedTutors} from "../../services/TutorServices.js";
 
@@ -154,7 +154,7 @@ const BookSession = () => {
 
             {/* Modal for session details */}
             <Modal show={showSessionsModal} onHide={() => setShowSessionsModal(false)} centered>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>
                         {selectedTutor?.firstName} {selectedTutor?.lastName}'s Sessions
                     </Modal.Title>
@@ -211,7 +211,7 @@ const BookSession = () => {
 
             {/* Modal for confirming booking */}
             <Modal show={showBookingModal} onHide={() => setShowBookingModal(false)}>
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>Confirm Booking</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
