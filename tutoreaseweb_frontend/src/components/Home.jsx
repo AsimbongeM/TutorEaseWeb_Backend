@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 const styles = {
@@ -45,8 +45,6 @@ const styles = {
         maxWidth: '1200px',
         margin: '0 auto',
         flex: '1',
-        paddingLeft: '40px',
-        paddingRight: '40px',
     },
     AppInfo: {
         margin: '20px 0',
@@ -65,38 +63,34 @@ const styles = {
         maxWidth: '800px',
         margin: '0 auto',
     },
-    ScrollableCardContainerWrapper: {
-        maxHeight: '150px',
-        overflowY: 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginBottom: '20px',
-        padding: '0 20px',
+    SlideShowContainer: {
+        position: 'relative',
+        maxWidth: '1200px',
+        margin: '20px auto',
+        overflow: 'hidden',
     },
-    ScrollableCardContainer: {
-        display: 'flex',
-        gap: '20px',
-        width: '100%',
-        maxWidth: '900',
-        overflowX: 'auto',
-        scrollBehavior: 'smooth',
-        padding: '10px 0',
+    Slide: {
+        display: 'none',
+        transition: 'opacity 0.5s ease-in-out',
+    },
+    SlideVisible: {
+        display: 'block',
+        opacity: 1,
     },
     Card: {
         backgroundColor: 'white',
         borderRadius: '15px',
         padding: '20px',
-        width: '250px',
+        width: '100%',
+        maxWidth: '800px',
         textAlign: 'left',
         boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.1)',
+        margin: '0 auto',
         transition: 'transform 0.3s, box-shadow 0.3s',
-        border: '1px solid #ddd',
-        flexShrink: '0',
     },
     CardHover: {
-        transform: 'scale(1.05)',
-        boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.2)',
+        transform: 'translateY(-5px)',
+        boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.2)',
     },
     CardTitle: {
         fontSize: '1.6rem',
@@ -111,10 +105,9 @@ const styles = {
     },
     List: {
         marginTop: '10px',
+        paddingLeft: '20px',
     },
     ListItem: {
-        listStyleType: 'disc',
-        marginLeft: '20px',
         marginBottom: '5px',
     },
     AppCta: {
@@ -125,6 +118,13 @@ const styles = {
         fontSize: '2rem',
         marginBottom: '20px',
         fontWeight: 'bold',
+    },
+    UppercaseText: {
+        color: '#00274d',
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        margin: '20px 0',
     },
     ButtonGroup: {
         display: 'flex',
@@ -150,12 +150,53 @@ const styles = {
     },
 };
 
+const slides = [
+    {
+        title: 'Beginner',
+        description: 'Learn the basics of Java.',
+        content: [
+            'Basic syntax and structure',
+            'Variables and data types',
+            'Control statements',
+            'Basic object-oriented concepts',
+        ],
+    },
+    {
+        title: 'Intermediate',
+        description: 'Expand your Java knowledge.',
+        content: [
+            'Advanced OOP concepts',
+            'Exception handling',
+            'Collections framework',
+            'File I/O',
+        ],
+    },
+    {
+        title: 'Advanced',
+        description: 'Master Java with advanced topics.',
+        content: [
+            'Multi-threading',
+            'Generics',
+            'JDBC and databases',
+            'Design patterns',
+        ],
+    },
+];
+
 function Home() {
     const [isTutorButtonHovered, setIsTutorButtonHovered] = useState(false);
     const [isStudentButtonHovered, setIsStudentButtonHovered] = useState(false);
     const [isSignInHovered, setIsSignInHovered] = useState(false);
     const [hoveredCard, setHoveredCard] = useState(null);
+    const [currentSlide, setCurrentSlide] = useState(0);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentSlide((prev) => (prev + 1) % slides.length);
+        }, 5000); // Change slide every 5 seconds
+        return () => clearInterval(interval); // Cleanup on unmount
+    }, []);
 
     return (
         <div style={styles.App}>
@@ -182,62 +223,6 @@ function Home() {
                     </p>
                 </section>
 
-                {/* Horizontally Scrollable Cards */}
-                <div style={styles.ScrollableCardContainerWrapper}>
-                    <div style={styles.ScrollableCardContainer}>
-                        <div
-                            style={hoveredCard === 'beginner' ? { ...styles.Card, ...styles.CardHover } : styles.Card}
-                            onMouseOver={() => setHoveredCard('beginner')}
-                            onMouseOut={() => setHoveredCard(null)}
-                        >
-                            <h2 style={styles.CardTitle}>Beginner</h2>
-                            <p style={styles.CardDescription}>
-                                Learn the basics of Java:
-                                <ul style={styles.List}>
-                                    <li style={styles.ListItem}>Basic syntax and structure</li>
-                                    <li style={styles.ListItem}>Variables and data types</li>
-                                    <li style={styles.ListItem}>Control statements</li>
-                                    <li style={styles.ListItem}>Basic object-oriented concepts</li>
-                                </ul>
-                            </p>
-                        </div>
-
-                        <div
-                            style={hoveredCard === 'intermediate' ? { ...styles.Card, ...styles.CardHover } : styles.Card}
-                            onMouseOver={() => setHoveredCard('intermediate')}
-                            onMouseOut={() => setHoveredCard(null)}
-                        >
-                            <h2 style={styles.CardTitle}>Intermediate</h2>
-                            <p style={styles.CardDescription}>
-                                Expand your Java knowledge:
-                                <ul style={styles.List}>
-                                    <li style={styles.ListItem}>Advanced OOP concepts</li>
-                                    <li style={styles.ListItem}>Exception handling</li>
-                                    <li style={styles.ListItem}>Collections framework</li>
-                                    <li style={styles.ListItem}>File I/O</li>
-                                </ul>
-                            </p>
-                        </div>
-
-                        <div
-                            style={hoveredCard === 'advanced' ? { ...styles.Card, ...styles.CardHover } : styles.Card}
-                            onMouseOver={() => setHoveredCard('advanced')}
-                            onMouseOut={() => setHoveredCard(null)}
-                        >
-                            <h2 style={styles.CardTitle}>Advanced</h2>
-                            <p style={styles.CardDescription}>
-                                Master Java with advanced topics:
-                                <ul style={styles.List}>
-                                    <li style={styles.ListItem}>Multi-threading</li>
-                                    <li style={styles.ListItem}>Generics</li>
-                                    <li style={styles.ListItem}>JDBC and databases</li>
-                                    <li style={styles.ListItem}>Design patterns</li>
-                                </ul>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
                 <section style={styles.AppCta}>
                     <h2 style={styles.h2}>Join us now</h2>
                     <div style={styles.ButtonGroup}>
@@ -259,6 +244,37 @@ function Home() {
                         </button>
                     </div>
                 </section>
+
+                <div style={styles.UppercaseText}>THESE ARE SOME OF THE TOPICS WE COVER</div>
+
+                <div style={styles.SlideShowContainer}>
+                    {slides.map((slide, index) => (
+                        <div
+                            key={index}
+                            style={{
+                                ...styles.Slide,
+                                ...(currentSlide === index ? styles.SlideVisible : {}),
+                            }}
+                        >
+                            <div
+                                style={{
+                                    ...styles.Card,
+                                    ...(hoveredCard === index ? styles.CardHover : {}),
+                                }}
+                                onMouseEnter={() => setHoveredCard(index)}
+                                onMouseLeave={() => setHoveredCard(null)}
+                            >
+                                <h2 style={styles.CardTitle}>{slide.title}</h2>
+                                <p style={styles.CardDescription}>{slide.description}</p>
+                                <ul style={styles.List}>
+                                    {slide.content.map((item, idx) => (
+                                        <li key={idx} style={styles.ListItem}>{item}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </main>
         </div>
     );
