@@ -1,14 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from "../AuthContext.jsx";
-
 import { Button, Form, Modal, Spinner } from 'react-bootstrap';
-import {
-    deleteAnnouncement,
-    fetchAnnouncements,
-    postAnnouncement,
-    updateAnnouncement
-} from "../../services/AnnouncementsServices.js";
-import {fetchFiles} from "../../services/ResourcesServices.js";
+import { deleteAnnouncement, fetchAnnouncements, postAnnouncement, updateAnnouncement } from "../../services/AnnouncementsServices.js";
 
 function Announcements() {
     const { auth } = useContext(AuthContext);
@@ -91,31 +84,42 @@ function Announcements() {
 
     return (
         <section className="container mt-4">
-            <h2 className="mb-4">Announcements</h2>
+            {/* Post Announcements Section */}
             {auth.role === 'tutor' && (
-                <div className="mb-4">
-                    <Form.Control
-                        as="textarea"
-                        value={newAnnouncement}
-                        onChange={handleInputChange}
-                        placeholder="Write your announcement here..."
-                        rows="3"
-                        className="mb-2"
-                    />
-                    <Button
-                        variant="primary"
-                        onClick={handlePostAnnouncement}
-                        disabled={loading}
-                    >
-                        {loading ? <Spinner animation="border" size="sm" /> : (editingIndex !== null ? 'Update Announcement' : 'Post Announcement')}
-                    </Button>
-                </div>
+                <>
+                    <h2 className="mb-4 text-primary text-center" style={{ fontWeight: 'bold', fontSize: '2rem' }}>
+                        Post Announcements
+                    </h2>
+                    <div className="mb-4">
+                        <Form.Control
+                            as="textarea"
+                            value={newAnnouncement}
+                            onChange={handleInputChange}
+                            placeholder="Write your announcement here..."
+                            rows="3"
+                            className="mb-2"
+                            style={{ fontSize: '1rem', color: '#333' }}
+                        />
+                        <Button
+                            variant="primary"
+                            onClick={handlePostAnnouncement}
+                            disabled={loading}
+                        >
+                            {loading ? <Spinner animation="border" size="sm" /> : (editingIndex !== null ? 'Update Announcement' : 'Post Announcement')}
+                        </Button>
+                    </div>
+                </>
             )}
-            {announcements.length > 0 && (
+
+            {/* History Announcements Section */}
+            <h2 className="mb-4 text-primary text-center" style={{ fontWeight: 'bold', fontSize: '2rem' }}>
+                History
+            </h2>
+            {announcements.length > 0 ? (
                 <div className="list-group">
                     {announcements.map((text, index) => (
-                        <div key={text.id} className="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
+                        <div key={text.id} className="list-group-item d-flex justify-content-between align-items-center" style={{ backgroundColor: '#f8f9fa', borderColor: '#00274d' }}>
+                            <div style={{ color: '#black' }}>
                                 {text.text || 'No content available'}
                             </div>
                             {auth.role === 'tutor' && (
@@ -140,6 +144,10 @@ function Announcements() {
                         </div>
                     ))}
                 </div>
+            ) : (
+                <p className="text-secondary text-center" style={{ fontWeight: 'bold', fontSize: '1.5rem' }}>
+                    No announcements available at the moment.
+                </p>
             )}
 
             {/* Confirmation Modal */}
