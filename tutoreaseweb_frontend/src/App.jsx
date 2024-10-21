@@ -29,6 +29,7 @@ import AdminNotifications from './components/admin/screens/AdminNotifications.js
 import AdminVoucher from './components/admin/screens/AdminVoucher.jsx';
 import CreateTopic from "./components/tutor/CreateTopic.jsx";
 import StudentAnnouncements from "./components/student/StudentAnnouncements.jsx";
+import ViewResource from "./components/student/ViewResources.jsx"
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
                     <Route path="/resources" element={<Resources />} />
                     <Route path="/announcements" element={<Announcements />} />
                     <Route path="/schedule" element={<Schedule />} />
+                    <Route path="/ViewResources" element={< ViewResource />} />
                     <Route path="/calendar" element={<Calendar/>}/>
                     <Route path="/book-session" element={<BookSession />} />
                     <Route path="/create-topic" element={<CreateTopic/>}/>

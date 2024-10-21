@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import za.ac.cput.domain.Resources;
+import za.ac.cput.domain.Topics;
 import za.ac.cput.service.ResourcesService;
 
 import java.util.List;
@@ -32,6 +33,11 @@ public class ResourcesController {
             }
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file: " + e.getMessage());
         }
+    }
+    @GetMapping("/getAll")
+    public List<Resources>getAll() {
+
+        return resourcesService.getAll();
     }
 
     @GetMapping

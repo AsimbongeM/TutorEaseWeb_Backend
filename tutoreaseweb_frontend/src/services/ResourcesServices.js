@@ -20,7 +20,9 @@ export const fetchFiles = async (tutorEmail) => {
 export const deleteFile = async (id) => {
     await axios.delete(`${FILE_API_URL}/delete/${id}`);
 };
-
+export const fetchAll =  () => {
+    return axios.get(`${FILE_API_URL}/getAll`);
+};
 export const updateFile = async (id, file) => {
     const formData = new FormData();
     formData.append('file', file);
