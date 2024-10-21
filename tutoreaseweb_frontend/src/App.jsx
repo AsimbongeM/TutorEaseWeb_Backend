@@ -28,6 +28,7 @@ import AdminSidebar from "./components/admin/screens/adminSidebar.jsx";
 import AdminNotifications from './components/admin/screens/AdminNotifications.jsx';
 import AdminVoucher from './components/admin/screens/AdminVoucher.jsx';
 import CreateTopic from "./components/tutor/CreateTopic.jsx";
+import StudentAnnouncements from "./components/student/StudentAnnouncements.jsx";
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
                     <Route path="/class-session/:sessionId" element={<ClassSession />} />
                     {/*<Route path="/student-dashboard" element={<StudentDashboard />} />*/}
                     <Route path="/student-profile" element={<StudentProfile />} />
+                    <Route path="/student/announcements" element={<StudentAnnouncements />} />
                     {/*<Route path="/tutor-dashboard" element={<TutorDashboard />} />*/}
                     <Route path="/tutor-profile" element={<TutorProfile />} />
                     <Route path="/tutor-registration" element={<TutorRegistration />} />
