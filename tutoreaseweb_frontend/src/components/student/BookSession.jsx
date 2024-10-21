@@ -14,6 +14,7 @@ const BookSession = () => {
     const [sessions, setSessions] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const { auth } = useContext(AuthContext);
+    const [message, setMessage] = useState(null); // State for messages
 
     // Fetch approved tutors when the component mounts or when auth changes
     useEffect(() => {
@@ -53,7 +54,7 @@ const BookSession = () => {
 
     const confirmBooking = async (session) => {
         if (!auth || !auth.email) {
-            console.error('User is not authenticated');
+            setMessage({ text: 'User is not authenticated', type: 'danger' });
             return;
         }
 
@@ -62,29 +63,33 @@ const BookSession = () => {
         try {
             // Constructing booking data
             const bookSessionData = {
-                tutor: selectedTutor,  // Full tutor object
+                tutor: selectedTutor, // Full tutor object
                 student: {
-                    email: auth.email,  // Authenticated student's email
+                    email: auth.email, // Authenticated student's email
                 },
-                scheduleSession: session  // Full session object
+                scheduleSession: session, // Full session object
             };
 
-            // Log the data before sending
             console.log("Data to be sent to backend:", bookSessionData);
 
             // Call the createBookSession service
             const response = await createBookSession(bookSessionData);
-            console.log('Response from createBookSession:', response.data);
 
-            // Log detailed booked session information
-            const {  tutor, student, scheduleSession } = response.data;
-            console.log('Booked session details:', { tutor, student, scheduleSession });
+            // Set success message
+            setMessage({ text: 'Booking successful!', type: 'success' });
 
-            // Optionally close modals or update UI
+            // Close both modals
             setShowBookingModal(false);
             setShowSessionsModal(false);
+
+            // Mark the session as booked by updating its isBooked flag
+            const updateResponse = await updateSession(session.id, { ...session, isBooked: true });
+            console.log('Session update response',updateResponse);
+            console.log(`Session data;id to booked.`,session.id );
         } catch (error) {
-            console.error('Error creating booking:', error);
+            console.error('Error creating booking or updating session:', error);
+            // Set error message
+            setMessage({ text: 'Error creating booking. Please try again.', type: 'danger' });
         }
     };
 
@@ -104,6 +109,12 @@ const BookSession = () => {
 
     return (
         <div className="container mt-5">
+            {message && (
+                <div className={`alert alert-${message.type}`} role="alert">
+                    {message.text}
+                </div>
+            )}
+
             <h2>Available Tutors</h2>
             <InputGroup className="mb-4">
                 <Form.Control
