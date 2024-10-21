@@ -33,8 +33,7 @@ public class AnnouncementsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating announcement: " + e.getMessage());
         }
     }
-
-    @GetMapping("/getAnnouncementsByTutorEmail")
+    @GetMapping
     public ResponseEntity<List<Announcement>> getAnnouncements(@RequestParam String tutorEmail) {
         try {
             List<Announcement> announcements = announcementService.findByTutorEmail(tutorEmail);
@@ -43,6 +42,7 @@ public class AnnouncementsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateAnnouncement(@PathVariable Long id,

@@ -12,9 +12,10 @@ export const postAnnouncement = async (announcementText, tutorEmail) => {
 
 // Fetch announcements for a specific tutor
 export const fetchAnnouncements = async (tutorEmail) => {
-    return await axios.get(`${ANNOUNCEMENTS_API_URL}/getAnnouncementsByTutorEmail`, {
-        tutor: { email: tutorEmail }
-    });
+    return await axios.get(ANNOUNCEMENTS_API_URL,
+        {
+            params: {tutorEmail}
+        });
 };
 
 // Update an existing announcement
