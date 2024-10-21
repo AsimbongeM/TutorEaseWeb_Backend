@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Button, Card, InputGroup, Form, Modal } from 'react-bootstrap';
-import { createBookSession, getAllBookSessions } from '../../services/BookSessionServices.js'; // Import your service here
-import { getSessionsByTutorEmail, updateSession } from "../../services/ScheduleSessionServices.js"; // Import updateSession service
+import { createBookSession, getAllBookSessions } from '../../services/BookSessionServices.js';
+import { getSessionsByTutorEmail, updateSession } from "../../services/ScheduleSessionServices.js";
 import { AuthContext } from "../AuthContext.jsx";
 import { getApprovedTutors } from "../../services/TutorServices.js";
 
@@ -15,12 +15,16 @@ const BookSession = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { auth } = useContext(AuthContext);
 
+    // Fetch approved tutors when the component mounts or when auth changes
     useEffect(() => {
         if (auth && auth.email) {
+            console.log("Authenticated user:", auth);
+
             const fetchTutors = async () => {
                 try {
                     const tutorsData = await getApprovedTutors();
-                    setTutors(tutorsData.data);
+                    console.log("Fetched tutors data:", tutorsData);
+                    setTutors(tutorsData.data); // Update state with fetched tutors
                 } catch (error) {
                     console.error('Error fetching tutors:', error);
                 }
@@ -30,15 +34,18 @@ const BookSession = () => {
     }, [auth]);
 
     const handleBook = (tutor) => {
+        console.log("Selected tutor for booking:", tutor);
         setSelectedTutor(tutor);
         setShowSessionsModal(true);
         fetchSessions(tutor.email); // Fetch sessions using tutor's email
     };
 
     const fetchSessions = async (tutorEmail) => {
+        console.log("Fetching sessions for tutor email:", tutorEmail);
         try {
-            const sessionsData = await getSessionsByTutorEmail(tutorEmail); // Call the service to fetch sessions
-            setSessions(sessionsData.data); // Set sessions for the selected tutor
+            const sessionsData = await getSessionsByTutorEmail(tutorEmail);
+            console.log("Fetched sessions data:", sessionsData);
+            setSessions(sessionsData.data);
         } catch (error) {
             console.error('Error fetching sessions:', error);
         }
@@ -50,38 +57,40 @@ const BookSession = () => {
             return;
         }
 
+        console.log("Selected session for booking:", session);
+
         try {
-            // Create full BookSession object to send
+            // Constructing booking data
             const bookSessionData = {
                 tutor: selectedTutor,  // Full tutor object
                 student: {
-                    email: auth.email,  // Use authenticated student's email
-                    // Add more student details if necessary
+                    email: auth.email,  // Authenticated student's email
                 },
                 scheduleSession: session  // Full session object
             };
 
-            // Log the entire data structure before sending
+            // Log the data before sending
             console.log("Data to be sent to backend:", bookSessionData);
 
-            const response = await createBookSession(bookSessionData); // Call createBookSession service
-            console.log('Session created:', response.data);
+            // Call the createBookSession service
+            const response = await createBookSession(bookSessionData);
+            console.log('Response from createBookSession:', response.data);
 
-            // Handle the response that contains the full objects
-            const { bookSessionID, tutor, student, scheduleSession } = response.data;
-            console.log('Booked session details:', { bookSessionID, tutor, student, scheduleSession });
+            // Log detailed booked session information
+            const {  tutor, student, scheduleSession } = response.data;
+            console.log('Booked session details:', { tutor, student, scheduleSession });
 
-            // Optionally update the UI or show a confirmation message
-
+            // Optionally close modals or update UI
             setShowBookingModal(false);
             setShowSessionsModal(false);
         } catch (error) {
-            console.error('Create error:', error);
+            console.error('Error creating booking:', error);
         }
     };
 
     const handleSearch = (event) => {
         setSearchTerm(event.target.value.toLowerCase());
+        console.log("Updated search term:", event.target.value.toLowerCase());
     };
 
     const filteredTutors = tutors.filter(tutor =>
@@ -90,6 +99,8 @@ const BookSession = () => {
         tutor.experience?.toLowerCase().includes(searchTerm) ||
         tutor.skills.toLowerCase().includes(searchTerm)
     );
+
+    console.log("Filtered tutors based on search term:", filteredTutors);
 
     return (
         <div className="container mt-5">
@@ -136,8 +147,8 @@ const BookSession = () => {
                                     <strong>Session ID:</strong> {session.id}<br />
                                     <strong>Date:</strong> {session.date}<br />
                                     <strong>Duration:</strong> {session.duration} hours<br />
-                                    <Button 
-                                        variant="primary" 
+                                    <Button
+                                        variant="primary"
                                         onClick={() => confirmBooking(session)} // Pass the session to confirmBooking
                                     >
                                         Book Session

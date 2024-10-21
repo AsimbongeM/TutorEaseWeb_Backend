@@ -17,8 +17,10 @@ public class BookSessionController {
     private BookSessionService bookSessionService;
 
     @PostMapping("/create")
-    public BookSession create(@RequestBody BookSession bookSession) {
-        return bookSessionService.create(bookSession);
+    public ResponseEntity<BookSession> create(@RequestBody BookSession bookSession) {
+
+//        return bookSessionService.create(bookSession);
+        return ResponseEntity.ok(bookSessionService.create(bookSession));
     }
 
     @GetMapping("/read/{id}")

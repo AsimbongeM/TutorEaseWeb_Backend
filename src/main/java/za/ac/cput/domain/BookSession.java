@@ -26,16 +26,16 @@ public class BookSession implements Serializable {
     private Student student;
 
     //ScheduleSession id as a foreign key
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "scheduleSession_ID",referencedColumnName = "id")
-    private ScheduleSession scheduleSession;
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "scheduleSession_ID",referencedColumnName = "id")
+//    private ScheduleSession scheduleSession;
     protected BookSession() {}
 
     private BookSession(BookSession.Builder builder) {
         this.bookSessionID = builder.bookSessionID;
         this.tutor = builder.tutor;
         this.student = builder.student;
-        this.scheduleSession = builder.scheduleSession;
+//        this.scheduleSession = builder.scheduleSession;
     }
 
     public Long getBookSessionID() {
@@ -50,9 +50,9 @@ public class BookSession implements Serializable {
         return student;
     }
 
-    public ScheduleSession getScheduleSession() {
-        return scheduleSession;
-    }
+//    public ScheduleSession getScheduleSession() {
+//        return scheduleSession;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -61,20 +61,20 @@ public class BookSession implements Serializable {
         BookSession that = (BookSession) o;
         return Objects.equals(bookSessionID, that.bookSessionID) &&
                 Objects.equals(tutor, that.tutor) &&
-                Objects.equals(scheduleSession, that.scheduleSession) &&
+//                Objects.equals(scheduleSession, that.scheduleSession) &&
                 Objects.equals(student, that.student);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bookSessionID,scheduleSession, tutor, student);
+        return Objects.hash(bookSessionID, tutor, student);
     }
 
     @Override
     public String toString() {
         return "BookSession{" +
                 "bookSessionID=" + bookSessionID +
-                ", scheduleSession=" + scheduleSession +
+//                ", scheduleSession=" + scheduleSession +
                 ", tutor=" + tutor +
                 ", student=" + student +
                 '}';
@@ -107,7 +107,7 @@ public class BookSession implements Serializable {
 
         public BookSession.Builder copy(BookSession bookSession) {
             this.bookSessionID = bookSession.bookSessionID;
-            this.scheduleSession = bookSession.scheduleSession;
+//            this.scheduleSession = bookSession.scheduleSession;
             this.tutor = bookSession.tutor;
             this.student = bookSession.student;
             return this;
