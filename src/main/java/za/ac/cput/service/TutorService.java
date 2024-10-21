@@ -2,8 +2,11 @@ package za.ac.cput.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import za.ac.cput.domain.Student;
 import za.ac.cput.domain.Tutor;
 import za.ac.cput.domain.TutorApprovalStatus;
+import za.ac.cput.repository.StudentRepository;
 import za.ac.cput.repository.TutorRepository;
 
 import java.util.List;
@@ -11,11 +14,13 @@ import java.util.List;
 @Service
 public class TutorService implements ITutorService {
     private final TutorRepository tutorRepository;
+    private final StudentRepository studentRepository;
     private final NotificationService notificationService;
 
     @Autowired
-    TutorService(TutorRepository tutorRepository, NotificationService notificationService) {
+    TutorService(TutorRepository tutorRepository,StudentRepository studentRepository, NotificationService notificationService) {
         this.tutorRepository = tutorRepository;
+        this.studentRepository = studentRepository;
         this.notificationService = notificationService;
     }
 
@@ -33,6 +38,7 @@ public class TutorService implements ITutorService {
         // Return the saved tutor
         return savedTutor;
     }
+
 
     @Override
     public Tutor read(String email) {
@@ -75,5 +81,10 @@ public class TutorService implements ITutorService {
     public Tutor authenticate(String email, String password) {
         return tutorRepository.findByEmailAndPassword(email, password);
     }
+//    public List<Tutor> getTutorsForStudent(String studentEmail) {
+//        Student student = studentRepository.findById(studentEmail)
+//                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+//        return tutorRepository.findTutorsBySkillLevel(student.getSkillLevel());
+//    }
 
 }

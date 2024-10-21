@@ -22,9 +22,9 @@ class TopicsServiceTest {
 
     @BeforeEach
     void setUp() {
-        topics1 = TopicsFactory.buildTopics("Advanced",TopicLevel.BEGINNER, "Variables");
-        topics2 = TopicsFactory.buildTopics("Advnced",TopicLevel.INTERMEDIATE, "Introduction to Java GUI Framework");
-        topics3 = TopicsFactory.buildTopics("Advanced",TopicLevel.ADVANCED, "Builder Pattern");
+        topics1 = TopicsFactory.buildTopics("Variables",TopicLevel.BEGINNER, "Introduction to Variables");
+        topics2 = TopicsFactory.buildTopics("Java GUI Framework",TopicLevel.INTERMEDIATE, "Introduction to Java GUI Framework");
+        topics3 = TopicsFactory.buildTopics("Builder Pattern",TopicLevel.ADVANCED, "Introduction to Design Pattern");
     }
 
     @Order(1)
