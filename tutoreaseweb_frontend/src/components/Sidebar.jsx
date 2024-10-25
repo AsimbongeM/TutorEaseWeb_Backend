@@ -130,8 +130,8 @@ function Sidebar() {
                         Content
                     </Link>
                     <Link
-                        to="/resources"
-                        style={{ ...styles.link, ...getActiveLinkStyle("/resources") }}
+                        to={auth.role === 'student' ? '/ViewResources' : '/resources'}
+                        style={{ ...styles.link, ...getActiveLinkStyle(auth.role === 'student' ? '/ViewResources' : '/resources') }}
                         onMouseOver={(e) =>
                             (e.currentTarget.style.backgroundColor = styles.linkHover.backgroundColor)
                         }
@@ -140,6 +140,7 @@ function Sidebar() {
                         <i className="bi bi-grid me-2"></i>
                         Resources
                     </Link>
+
 
                     {/* Book Session link available only for students */}
                     {auth.role === "student" && (
