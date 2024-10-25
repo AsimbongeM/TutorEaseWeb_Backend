@@ -2,6 +2,7 @@ package za.ac.cput.domain;
 
 import jakarta.persistence.*;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -18,9 +19,9 @@ public class Tutor {
     private String password;
     private String skills;
     private int experience;
-    //    @Lob
-//    @Column(length = 10000000)
-//    private byte[] profilePicture;
+    @Lob
+    @Column(length = 10000000)
+    private byte[] profilePicture;
 //    @Lob
 //    @Column(length = 10000000)
 //    private byte[] idDocument;
@@ -50,7 +51,7 @@ public class Tutor {
         this.password = builder.password;
         this.skills = builder.skills;
         this.experience = builder.experience;
-//        this.profilePicture = builder.profilePicture;
+        this.profilePicture = builder.profilePicture;
 //        this.idDocument = builder.idDocument;
 //        this.sarsDocument = builder.sarsDocument;
         this.approvalStatus = builder.approvalStatus != null ? builder.approvalStatus : TutorApprovalStatus.PENDING;
@@ -94,9 +95,9 @@ public class Tutor {
         return experience;
     }
 
-//    public byte[] getProfilePicture() {
-//        return profilePicture;
-//    }
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
 //
 //    public byte[] getIdDocument() {
 //        return idDocument;
@@ -131,16 +132,14 @@ public class Tutor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tutor tutor = (Tutor) o;
-
-        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resources, tutor.resources) && Objects.equals(bookSessions, tutor.bookSessions) && Objects.equals(announcements, tutor.announcements);
-
+        return age == tutor.age && experience == tutor.experience && Objects.equals(email, tutor.email) && Objects.equals(firstName, tutor.firstName) && Objects.equals(lastName, tutor.lastName) && Objects.equals(cellNumber, tutor.cellNumber) && Objects.equals(password, tutor.password) && Objects.equals(skills, tutor.skills) && Arrays.equals(profilePicture, tutor.profilePicture) && approvalStatus == tutor.approvalStatus && Objects.equals(scheduleSessions, tutor.scheduleSessions) && Objects.equals(resources, tutor.resources) && Objects.equals(bookSessions, tutor.bookSessions) && Objects.equals(announcements, tutor.announcements);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resources, bookSessions, announcements);
-
+        int result = Objects.hash(email, firstName, lastName, age, cellNumber, password, skills, experience, approvalStatus, scheduleSessions, resources, bookSessions, announcements);
+        result = 31 * result + Arrays.hashCode(profilePicture);
+        return result;
     }
 
     @Override
@@ -154,11 +153,11 @@ public class Tutor {
                 ", password='" + password + '\'' +
                 ", skills='" + skills + '\'' +
                 ", experience=" + experience +
+                ", profilePicture=" + Arrays.toString(profilePicture) +
                 ", approvalStatus=" + approvalStatus +
                 ", scheduleSessions=" + scheduleSessions +
                 ", resources=" + resources +
                 ", bookSessions=" + bookSessions +
-
                 ", announcements=" + announcements +
                 '}';
     }
@@ -172,7 +171,7 @@ public class Tutor {
         private String password;
         private String skills;
         private int experience;
-        //        private byte[] profilePicture;
+                private byte[] profilePicture;
 //        private byte[] idDocument;
 //        private byte[] sarsDocument;
         private TutorApprovalStatus approvalStatus;
@@ -222,10 +221,10 @@ public class Tutor {
         }
 
 
-//        public Builder setProfilePicture(byte[] profilePicture) {
-//            this.profilePicture = profilePicture;
-//            return this;
-//        }
+        public Builder setProfilePicture(byte[] profilePicture) {
+            this.profilePicture = profilePicture;
+            return this;
+        }
 //        public Builder setIdDocument(byte[] idDocument) {
 //            this.idDocument = idDocument;
 //            return this;
@@ -269,7 +268,7 @@ public class Tutor {
             this.password = tutor.password;
             this.skills = tutor.skills;
             this.experience = tutor.experience;
-//            this.profilePicture = tutor.profilePicture;
+            this.profilePicture = tutor.profilePicture;
 //            this.idDocument = tutor.idDocument;
 //            this.sarsDocument = tutor.sarsDocument;
             this.approvalStatus = tutor.approvalStatus;

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {NavLink, useNavigate} from 'react-router-dom';
+import React, {useEffect, useRef, useState} from 'react';
+import {NavLink} from 'react-router-dom';
 import {createTutor, getTutorById} from '../../services/TutorServices.js';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -18,7 +18,10 @@ const TutorRegistration = () => {
     const [cellNumber, setCellNumber] = useState('');
     const [skills, setSkills] = useState('');
     const [experience, setExperience] = useState('');
+    const [profilePicture, setProfilePicture] = useState(null);
     const [errors, setErrors] = useState({});
+    const errorTimeoutRef = useRef(null);
+    const [profilePreview, setProfilePreview] = useState(null);
     const [apiError, setApiError] = useState('');
     const [passwordConstraints, setPasswordConstraints] = useState({
         length: false,
@@ -66,6 +69,7 @@ const TutorRegistration = () => {
                             password,
                             age,
                             cellNumber: trimmedCellNumber,
+                            profilePicture,
                             skills,
                             experience,
                             approvalStatus: 'PENDING'
@@ -84,7 +88,39 @@ const TutorRegistration = () => {
             }
         }
     };
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            if (allowedTypes.includes(file.type)) {
+                setProfilePicture(file);
 
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setProfilePreview(reader.result);
+                };
+                reader.readAsDataURL(file);
+                setErrors(''); // Clear any existing error message
+            } else {
+                setErrors('Please select a JPEG or PNG image.');
+                setProfilePicture(null);
+                setProfilePreview(null); // Clear the preview
+                e.target.value = ''; // Clear the file input
+
+                // Clear any existing timeout
+                if (errorTimeoutRef.current) {
+                    clearTimeout(errorTimeoutRef.current);
+                }
+
+                // Set a new timeout to clear the error message after 3 seconds
+                errorTimeoutRef.current = setTimeout(() => {
+                    setErrors('');
+                }, 3000); // 3 seconds
+            }
+        } else {
+            setProfilePreview(null); // Clear the preview if no file is selected
+        }
+    };
     const handlePopupClose = () => {
         setIsPopupVisible(false); // Hide the popup
     };
@@ -452,7 +488,25 @@ const TutorRegistration = () => {
                     {errors.confirmPassword && <div className="text-danger">{errors.confirmPassword}</div>}
                 </div>
 
-
+                <div className="mb-3">
+                    <label htmlFor="profilePicture" className="form-label" style={{fontWeight: 'bold'}}>Profile
+                        Picture:</label>
+                    <input
+                        type="file"
+                        id="profilePicture"
+                        name="profilePicture"
+                        className="form-control"
+                        onChange={handleFileChange} // Handle file input change
+                    />
+                    {profilePreview && (
+                        <img
+                            src={profilePreview}
+                            alt="Profile Preview"
+                            style={{marginTop: '10px', maxWidth: '100%', height: 'auto', borderRadius: '5px'}}
+                        />
+                    )}
+                    {errors.profilePicture && <div className="text-danger">{errors.profilePicture}</div>}
+                </div>
                 <div className="mb-3">
                     <label htmlFor="skills" className="form-label" style={{fontWeight: 'bold'}}>Skill level:</label>
                     <div className="d-flex align-items-center">

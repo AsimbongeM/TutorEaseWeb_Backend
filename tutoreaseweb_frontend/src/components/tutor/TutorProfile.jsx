@@ -1,23 +1,21 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import NavBar from "../../navigation/NavBar.jsx";
-import {deleteTutorById, getTutorById, updateTutor} from "../../services/TutorServices.js";
+import {deleteTutorById, getTutorById, getTutorImageUrl, updateTutor} from "../../services/TutorServices.js";
 import {AuthContext} from "../AuthContext.jsx";
 
 const TutorProfile = () => {
     const [tutor, setTutor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditable, setIsEditable] = useState(false);
-    const [isSaveHovered, setIsSaveHovered] = useState(false);
-    const [isEditHovered, setIsEditHovered] = useState(false);
+    const [profilePicture, setProfilePicture] = useState(null);
+    const [profilePreview, setProfilePreview] = useState(null);
+    const [errors, setErrors] = useState('');
+    const errorTimeoutRef = useRef(null);
     const navigate = useNavigate();
     const {auth, setAuth} = useContext(AuthContext);
 
     useEffect(() => {
-        // Set background color for the body when the component mounts
         document.body.style.backgroundColor = '#e6f2ff';
-
-        // Cleanup the style when the component unmounts
         return () => {
             document.body.style.backgroundColor = '';
         };
@@ -27,7 +25,10 @@ const TutorProfile = () => {
         if (auth && auth.email) {
             getTutorById(auth.email)
                 .then((response) => {
-                    setTutor(response.data);
+                    const tutorData = response.data;
+                    const imageUrl = getTutorImageUrl(tutorData.email);
+                    setTutor({...tutorData, imageUrl});
+                    setProfilePreview(imageUrl); // Set initial preview
                     setLoading(false);
                 })
                 .catch((error) => {
@@ -39,15 +40,60 @@ const TutorProfile = () => {
         }
     }, [auth]);
 
-    const toggleEdit = () => {
-        setIsEditable(prevState => !prevState);
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            if (allowedTypes.includes(file.type)) {
+                setProfilePicture(file);
+
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setProfilePreview(reader.result);
+                };
+                reader.readAsDataURL(file);
+                setErrors(''); // Clear any existing error message
+            } else {
+                setErrors('Please select a JPEG or PNG image.');
+                setProfilePicture(null);
+                setProfilePreview(null); // Clear the preview
+                e.target.value = ''; // Clear the file input
+
+                // Clear any existing timeout
+                if (errorTimeoutRef.current) {
+                    clearTimeout(errorTimeoutRef.current);
+                }
+
+                // Set a new timeout to clear the error message after 3 seconds
+                errorTimeoutRef.current = setTimeout(() => {
+                    setErrors('');
+                }, 3000); // 3 seconds
+            }
+        } else {
+            setProfilePreview(null); // Clear the preview if no file is selected
+        }
     };
 
     const handleSave = () => {
-        updateTutor(auth.email, tutor)
+        const tutorData = {
+            email: auth.email,
+            firstName: tutor.firstName,
+            lastName: tutor.lastName,
+            password: tutor.password || '',
+            age: tutor.age,
+            cellNumber: tutor.cellNumber,
+            skills: tutor.skills,
+            experience: tutor.experience,
+            approvalStatus: tutor.approvalStatus,
+            profilePicture // Include the profile picture if it exists
+        };
+
+        updateTutor(tutorData)
             .then((response) => {
                 setTutor(response.data);
                 setIsEditable(false);
+                setProfilePicture(null);
+                setProfilePreview(getTutorImageUrl(auth.email)); // Reset preview to updated image
             })
             .catch((error) => {
                 console.error("Error updating tutor data:", error);
@@ -77,10 +123,14 @@ const TutorProfile = () => {
         <div className="container">
             <div className="d-flex flex-column align-items-center mt-5">
                 <div className="text-center">
-                    <img src="/images/logo.png" alt="Profile Picture" className="rounded-circle mb-3"
-                         style={{width: '120px', height: '120px', border: '2px solid #fff'}}/>
+                    <img
+                        src={profilePreview || "/images/logo.png"}
+                        alt="Profile Preview"
+                        className="rounded-circle mb-3"
+                        style={{width: '150px', height: '150px', border: '2px solid #fff'}}
+                    />
                 </div>
-                <form className="w-100 p-4 bg-light shadow rounded" style={{maxWidth: '400px'}}>
+                <form className="w-100 p-4 bg-light shadow rounded" style={{maxWidth: '600px'}}>
                     <div className="mb-3">
                         <label htmlFor="firstName" className="form-label">First Name:</label>
                         <input
@@ -167,8 +217,6 @@ const TutorProfile = () => {
                             onChange={(e) => setTutor({...tutor, experience: e.target.value})}
                         />
                     </div>
-
-                    {/* Tutor Approval Status */}
                     <div className="mb-3">
                         <label htmlFor="approvalStatus" className="form-label">Approval Status:</label>
                         <input
@@ -181,59 +229,34 @@ const TutorProfile = () => {
                         />
                     </div>
 
+                    {/*/!* Profile Picture Input *!/*/}
+                    {/*<div className="mb-3">*/}
+                    {/*    <label htmlFor="profilePicture" className="form-label">Profile Picture:</label>*/}
+                    {/*    <input*/}
+                    {/*        type="file"*/}
+                    {/*        id="profilePicture"*/}
+                    {/*        accept="image/*"*/}
+                    {/*        onChange={handleFileChange}*/}
+                    {/*        className="form-control"*/}
+                    {/*        disabled={!isEditable}*/}
+                    {/*    />*/}
+                    {/*    {errors && <div className="text-danger">{errors}</div>}*/}
+                    {/*</div>*/}
+
                     <div className="d-flex justify-content-between">
                         {isEditable ? (
                             <>
-                                <button
-                                    type="button"
-                                    className="btn"
-                                    onClick={handleSave}
-                                    style={{
-                                        backgroundColor: '#00274d',
-                                        color: 'white',
-                                        border: 'none',
-                                        transition: 'all 0.3s ease',
-                                        transform: isSaveHovered ? 'scale(1.05)' : 'none',
-                                        ...(isSaveHovered ? {backgroundColor: '#ffcc00', color: '#00274d'} : {}),
-                                    }}
-                                    onMouseEnter={() => setIsSaveHovered(true)}
-                                    onMouseLeave={() => setIsSaveHovered(false)}
-                                >
-                                    Save
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={toggleEdit}
-                                >
-                                    Cancel
+                                <button type="button" className="btn btn-primary" onClick={handleSave}>Save</button>
+                                <button type="button" className="btn btn-danger"
+                                        onClick={() => setIsEditable(false)}>Cancel
                                 </button>
                             </>
                         ) : (
                             <>
-                                <button
-                                    type="button"
-                                    className="btn"
-                                    onClick={toggleEdit}
-                                    style={{
-                                        backgroundColor: '#00274d',
-                                        color: 'white',
-                                        border: 'none',
-                                        transition: 'all 0.3s ease',
-                                        transform: isEditHovered ? 'scale(1.05)' : 'none',
-                                        ...(isEditHovered ? {backgroundColor: '#ffcc00', color: '#00274d'} : {}),
-                                    }}
-                                    onMouseEnter={() => setIsEditHovered(true)}
-                                    onMouseLeave={() => setIsEditHovered(false)}
-                                >
-                                    Edit
+                                <button type="button" className="btn btn-primary"
+                                        onClick={() => setIsEditable(true)}>Edit
                                 </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={handleDelete}
-                                >
-                                    Delete Account
+                                <button type="button" className="btn btn-danger" onClick={handleDelete}>Delete Account
                                 </button>
                             </>
                         )}
