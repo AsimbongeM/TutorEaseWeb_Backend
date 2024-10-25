@@ -177,6 +177,7 @@ const BookSession = () => {
             </Modal>
 
             {/* Modal for session details */}
+            {/* Modal for session details */}
             <Modal show={showSessionsModal} onHide={() => setShowSessionsModal(false)} centered>
                 <Modal.Header>
                     <Modal.Title>
@@ -197,8 +198,9 @@ const BookSession = () => {
                                             variant="primary"
                                             onClick={() => confirmBooking(session)}
                                             style={{ marginLeft: '15px' }}
+                                            disabled={session.isBooked} // Disable if already booked
                                         >
-                                            <i className="fas fa-calendar-plus"></i> Book Session
+                                            <i className="fas fa-calendar-plus"></i> {session.isBooked ? 'Booked' : 'Book Session'}
                                         </Button>
                                     </div>
                                 </li>
@@ -214,6 +216,7 @@ const BookSession = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
 
             {/* Modal for confirming booking */}
             <Modal show={showBookingModal} onHide={() => setShowBookingModal(false)}>
