@@ -58,8 +58,8 @@ export const getBookSession = async (sessionId) => {
 // Get all booking sessions
 export const getAllBookSessions = async () => {
     try {
-        const response = await axios.get(`${REST_API_BASE_URL}/getAll`);
-        return response.data;
+        return  await axios.get(`${REST_API_BASE_URL}/getAll`);
+
     } catch (error) {
         console.error('Error fetching all sessions:', error);
         throw error;

@@ -75,11 +75,11 @@ public class TutorController {
         return tutorService.read(email);
     }
 
-//    @PutMapping("/update/{email}")
-//    public Tutor update(@PathVariable String email, @RequestBody Tutor tutor) {
-//        return tutorService.update(email, tutor);
-//
-//    }
+    @PutMapping("/update/{email}")
+    public Tutor update(@PathVariable String email, @RequestBody Tutor tutor) {
+        return tutorService.update(email, tutor);
+
+    }
 
     @DeleteMapping("/delete/{email}")
     public void delete(@PathVariable String email) {

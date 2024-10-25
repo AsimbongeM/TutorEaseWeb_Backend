@@ -37,5 +37,6 @@ export const getAllTutors = () =>
 // Function to fetch all approved tutors
 export const getApprovedTutors = () =>
     axios.get(`${REST_API_BASE_URL}/approved-tutors`);
-
+export const updateTutor1 = (email, tutor) =>
+    axios.put(`${REST_API_BASE_URL}/update/${email}`, tutor);
 export const getTutorImageUrl = (email) => `${REST_API_BASE_URL}/profilePicture/${email}`;

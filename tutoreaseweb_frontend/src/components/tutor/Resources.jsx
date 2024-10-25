@@ -28,8 +28,7 @@ const Resources = () => {
                 response = await fetchFiles(email);
             } else if (role === 'student') {
                 // Fetch files uploaded by the student's tutor
-                response = await fetchFiles(auth.tutorId); // Assuming tutorId is part of the student's auth info
-            }
+                response = await fetchFiles(auth.tutorId);             }
             setFiles(response.data);
         } catch (error) {
             console.error("Error fetching files:", error);

@@ -2,8 +2,12 @@ package za.ac.cput.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import za.ac.cput.domain.*;
-import za.ac.cput.repository.*;
+import za.ac.cput.domain.BookSession;
+import za.ac.cput.domain.Student;
+import za.ac.cput.domain.Tutor;
+import za.ac.cput.repository.BookSessionRepository;
+import za.ac.cput.repository.StudentRepository;
+import za.ac.cput.repository.TutorRepository;
 
 import java.util.List;
 
@@ -58,6 +62,6 @@ public class BookSessionService implements IBookSessionService {
 
     @Override
     public List<BookSession> getAll() {
-        return List.of();
+        return bookSessionRepository.findAll();
     }
 }

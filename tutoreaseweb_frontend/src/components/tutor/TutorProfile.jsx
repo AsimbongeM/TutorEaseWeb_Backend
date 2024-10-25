@@ -123,12 +123,14 @@ const TutorProfile = () => {
         <div className="container">
             <div className="d-flex flex-column align-items-center mt-5">
                 <div className="text-center">
-                    <img
-                        src={profilePreview || "/images/logo.png"}
-                        alt="Profile Preview"
-                        className="rounded-circle mb-3"
-                        style={{width: '150px', height: '150px', border: '2px solid #fff'}}
-                    />
+                    {tutor.profilePicture && (
+                        <img
+                            src={`data:image/jpeg;base64,${tutor.profilePicture}`}
+                            alt={`${tutor.firstName} ${tutor.lastName}`}
+                            className="tutor-image"
+                            style={{width: '150px', height: '150px', border: '2px solid #fff'}}
+                        />
+                    )}
                 </div>
                 <form className="w-100 p-4 bg-light shadow rounded" style={{maxWidth: '600px'}}>
                     <div className="mb-3">
@@ -229,19 +231,19 @@ const TutorProfile = () => {
                         />
                     </div>
 
-                    {/*/!* Profile Picture Input *!/*/}
-                    {/*<div className="mb-3">*/}
-                    {/*    <label htmlFor="profilePicture" className="form-label">Profile Picture:</label>*/}
-                    {/*    <input*/}
-                    {/*        type="file"*/}
-                    {/*        id="profilePicture"*/}
-                    {/*        accept="image/*"*/}
-                    {/*        onChange={handleFileChange}*/}
-                    {/*        className="form-control"*/}
-                    {/*        disabled={!isEditable}*/}
-                    {/*    />*/}
-                    {/*    {errors && <div className="text-danger">{errors}</div>}*/}
-                    {/*</div>*/}
+                    {/* Profile Picture Input */}
+                    <div className="mb-3">
+                        <label htmlFor="profilePicture" className="form-label">Profile Picture:</label>
+                        <input
+                            type="file"
+                            id="profilePicture"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="form-control"
+                            disabled={!isEditable}
+                        />
+                        {errors && <div className="text-danger">{errors}</div>}
+                    </div>
 
                     <div className="d-flex justify-content-between">
                         {isEditable ? (

@@ -1,9 +1,9 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, Card, Form, InputGroup, Modal} from 'react-bootstrap';
-import {createBookSession} from '../../services/BookSessionServices.js';
-import {getSessionsByTutorEmail, updateSession} from "../../services/ScheduleSessionServices.js";
-import {AuthContext} from "../AuthContext.jsx";
-import {getApprovedTutors} from "../../services/TutorServices.js";
+import React, { useContext, useEffect, useState } from 'react';
+import { Button, Card, Form, InputGroup, Modal } from 'react-bootstrap';
+import { createBookSession, getAllBookSessions } from '../../services/BookSessionServices.js';
+import { getSessionsByTutorEmail, updateSession } from "../../services/ScheduleSessionServices.js";
+import { AuthContext } from "../AuthContext.jsx";
+import { getApprovedTutors } from "../../services/TutorServices.js";
 
 const BookSession = () => {
     const [loading, setLoading] = useState(true);
@@ -11,21 +11,19 @@ const BookSession = () => {
     const [selectedTutor, setSelectedTutor] = useState(null);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [showSessionsModal, setShowSessionsModal] = useState(false);
+    const [showAllSessionsModal, setShowAllSessionsModal] = useState(false);
     const [sessions, setSessions] = useState([]);
+    const [allSessions, setAllSessions] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const { auth } = useContext(AuthContext);
-    const [message, setMessage] = useState(null); // State for messages
+    const [message, setMessage] = useState(null);
 
-    // Fetch approved tutors when the component mounts or when auth changes
     useEffect(() => {
         if (auth && auth.email) {
-            console.log("Authenticated user:", auth);
-
             const fetchTutors = async () => {
                 try {
                     const tutorsData = await getApprovedTutors();
-                    console.log("Fetched tutors data:", tutorsData);
-                    setTutors(tutorsData.data); // Update state with fetched tutors
+                    setTutors(tutorsData.data);
                 } catch (error) {
                     console.error('Error fetching tutors:', error);
                 }
@@ -35,20 +33,29 @@ const BookSession = () => {
     }, [auth]);
 
     const handleBook = (tutor) => {
-        console.log("Selected tutor for booking:", tutor);
         setSelectedTutor(tutor);
         setShowSessionsModal(true);
-        fetchSessions(tutor.email); // Fetch sessions using tutor's email
+        fetchSessions(tutor.email);
     };
 
     const fetchSessions = async (tutorEmail) => {
-        console.log("Fetching sessions for tutor email:", tutorEmail);
         try {
             const sessionsData = await getSessionsByTutorEmail(tutorEmail);
-            console.log("Fetched sessions data:", sessionsData);
             setSessions(sessionsData.data);
         } catch (error) {
             console.error('Error fetching sessions:', error);
+        }
+    };
+
+    const fetchAllSessions = async () => {
+        try {
+            const allSessionsData = await getAllBookSessions();
+            setAllSessions(allSessionsData.data || []);
+            console.log("All sessions: ", allSessionsData);
+            setShowAllSessionsModal(true);
+        } catch (error) {
+            console.error('Error fetching all sessions:', error);
+            setAllSessions([]);
         }
     };
 
@@ -58,51 +65,33 @@ const BookSession = () => {
             return;
         }
 
-        console.log("Selected session for booking:", session);
-
         try {
-            // Constructing booking data
             const bookSessionData = {
-                tutor: selectedTutor, // Full tutor object
+                tutor: selectedTutor,
                 student: {
-                    email: auth.email, // Authenticated student's email
+                    email: auth.email,
                 },
-                scheduleSession: session, // Full session object
+                scheduleSession: session,
             };
 
-            console.log("Data to be sent to backend:", bookSessionData);
-
-            // Call the createBookSession service
-            const response = await createBookSession(bookSessionData);
-
-            // Set success message
+            await createBookSession(bookSessionData);
             setMessage({ text: 'Booking successful!', type: 'success' });
-
-            // Close both modals
             setShowBookingModal(false);
             setShowSessionsModal(false);
 
-            // Mark the session as booked by updating its isBooked flag
-            const updateResponse = await updateSession(session.id, { ...session, isBooked: true });
-            console.log('Session update response', updateResponse);
-            console.log(`Session data; id to booked.`, session.id);
+            await updateSession(session.id, { ...session, isBooked: true });
 
-            // Automatically hide the success message after 3 seconds
             setTimeout(() => {
                 setMessage(null);
             }, 3000);
-
         } catch (error) {
             console.error('Error creating booking or updating session:', error);
-            // Set error message
             setMessage({ text: 'Error creating booking. Please try again.', type: 'danger' });
         }
     };
 
-
     const handleSearch = (event) => {
         setSearchTerm(event.target.value.toLowerCase());
-        console.log("Updated search term:", event.target.value.toLowerCase());
     };
 
     const filteredTutors = tutors.filter(tutor =>
@@ -111,8 +100,6 @@ const BookSession = () => {
         tutor.experience?.toLowerCase().includes(searchTerm) ||
         tutor.skills.toLowerCase().includes(searchTerm)
     );
-
-    console.log("Filtered tutors based on search term:", filteredTutors);
 
     return (
         <div className="container mt-5">
@@ -129,6 +116,10 @@ const BookSession = () => {
                     onChange={handleSearch}
                 />
             </InputGroup>
+
+            <Button variant="info" onClick={fetchAllSessions}>
+                View All Sessions
+            </Button>
 
             <div className="row mb-4">
                 {filteredTutors.map(tutor => (
@@ -152,6 +143,39 @@ const BookSession = () => {
                 ))}
             </div>
 
+            {/* Modal for all booking sessions */}
+            <Modal show={showAllSessionsModal} onHide={() => setShowAllSessionsModal(false)} centered>
+                <Modal.Header>
+                    <Modal.Title>All Booked Sessions</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {allSessions.length > 0 ? (
+                        <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
+                            {allSessions.map((x)=> (
+                                <li key={x.id}>
+                                    <div style={{
+                                        padding: '10px',
+                                        border: '1px solid #dee2e6',
+                                        borderRadius: '8px',
+                                        marginBottom: '10px'
+                                    }}>
+                                        <strong>Student Name:</strong> {x.student.firstName} {x.student.lastName} <br />
+                                        <strong>Tutor Name:</strong> {x.tutor.firstName} {x.tutor.lastName} <br />
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p>No sessions available.</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowAllSessionsModal(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             {/* Modal for session details */}
             <Modal show={showSessionsModal} onHide={() => setShowSessionsModal(false)} centered>
                 <Modal.Header>
@@ -161,34 +185,18 @@ const BookSession = () => {
                 </Modal.Header>
                 <Modal.Body>
                     {sessions.length > 0 ? (
-                        <ul style={{listStyleType: 'none', padding: '0', margin: '0'}}>
+                        <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
                             {sessions.map(session => (
-                                <li
-                                    key={session.id}
-                                    style={{
-                                        marginBottom: '15px',
-                                        padding: '20px',
-                                        border: '1px solid #dee2e6',
-                                        borderRadius: '8px',
-                                        backgroundColor: '#ffffff',
-                                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                                    }}
-                                >
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
-                                    }}>
-                                        <div style={{flex: '1'}}>
-                                            <strong>Session ID:</strong> {session.id} <br/>
-                                            <strong>Date:</strong> {session.date} <br/>
-                                            <strong>Start Time:</strong> {session.startTime} hours <br/>
-                                            <strong>End Time:</strong> {session.endTime} hours
-                                        </div>
+                                <li key={session.id}>
+                                    <div>
+                                        <strong>Session ID:</strong> {session.id} <br />
+                                        <strong>Date:</strong> {session.date} <br />
+                                        <strong>Start Time:</strong> {session.startTime} hours <br />
+                                        <strong>End Time:</strong> {session.endTime} hours
                                         <Button
                                             variant="primary"
                                             onClick={() => confirmBooking(session)}
-                                            style={{marginLeft: '15px', padding: '10px 20px'}}
+                                            style={{ marginLeft: '15px' }}
                                         >
                                             <i className="fas fa-calendar-plus"></i> Book Session
                                         </Button>
@@ -197,8 +205,7 @@ const BookSession = () => {
                             ))}
                         </ul>
                     ) : (
-                        <p style={{textAlign: 'center', color: '#6c757d', padding: '20px'}}>No sessions available for
-                            this tutor.</p>
+                        <p>No sessions available for this tutor.</p>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
@@ -207,7 +214,6 @@ const BookSession = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
 
             {/* Modal for confirming booking */}
             <Modal show={showBookingModal} onHide={() => setShowBookingModal(false)}>
